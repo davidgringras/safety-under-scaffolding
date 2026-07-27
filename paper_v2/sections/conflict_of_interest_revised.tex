@@ -1,0 +1,9 @@
+% Conflict of Interest and Methodological Independence
+% Revised Feb 16, 2026 — condensed
+
+\subsubsection{Conflict of Interest and Methodological Independence}
+\label{sec:coi}
+
+Threat channels from this builder-as-subject configuration sit in Table~\ref{tab:threat-channels} (Section~\ref{sec:reflexivity}).  Opus is resilient to evaluative-pressure scaffolds (ReAct $-2.0$~pp, multi-agent $-1.2$~pp; Table~\ref{tab:model-config}) but breaks on content-destroying ones (map-reduce: $-15.6$~pp aggregate, $-24.7$~pp on TruthfulQA).  That mismatch --- vulnerable to one channel, robust to another --- is the wrong fingerprint for pipeline-design bias, which would push toward roughly uniform improvement across configurations.  It weakens the builder-as-subject concern; it does not, on its own, dispatch it.
+
+Structural safeguards constrain the conflict: (i)~pre-registration before data collection; (ii)~fully automated scoring (80.9\% deterministic MC extraction, immune to assessor bias by construction; 19.1\% LLM-as-judge scoring, Gemini~3~Flash primary with Opus~4.6 validation on a 10\% subsample); (iii)~uniform scaffold treatment (text-based parsing, identical prompts across models); (iv)~full code release.  One confirmed apparatus--model mismatch (Gemini parse failures from Opus-developed extraction logic; Section~\ref{sec:gemini-results}) surfaced and was corrected; subtler interactions may persist.  We treat Opus's evaluative-pressure resilience as hypothesis-generating, pending independent confirmation.  The Opus-excluded sensitivity analysis (Table~\ref{tab:opus-excluded}) preserves all qualitative conclusions without Opus ($N = 52{,}340$).

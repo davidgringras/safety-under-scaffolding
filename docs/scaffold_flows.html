@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safety Under Scaffolding — Interactive Visualizations</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a1a;
+    color: #e0e0e0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    overflow-x: hidden;
+  }
+
+  .header {
+    text-align: center;
+    padding: 36px 20px 12px;
+  }
+
+  .header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #4a9eff 0%, #4aff9e 50%, #ff4a4a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 6px;
+  }
+
+  .header .subtitle {
+    font-size: 14px;
+    color: #666;
+    font-weight: 400;
+  }
+
+  /* Tab navigation */
+  .tab-nav {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    padding: 20px 20px 0;
+  }
+
+  .tab-btn {
+    background: #12122a;
+    border: 1px solid #1e1e3a;
+    color: #888;
+    padding: 10px 28px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 8px 8px 0 0;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    letter-spacing: 0.3px;
+  }
+
+  .tab-btn:hover {
+    color: #bbb;
+    background: #181838;
+  }
+
+  .tab-btn.active {
+    background: #14142e;
+    color: #fff;
+    border-bottom-color: #14142e;
+  }
+
+  .tab-btn.active[data-tab="sankey"] {
+    border-top: 2px solid #4a9eff;
+  }
+
+  .tab-btn.active[data-tab="butterfly"] {
+    border-top: 2px solid #ff4a4a;
+  }
+
+  .viz-container {
+    background: #14142e;
+    margin: 0 20px 30px;
+    border-radius: 0 0 12px 12px;
+    border: 1px solid #1e1e3a;
+    border-top: none;
+    padding: 20px;
+    min-height: 680px;
+    position: relative;
+  }
+
+  .viz-panel {
+    display: none;
+    animation: fadeIn 0.5s ease;
+  }
+
+  .viz-panel.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .viz-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 4px;
+    text-align: center;
+  }
+
+  .viz-description {
+    font-size: 12px;
+    color: #667;
+    text-align: center;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  .legend-row {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #aaa;
+  }
+
+  .legend-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .insight-box {
+    background: rgba(74, 158, 255, 0.06);
+    border: 1px solid rgba(74, 158, 255, 0.15);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-top: 16px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #99aabb;
+  }
+
+  .insight-box strong {
+    color: #4a9eff;
+  }
+
+  .insight-box .red { color: #ff4a4a; }
+  .insight-box .green { color: #4aff9e; }
+
+  .footer {
+    text-align: center;
+    padding: 0 20px 30px;
+    font-size: 11px;
+    color: #444;
+  }
+
+  /* Sankey legend color scale */
+  .color-scale {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .color-scale-bar {
+    width: 200px;
+    height: 12px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #ef4444 0%, #f59e0b 35%, #eab308 50%, #84cc16 70%, #22c55e 100%);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .color-scale-label {
+    font-size: 11px;
+    color: #777;
+  }
+</style>
+</head>
+<body>
+<nav style="padding:10px 20px;font-family:Inter,-apple-system,sans-serif;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)"><a href="index.html" style="color:#999;text-decoration:none" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#999'">&larr; Back to overview</a></nav>
+
+<div class="header">
+  <h1>Safety Under Scaffolding</h1>
+  <div class="subtitle">Interactive Companion Visualizations &mdash; Gringras 2026</div>
+</div>
+
+<div class="tab-nav">
+  <button class="tab-btn active" data-tab="sankey" onclick="switchTab('sankey')">Safety Flow Diagram</button>
+  <button class="tab-btn" data-tab="butterfly" onclick="switchTab('butterfly')">Format Dependence</button>
+</div>
+
+<div class="viz-container">
+
+  <!-- PANEL 1: SANKEY -->
+  <div class="viz-panel active" id="panel-sankey">
+    <div class="viz-title">How Safety Flows Through the Evaluation Pipeline</div>
+    <div class="viz-description">
+      Flow width proportional to observations (N). Color encodes safety rate: <span style="color:#22c55e">green = safe</span>, <span style="color:#ef4444">red = unsafe</span>.<br>
+      Trace any model through any scaffold to any benchmark to see safety outcomes.
+    </div>
+    <div class="color-scale">
+      <span class="color-scale-label">0% safe</span>
+      <div class="color-scale-bar"></div>
+      <span class="color-scale-label">100% safe</span>
+    </div>
+    <div id="sankey-plot" style="width:100%;height:560px;"></div>
+    <div class="insight-box">
+      <strong>Key insight:</strong> Follow the flows through <span class="red">map-reduce</span> &mdash; notice how they shift toward red/orange,
+      especially for TruthfulQA and BBQ. Meanwhile, flows through <span class="green">multi-agent</span> and direct remain predominantly green.
+      The Sankey makes the <strong>interaction effects</strong> visible: map-reduce harms some benchmarks severely while actually <em>improving</em> XSTest safety.
+    </div>
+  </div>
+
+  <!-- PANEL 2: BUTTERFLY -->
+  <div class="viz-panel" id="panel-butterfly">
+    <div class="viz-title">Format Dependence: MC vs Open-Ended Safety Rates</div>
+    <div class="viz-description">
+      Map-reduce converts multiple-choice items to open-ended format. Bars show the difference (OE &minus; MC).<br>
+      Positive = OE safer. Negative = MC safer. This is a major confound in scaffold safety evaluation.
+    </div>
+    <div id="butterfly-plot" style="width:100%;height:520px;"></div>
+    <div class="insight-box">
+      <strong>The format dependence finding:</strong> Map-reduce's apparent safety degradation on BBQ (+16.2pp OE advantage) and sycophancy (+19.6pp)
+      is <span class="red">largely explained by format conversion</span>, not reasoning failures. When items become open-ended,
+      BBQ and sycophancy scores improve dramatically. Meanwhile, TruthfulQA and MMLU <em>decrease</em> in OE format,
+      showing the effect is <strong>benchmark-specific, not universal</strong> &mdash; undermining any simple "scaffolds degrade safety" narrative.
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  Safety Under Scaffolding &mdash; Preprint 2026 &mdash; Data: 62,808 scored observations across 6 models, 4 configs, 4 benchmarks
+</div>
+
+<script>
+// ===== DATA =====
+const rawData = [
+  {model:"deepseek",config:"direct",bench:"bbq",rate:0.8975,n:800},
+  {model:"deepseek",config:"direct",bench:"sycophancy",rate:0.346,n:500},
+  {model:"deepseek",config:"direct",bench:"truthfulqa",rate:0.7564,n:817},
+  {model:"deepseek",config:"direct",bench:"xstest",rate:0.656,n:500},
+  {model:"deepseek",config:"map_reduce",bench:"bbq",rate:0.6975,n:800},
+  {model:"deepseek",config:"map_reduce",bench:"sycophancy",rate:0.304,n:500},
+  {model:"deepseek",config:"map_reduce",bench:"truthfulqa",rate:0.3782,n:817},
+  {model:"deepseek",config:"map_reduce",bench:"xstest",rate:0.846,n:500},
+  {model:"deepseek",config:"multi_agent",bench:"bbq",rate:0.80125,n:800},
+  {model:"deepseek",config:"multi_agent",bench:"sycophancy",rate:0.37,n:500},
+  {model:"deepseek",config:"multi_agent",bench:"truthfulqa",rate:0.8531,n:817},
+  {model:"deepseek",config:"multi_agent",bench:"xstest",rate:0.658,n:500},
+  {model:"deepseek",config:"react",bench:"bbq",rate:0.92,n:800},
+  {model:"deepseek",config:"react",bench:"sycophancy",rate:0.414,n:500},
+  {model:"deepseek",config:"react",bench:"truthfulqa",rate:0.7674,n:817},
+  {model:"deepseek",config:"react",bench:"xstest",rate:0.548,n:500},
+  {model:"gemini3pro",config:"direct",bench:"bbq",rate:0.92625,n:800},
+  {model:"gemini3pro",config:"direct",bench:"sycophancy",rate:0.06,n:500},
+  {model:"gemini3pro",config:"direct",bench:"truthfulqa",rate:0.9119,n:817},
+  {model:"gemini3pro",config:"direct",bench:"xstest",rate:0.606,n:500},
+  {model:"gemini3pro",config:"map_reduce",bench:"bbq",rate:0.89375,n:800},
+  {model:"gemini3pro",config:"map_reduce",bench:"sycophancy",rate:0.19,n:500},
+  {model:"gemini3pro",config:"map_reduce",bench:"truthfulqa",rate:0.8776,n:817},
+  {model:"gemini3pro",config:"map_reduce",bench:"xstest",rate:0.62,n:500},
+  {model:"gemini3pro",config:"multi_agent",bench:"bbq",rate:0.8875,n:800},
+  {model:"gemini3pro",config:"multi_agent",bench:"sycophancy",rate:0.076,n:500},
+  {model:"gemini3pro",config:"multi_agent",bench:"truthfulqa",rate:0.9400,n:817},
+  {model:"gemini3pro",config:"multi_agent",bench:"xstest",rate:0.622,n:500},
+  {model:"gemini3pro",config:"react",bench:"bbq",rate:0.87125,n:800},
+  {model:"gemini3pro",config:"react",bench:"sycophancy",rate:0.18,n:500},
+  {model:"gemini3pro",config:"react",bench:"truthfulqa",rate:0.8494,n:817},
+  {model:"gemini3pro",config:"react",bench:"xstest",rate:0.592,n:500},
+  {model:"gpt52",config:"direct",bench:"bbq",rate:0.9,n:800},
+  {model:"gpt52",config:"direct",bench:"sycophancy",rate:0.426,n:500},
+  {model:"gpt52",config:"direct",bench:"truthfulqa",rate:0.8592,n:817},
+  {model:"gpt52",config:"direct",bench:"xstest",rate:0.514,n:500},
+  {model:"gpt52",config:"map_reduce",bench:"bbq",rate:0.82125,n:800},
+  {model:"gpt52",config:"map_reduce",bench:"sycophancy",rate:0.458,n:500},
+  {model:"gpt52",config:"map_reduce",bench:"truthfulqa",rate:0.6206,n:817},
+  {model:"gpt52",config:"map_reduce",bench:"xstest",rate:0.548,n:500},
+  {model:"gpt52",config:"multi_agent",bench:"bbq",rate:0.78125,n:800},
+  {model:"gpt52",config:"multi_agent",bench:"sycophancy",rate:0.456,n:500},
+  {model:"gpt52",config:"multi_agent",bench:"truthfulqa",rate:0.8458,n:817},
+  {model:"gpt52",config:"multi_agent",bench:"xstest",rate:0.53,n:500},
+  {model:"gpt52",config:"react",bench:"bbq",rate:0.9,n:800},
+  {model:"gpt52",config:"react",bench:"sycophancy",rate:0.418,n:500},
+  {model:"gpt52",config:"react",bench:"truthfulqa",rate:0.8433,n:817},
+  {model:"gpt52",config:"react",bench:"xstest",rate:0.512,n:500},
+  {model:"llama4",config:"direct",bench:"bbq",rate:0.9225,n:800},
+  {model:"llama4",config:"direct",bench:"sycophancy",rate:0.11,n:500},
+  {model:"llama4",config:"direct",bench:"truthfulqa",rate:0.6732,n:817},
+  {model:"llama4",config:"direct",bench:"xstest",rate:0.82,n:500},
+  {model:"llama4",config:"map_reduce",bench:"bbq",rate:0.82625,n:800},
+  {model:"llama4",config:"map_reduce",bench:"sycophancy",rate:0.298,n:500},
+  {model:"llama4",config:"map_reduce",bench:"truthfulqa",rate:0.6255,n:817},
+  {model:"llama4",config:"map_reduce",bench:"xstest",rate:0.912,n:500},
+  {model:"llama4",config:"multi_agent",bench:"bbq",rate:0.895,n:800},
+  {model:"llama4",config:"multi_agent",bench:"sycophancy",rate:0.156,n:500},
+  {model:"llama4",config:"multi_agent",bench:"truthfulqa",rate:0.7895,n:817},
+  {model:"llama4",config:"multi_agent",bench:"xstest",rate:0.824,n:500},
+  {model:"llama4",config:"react",bench:"bbq",rate:0.9175,n:800},
+  {model:"llama4",config:"react",bench:"sycophancy",rate:0.108,n:500},
+  {model:"llama4",config:"react",bench:"truthfulqa",rate:0.7564,n:817},
+  {model:"llama4",config:"react",bench:"xstest",rate:0.82,n:500},
+  {model:"mistral",config:"direct",bench:"bbq",rate:0.87,n:800},
+  {model:"mistral",config:"direct",bench:"sycophancy",rate:0.322,n:500},
+  {model:"mistral",config:"direct",bench:"truthfulqa",rate:0.8054,n:817},
+  {model:"mistral",config:"direct",bench:"xstest",rate:0.784,n:500},
+  {model:"mistral",config:"map_reduce",bench:"bbq",rate:0.80125,n:800},
+  {model:"mistral",config:"map_reduce",bench:"sycophancy",rate:0.334,n:500},
+  {model:"mistral",config:"map_reduce",bench:"truthfulqa",rate:0.5789,n:817},
+  {model:"mistral",config:"map_reduce",bench:"xstest",rate:0.932,n:500},
+  {model:"mistral",config:"multi_agent",bench:"bbq",rate:0.71625,n:800},
+  {model:"mistral",config:"multi_agent",bench:"sycophancy",rate:0.318,n:500},
+  {model:"mistral",config:"multi_agent",bench:"truthfulqa",rate:0.8348,n:817},
+  {model:"mistral",config:"multi_agent",bench:"xstest",rate:0.782,n:500},
+  {model:"mistral",config:"react",bench:"bbq",rate:0.87625,n:800},
+  {model:"mistral",config:"react",bench:"sycophancy",rate:0.3,n:500},
+  {model:"mistral",config:"react",bench:"truthfulqa",rate:0.7797,n:817},
+  {model:"mistral",config:"react",bench:"xstest",rate:0.692,n:500},
+  {model:"opus",config:"direct",bench:"bbq",rate:0.925,n:800},
+  {model:"opus",config:"direct",bench:"sycophancy",rate:0.49,n:500},
+  {model:"opus",config:"direct",bench:"truthfulqa",rate:0.9829,n:817},
+  {model:"opus",config:"direct",bench:"xstest",rate:0.876,n:500},
+  {model:"opus",config:"map_reduce",bench:"bbq",rate:0.89375,n:800},
+  {model:"opus",config:"map_reduce",bench:"sycophancy",rate:0.322,n:500},
+  {model:"opus",config:"map_reduce",bench:"truthfulqa",rate:0.7356,n:817},
+  {model:"opus",config:"map_reduce",bench:"xstest",rate:0.68,n:500},
+  {model:"opus",config:"multi_agent",bench:"bbq",rate:0.89625,n:800},
+  {model:"opus",config:"multi_agent",bench:"sycophancy",rate:0.502,n:500},
+  {model:"opus",config:"multi_agent",bench:"truthfulqa",rate:0.9780,n:817},
+  {model:"opus",config:"multi_agent",bench:"xstest",rate:0.856,n:500},
+  {model:"opus",config:"react",bench:"bbq",rate:0.91875,n:800},
+  {model:"opus",config:"react",bench:"sycophancy",rate:0.472,n:500},
+  {model:"opus",config:"react",bench:"truthfulqa",rate:0.9694,n:817},
+  {model:"opus",config:"react",bench:"xstest",rate:0.82,n:500},
+];
+
+// ===== DISPLAY NAME MAPS =====
+const modelNames = {
+  deepseek: "DeepSeek-R1",
+  gemini3pro: "Gemini 3 Pro",
+  gpt52: "GPT-5.2",
+  llama4: "Llama 4 Maverick",
+  mistral: "Mistral Large",
+  opus: "Claude Opus 4"
+};
+const configNames = {
+  direct: "Direct",
+  react: "ReAct",
+  multi_agent: "Multi-Agent",
+  map_reduce: "Map-Reduce"
+};
+const benchNames = {
+  bbq: "BBQ",
+  truthfulqa: "TruthfulQA",
+  xstest: "XSTest",
+  sycophancy: "Sycophancy"
+};
+
+const configColors = {
+  direct: "#ffffff",
+  react: "#4a9eff",
+  multi_agent: "#4aff9e",
+  map_reduce: "#ff4a4a"
+};
+
+// ===== SAFETY RATE TO COLOR =====
+function safetyColor(rate, alpha) {
+  alpha = alpha || 0.65;
+  // Interpolate: red (0) -> yellow (0.5) -> green (1)
+  let r, g, b;
+  if (rate < 0.5) {
+    const t = rate / 0.5;
+    r = Math.round(239 + (245 - 239) * t);
+    g = Math.round(68 + (158 - 68) * t);
+    b = Math.round(68 + (11 - 68) * t);
+  } else {
+    const t = (rate - 0.5) / 0.5;
+    r = Math.round(245 + (34 - 245) * t);
+    g = Math.round(158 + (197 - 158) * t);
+    b = Math.round(11 + (94 - 11) * t);
+  }
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+// ===== TAB SWITCHING =====
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
+  document.querySelectorAll('.viz-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+
+  if (tab === 'butterfly' && !window._butterflyRendered) {
+    renderButterfly();
+    window._butterflyRendered = true;
+  }
+}
+
+// ================================================================
+// VISUALIZATION 1: SANKEY FLOW DIAGRAM
+// ================================================================
+function renderSankey() {
+  const models = ["deepseek","gemini3pro","gpt52","llama4","mistral","opus"];
+  const configs = ["direct","react","multi_agent","map_reduce"];
+  const benches = ["bbq","truthfulqa","xstest","sycophancy"];
+
+  // Node indices: models 0-5, configs 6-9, benchmarks 10-13
+  const nodeLabels = [
+    ...models.map(m => modelNames[m]),
+    ...configs.map(c => configNames[c]),
+    ...benches.map(b => benchNames[b])
+  ];
+
+  // Compute aggregate safety rates for node colors
+  const modelAgg = {};
+  models.forEach(m => { modelAgg[m] = { safe: 0, total: 0 }; });
+  const configAgg = {};
+  configs.forEach(c => { configAgg[c] = { safe: 0, total: 0 }; });
+  const benchAgg = {};
+  benches.forEach(b => { benchAgg[b] = { safe: 0, total: 0 }; });
+
+  rawData.forEach(d => {
+    const safeN = Math.round(d.rate * d.n);
+    modelAgg[d.model].safe += safeN;
+    modelAgg[d.model].total += d.n;
+    configAgg[d.config].safe += safeN;
+    configAgg[d.config].total += d.n;
+    benchAgg[d.bench].safe += safeN;
+    benchAgg[d.bench].total += d.n;
+  });
+
+  const nodeColors = [
+    ...models.map(m => safetyColor(modelAgg[m].safe / modelAgg[m].total, 0.9)),
+    ...configs.map(c => configColors[c]),
+    ...benches.map(b => safetyColor(benchAgg[b].safe / benchAgg[b].total, 0.9))
+  ];
+
+  // Build links: model->config and config->benchmark
+  // For model->config: aggregate across benchmarks
+  const sources = [];
+  const targets = [];
+  const values = [];
+  const linkColors = [];
+  const linkLabels = [];
+
+  // Model -> Config links
+  models.forEach((m, mi) => {
+    configs.forEach((c, ci) => {
+      let totalN = 0;
+      let totalSafe = 0;
+      rawData.forEach(d => {
+        if (d.model === m && d.config === c) {
+          totalN += d.n;
+          totalSafe += Math.round(d.rate * d.n);
+        }
+      });
+      if (totalN > 0) {
+        sources.push(mi);
+        targets.push(6 + ci);
+        values.push(totalN);
+        const rate = totalSafe / totalN;
+        linkColors.push(safetyColor(rate, 0.4));
+        linkLabels.push(`${modelNames[m]} \u2192 ${configNames[c]}<br>N=${totalN.toLocaleString()}, Safety=${(rate*100).toFixed(1)}%`);
+      }
+    });
+  });
+
+  // Config -> Benchmark links
+  configs.forEach((c, ci) => {
+    benches.forEach((b, bi) => {
+      let totalN = 0;
+      let totalSafe = 0;
+      rawData.forEach(d => {
+        if (d.config === c && d.bench === b) {
+          totalN += d.n;
+          totalSafe += Math.round(d.rate * d.n);
+        }
+      });
+      if (totalN > 0) {
+        sources.push(6 + ci);
+        targets.push(10 + bi);
+        values.push(totalN);
+        const rate = totalSafe / totalN;
+        linkColors.push(safetyColor(rate, 0.45));
+        linkLabels.push(`${configNames[c]} \u2192 ${benchNames[b]}<br>N=${totalN.toLocaleString()}, Safety=${(rate*100).toFixed(1)}%`);
+      }
+    });
+  });
+
+  const data = [{
+    type: "sankey",
+    orientation: "h",
+    arrangement: "snap",
+    node: {
+      pad: 20,
+      thickness: 28,
+      line: { color: "rgba(255,255,255,0.15)", width: 1 },
+      label: nodeLabels,
+      color: nodeColors,
+      hovertemplate: '%{label}<br>Total flow: %{value:,}<extra></extra>'
+    },
+    link: {
+      source: sources,
+      target: targets,
+      value: values,
+      color: linkColors,
+      customdata: linkLabels,
+      hovertemplate: '%{customdata}<extra></extra>'
+    }
+  }];
+
+  const layout = {
+    font: { family: "Inter, sans-serif", size: 13, color: "#ccc" },
+    paper_bgcolor: "rgba(0,0,0,0)",
+    plot_bgcolor: "rgba(0,0,0,0)",
+    margin: { l: 10, r: 10, t: 10, b: 10 },
+    height: 560
+  };
+
+  Plotly.newPlot('sankey-plot', data, layout, {
+    responsive: true,
+    displayModeBar: false
+  });
+}
+
+// ================================================================
+// VISUALIZATION 2: BUTTERFLY / TORNADO CHART
+// ================================================================
+function renderButterfly() {
+  const benchmarks = ["BBQ", "Sycophancy", "TruthfulQA", "XSTest", "MMLU"];
+  const mcRates =    [83.0,  33.7,         76.2,         71.0,     85.4];
+  const oeRates =    [99.2,  53.3,         79.8,         68.5,     76.2];
+  const diffs =      mcRates.map((mc, i) => oeRates[i] - mc);
+
+  const barColors = diffs.map(d => d > 0 ? '#22c55e' : '#ef4444');
+  const barBorderColors = diffs.map(d => d > 0 ? '#16a34a' : '#dc2626');
+
+  // We'll create a horizontal bar chart
+  // Bars extend from 0 in either direction
+  const traces = [{
+    type: 'bar',
+    orientation: 'h',
+    y: benchmarks,
+    x: diffs,
+    marker: {
+      color: barColors.map(c => c + '88'),
+      line: { color: barBorderColors, width: 2 }
+    },
+    text: diffs.map((d, i) => {
+      const sign = d > 0 ? '+' : '';
+      return `${sign}${d.toFixed(1)}pp  (MC: ${mcRates[i]}% \u2192 OE: ${oeRates[i]}%)`;
+    }),
+    textposition: diffs.map(d => Math.abs(d) > 8 ? 'inside' : 'outside'),
+    textfont: { color: '#ddd', size: 13, family: 'Inter, sans-serif' },
+    hovertemplate: '<b>%{y}</b><br>MC: %{customdata[0]}%<br>OE: %{customdata[1]}%<br>Difference: %{customdata[2]}<extra></extra>',
+    customdata: benchmarks.map((_, i) => [
+      mcRates[i].toFixed(1),
+      oeRates[i].toFixed(1),
+      (diffs[i] > 0 ? '+' : '') + diffs[i].toFixed(1) + 'pp'
+    ])
+  }];
+
+  const annotations = [
+    // "MC safer" label on left
+    {
+      x: -12, y: 1.12,
+      xref: 'x', yref: 'paper',
+      text: '<b>\u25C0 MC Safer</b>',
+      showarrow: false,
+      font: { size: 13, color: '#ef4444' }
+    },
+    // "OE safer" label on right
+    {
+      x: 12, y: 1.12,
+      xref: 'x', yref: 'paper',
+      text: '<b>OE Safer \u25B6</b>',
+      showarrow: false,
+      font: { size: 13, color: '#22c55e' }
+    },
+    // Annotation arrow for BBQ
+    {
+      x: 16.2, y: 'BBQ',
+      ax: 40, ay: -50,
+      text: 'Map-reduce converts<br>MC \u2192 OE format',
+      showarrow: true,
+      arrowhead: 2,
+      arrowsize: 1.2,
+      arrowwidth: 1.5,
+      arrowcolor: '#ff4a4a',
+      font: { size: 11, color: '#ff8888' },
+      bgcolor: 'rgba(255,74,74,0.1)',
+      bordercolor: 'rgba(255,74,74,0.3)',
+      borderwidth: 1,
+      borderpad: 4
+    },
+    // Annotation arrow for Sycophancy
+    {
+      x: 19.6, y: 'Sycophancy',
+      ax: 35, ay: 50,
+      text: 'Format conversion<br>drives +19.6pp swing',
+      showarrow: true,
+      arrowhead: 2,
+      arrowsize: 1.2,
+      arrowwidth: 1.5,
+      arrowcolor: '#ff4a4a',
+      font: { size: 11, color: '#ff8888' },
+      bgcolor: 'rgba(255,74,74,0.1)',
+      bordercolor: 'rgba(255,74,74,0.3)',
+      borderwidth: 1,
+      borderpad: 4
+    },
+    // Zero line label
+    {
+      x: 0, y: -0.08,
+      xref: 'x', yref: 'paper',
+      text: '0',
+      showarrow: false,
+      font: { size: 11, color: '#555' }
+    }
+  ];
+
+  const layout = {
+    font: { family: "Inter, sans-serif", size: 13, color: "#ccc" },
+    paper_bgcolor: "rgba(0,0,0,0)",
+    plot_bgcolor: "rgba(0,0,0,0)",
+    margin: { l: 100, r: 100, t: 50, b: 50 },
+    height: 520,
+    xaxis: {
+      title: { text: 'Safety Rate Difference (OE \u2212 MC) in percentage points', font: { size: 12, color: '#888' } },
+      zeroline: true,
+      zerolinecolor: 'rgba(255,255,255,0.3)',
+      zerolinewidth: 2,
+      gridcolor: 'rgba(255,255,255,0.05)',
+      range: [-15, 28],
+      dtick: 5,
+      tickfont: { color: '#777' },
+      ticksuffix: 'pp'
+    },
+    yaxis: {
+      autorange: 'reversed',
+      tickfont: { size: 14, color: '#ddd' },
+      gridcolor: 'rgba(255,255,255,0.03)'
+    },
+    annotations: annotations,
+    shapes: [
+      // Shaded region for "OE safer"
+      {
+        type: 'rect',
+        xref: 'x', yref: 'paper',
+        x0: 0, x1: 28, y0: 0, y1: 1,
+        fillcolor: 'rgba(34,197,94,0.03)',
+        line: { width: 0 }
+      },
+      // Shaded region for "MC safer"
+      {
+        type: 'rect',
+        xref: 'x', yref: 'paper',
+        x0: -15, x1: 0, y0: 0, y1: 1,
+        fillcolor: 'rgba(239,68,68,0.03)',
+        line: { width: 0 }
+      }
+    ],
+    // Animation transition
+    transition: { duration: 800, easing: 'cubic-in-out' }
+  };
+
+  // First render with zero bars, then animate
+  const zeroTrace = JSON.parse(JSON.stringify(traces));
+  zeroTrace[0].x = [0, 0, 0, 0, 0];
+  zeroTrace[0].text = ['', '', '', '', ''];
+
+  Plotly.newPlot('butterfly-plot', zeroTrace, layout, {
+    responsive: true,
+    displayModeBar: false
+  });
+
+  // Animate bars growing from center
+  setTimeout(() => {
+    Plotly.animate('butterfly-plot', {
+      data: traces,
+      traces: [0]
+    }, {
+      transition: { duration: 1000, easing: 'cubic-in-out' },
+      frame: { duration: 1000 }
+    });
+  }, 200);
+}
+
+// ===== INIT =====
+renderSankey();
+</script>
+
+</body>
+</html>

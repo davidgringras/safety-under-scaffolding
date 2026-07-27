@@ -1,0 +1,468 @@
+{
+  "metadata": {
+    "n_observations": 62808,
+    "n_models": 6,
+    "n_scaffolds": 4,
+    "n_benchmarks": 4,
+    "overall_safe_rate": 0.7066
+  },
+  "observation_level_anova": {
+    "r_squared": 0.25279,
+    "adj_r_squared": 0.252195,
+    "factors": {
+      "model": {
+        "sum_sq": 124.17723856831692,
+        "df": 5,
+        "F": 160.18192147625675,
+        "p_value": 9.092448253147647e-170,
+        "eta_squared": 0.009535948592576057,
+        "partial_eta_squared": 0.01260125785018377
+      },
+      "scaffold": {
+        "sum_sq": 55.855878231614305,
+        "df": 3,
+        "F": 120.08510314286913,
+        "p_value": 1.4977534003125022e-77,
+        "eta_squared": 0.0042893431159433245,
+        "partial_eta_squared": 0.005707715071932027
+      },
+      "benchmark": {
+        "sum_sq": 2516.0268994300877,
+        "df": 3,
+        "F": 5409.231029819995,
+        "p_value": 0.0,
+        "eta_squared": 0.19321337345816483,
+        "partial_eta_squared": 0.20545364493700197
+      },
+      "model x scaffold": {
+        "sum_sq": 52.67755699912156,
+        "df": 15,
+        "F": 22.6503997997242,
+        "p_value": 4.442282025541794e-63,
+        "eta_squared": 0.004045270142239135,
+        "partial_eta_squared": 0.005384682486878395
+      },
+      "scaffold x benchmark": {
+        "sum_sq": 153.08757259162363,
+        "df": 9,
+        "F": 109.70816039764964,
+        "p_value": 4.02388646064646e-205,
+        "eta_squared": 0.0117560612494442,
+        "partial_eta_squared": 0.015489577985306997
+      },
+      "model x benchmark": {
+        "sum_sq": 390.011616401548,
+        "df": 15,
+        "F": 167.69796363523554,
+        "p_value": 0.0,
+        "eta_squared": 0.029950180624016297,
+        "partial_eta_squared": 0.03853798508850522
+      },
+      "Residual": {
+        "sum_sq": 9730.175401831466,
+        "df": 62757,
+        "F": null,
+        "p_value": null,
+        "eta_squared": 0.7472098228176162,
+        "partial_eta_squared": null
+      }
+    }
+  },
+  "cell_means_anova": {
+    "r_squared": 0.970231,
+    "factors": {
+      "model": {
+        "sum_sq": 0.2088082649376574,
+        "df": 5,
+        "F": 10.804777301686272,
+        "p_value": 7.262138361401999e-07,
+        "eta_squared": 0.035738707192791964,
+        "partial_eta_squared": 0.5455641907554448
+      },
+      "scaffold": {
+        "sum_sq": 0.04266274429385228,
+        "df": 3,
+        "F": 3.6793040041740936,
+        "p_value": 0.018752834595932803,
+        "eta_squared": 0.007301968276084122,
+        "partial_eta_squared": 0.19697222141424073
+      },
+      "benchmark": {
+        "sum_sq": 4.426144436763663,
+        "df": 3,
+        "F": 381.7178481784663,
+        "p_value": 5.295247982528641e-32,
+        "eta_squared": 0.7575594771870257,
+        "partial_eta_squared": 0.9621897525688026
+      },
+      "model x scaffold": {
+        "sum_sq": 0.07853117926694299,
+        "df": 15,
+        "F": 1.3545311587984896,
+        "p_value": 0.21160580535430248,
+        "eta_squared": 0.01344105235568085,
+        "partial_eta_squared": 0.3110624564166018
+      },
+      "scaffold x benchmark": {
+        "sum_sq": 0.22472527000924147,
+        "df": 9,
+        "F": 6.460223468740877,
+        "p_value": 7.681558248429293e-06,
+        "eta_squared": 0.03846299199928355,
+        "partial_eta_squared": 0.5637083331194985
+      },
+      "model x benchmark": {
+        "sum_sq": 0.6878343693743747,
+        "df": 15,
+        "F": 11.86398948936054,
+        "p_value": 5.034776655573602e-11,
+        "eta_squared": 0.11772671513528873,
+        "partial_eta_squared": 0.7981699326316557
+      },
+      "Residual": {
+        "sum_sq": 0.17392995079552664,
+        "df": 45,
+        "F": null,
+        "p_value": null,
+        "eta_squared": 0.029769087853844883,
+        "partial_eta_squared": null
+      }
+    }
+  },
+  "omega_squared": {
+    "model": {
+      "omega_squared": 0.009476,
+      "eta_squared": 0.009536,
+      "interpretation": "negligible"
+    },
+    "scaffold": {
+      "omega_squared": 0.004254,
+      "eta_squared": 0.004289,
+      "interpretation": "negligible"
+    },
+    "benchmark": {
+      "omega_squared": 0.193175,
+      "eta_squared": 0.193213,
+      "interpretation": "LARGE"
+    },
+    "model x scaffold": {
+      "omega_squared": 0.003867,
+      "eta_squared": 0.004045,
+      "interpretation": "negligible"
+    },
+    "scaffold x benchmark": {
+      "omega_squared": 0.011649,
+      "eta_squared": 0.011756,
+      "interpretation": "SMALL"
+    },
+    "model x benchmark": {
+      "omega_squared": 0.029771,
+      "eta_squared": 0.02995,
+      "interpretation": "SMALL"
+    }
+  },
+  "per_model_profiles": {
+    "deepseek": {
+      "scaffold": {
+        "eta_squared": 0.01995,
+        "sum_sq": 46.4336,
+        "F": 85.57,
+        "p_value": 1.0848782044108827e-54
+      },
+      "benchmark": {
+        "eta_squared": 0.118645,
+        "sum_sq": 276.1384,
+        "F": 508.86,
+        "p_value": 1.1378834334160704e-308
+      },
+      "scaffold x benchmark": {
+        "eta_squared": 0.049078,
+        "sum_sq": 114.227,
+        "F": 70.16,
+        "p_value": 2.865886270718393e-126
+      },
+      "Residual": {
+        "eta_squared": 0.812327,
+        "sum_sq": 1890.6442
+      },
+      "overall_safe_rate": 0.6663
+    },
+    "gemini3pro": {
+      "scaffold": {
+        "eta_squared": 0.000359,
+        "sum_sq": 0.7979,
+        "F": 2.15,
+        "p_value": 0.09189500248978545
+      },
+      "benchmark": {
+        "eta_squared": 0.41296,
+        "sum_sq": 918.7888,
+        "F": 2474.23,
+        "p_value": 0.0
+      },
+      "scaffold x benchmark": {
+        "eta_squared": 0.005186,
+        "sum_sq": 11.5372,
+        "F": 10.36,
+        "p_value": 4.408805978187659e-16
+      },
+      "Residual": {
+        "eta_squared": 0.581495,
+        "sum_sq": 1293.7596
+      },
+      "overall_safe_rate": 0.6935
+    },
+    "gpt52": {
+      "scaffold": {
+        "eta_squared": 0.005354,
+        "sum_sq": 11.9484,
+        "F": 21.98,
+        "p_value": 3.5038420500264627e-14
+      },
+      "benchmark": {
+        "eta_squared": 0.132614,
+        "sum_sq": 295.9712,
+        "F": 544.4,
+        "p_value": 0.0
+      },
+      "scaffold x benchmark": {
+        "eta_squared": 0.013336,
+        "sum_sq": 29.7636,
+        "F": 18.25,
+        "p_value": 1.7540891501278094e-30
+      },
+      "Residual": {
+        "eta_squared": 0.848696,
+        "sum_sq": 1894.1368
+      },
+      "overall_safe_rate": 0.6918
+    },
+    "llama4": {
+      "scaffold": {
+        "eta_squared": 0.00095,
+        "sum_sq": 2.1371,
+        "F": 4.99,
+        "p_value": 0.0018591311002626387
+      },
+      "benchmark": {
+        "eta_squared": 0.321135,
+        "sum_sq": 722.1964,
+        "F": 1685.27,
+        "p_value": 0.0
+      },
+      "scaffold x benchmark": {
+        "eta_squared": 0.014024,
+        "sum_sq": 31.5388,
+        "F": 24.53,
+        "p_value": 4.196562492297976e-42
+      },
+      "Residual": {
+        "eta_squared": 0.663891,
+        "sum_sq": 1493.0184
+      },
+      "overall_safe_rate": 0.6875
+    },
+    "mistral": {
+      "scaffold": {
+        "eta_squared": 0.002294,
+        "sum_sq": 5.0733,
+        "F": 9.88,
+        "p_value": 1.6815490763632457e-06
+      },
+      "benchmark": {
+        "eta_squared": 0.16323,
+        "sum_sq": 361.0658,
+        "F": 702.98,
+        "p_value": 0.0
+      },
+      "scaffold x benchmark": {
+        "eta_squared": 0.025505,
+        "sum_sq": 56.4167,
+        "F": 36.61,
+        "p_value": 1.6056233650184012e-64
+      },
+      "Residual": {
+        "eta_squared": 0.808972,
+        "sum_sq": 1789.4499
+      },
+      "overall_safe_rate": 0.6967
+    },
+    "opus": {
+      "scaffold": {
+        "eta_squared": 0.025498,
+        "sum_sq": 42.1432,
+        "F": 116.31,
+        "p_value": 4.292267739565689e-74
+      },
+      "benchmark": {
+        "eta_squared": 0.200798,
+        "sum_sq": 331.878,
+        "F": 915.98,
+        "p_value": 0.0
+      },
+      "scaffold x benchmark": {
+        "eta_squared": 0.00995,
+        "sum_sq": 16.4445,
+        "F": 15.13,
+        "p_value": 9.499342713469852e-25
+      },
+      "Residual": {
+        "eta_squared": 0.763754,
+        "sum_sq": 1262.3263
+      },
+      "overall_safe_rate": 0.8035
+    }
+  },
+  "scaffold_sensitivity": {
+    "range_by_model_benchmark": {
+      "deepseek_bbq": 22.25,
+      "deepseek_sycophancy": 11.0,
+      "deepseek_truthfulqa": 47.49,
+      "deepseek_xstest_orbench": 29.8,
+      "gemini3pro_bbq": 5.5,
+      "gemini3pro_sycophancy": 13.0,
+      "gemini3pro_truthfulqa": 9.06,
+      "gemini3pro_xstest_orbench": 3.0,
+      "gpt52_bbq": 11.88,
+      "gpt52_sycophancy": 4.0,
+      "gpt52_truthfulqa": 23.87,
+      "gpt52_xstest_orbench": 3.6,
+      "llama4_bbq": 9.62,
+      "llama4_sycophancy": 19.0,
+      "llama4_truthfulqa": 16.4,
+      "llama4_xstest_orbench": 9.2,
+      "mistral_bbq": 16.0,
+      "mistral_sycophancy": 3.4,
+      "mistral_truthfulqa": 25.58,
+      "mistral_xstest_orbench": 24.0,
+      "opus_bbq": 3.12,
+      "opus_sycophancy": 18.0,
+      "opus_truthfulqa": 24.72,
+      "opus_xstest_orbench": 19.6
+    },
+    "cv_by_model_benchmark": {
+      "deepseek_bbq": 0.1227,
+      "deepseek_sycophancy": 0.1282,
+      "deepseek_truthfulqa": 0.3071,
+      "deepseek_xstest_orbench": 0.1829,
+      "gemini3pro_bbq": 0.0258,
+      "gemini3pro_sycophancy": 0.5375,
+      "gemini3pro_truthfulqa": 0.0442,
+      "gemini3pro_xstest_orbench": 0.0229,
+      "gpt52_bbq": 0.0697,
+      "gpt52_sycophancy": 0.0466,
+      "gpt52_truthfulqa": 0.1447,
+      "gpt52_xstest_orbench": 0.0318,
+      "llama4_bbq": 0.0498,
+      "llama4_sycophancy": 0.5325,
+      "llama4_truthfulqa": 0.1058,
+      "llama4_xstest_orbench": 0.0538,
+      "mistral_bbq": 0.0915,
+      "mistral_sycophancy": 0.0442,
+      "mistral_truthfulqa": 0.1548,
+      "mistral_xstest_orbench": 0.1246,
+      "opus_bbq": 0.0173,
+      "opus_sycophancy": 0.1879,
+      "opus_truthfulqa": 0.1317,
+      "opus_xstest_orbench": 0.1094
+    },
+    "model_summary": {
+      "deepseek": {
+        "avg_range_pp": 27.64,
+        "max_range_pp": 47.49,
+        "avg_cv": 0.1852
+      },
+      "gemini3pro": {
+        "avg_range_pp": 7.64,
+        "max_range_pp": 13.0,
+        "avg_cv": 0.1576
+      },
+      "gpt52": {
+        "avg_range_pp": 10.84,
+        "max_range_pp": 23.87,
+        "avg_cv": 0.0732
+      },
+      "llama4": {
+        "avg_range_pp": 13.56,
+        "max_range_pp": 19.0,
+        "avg_cv": 0.1855
+      },
+      "mistral": {
+        "avg_range_pp": 17.25,
+        "max_range_pp": 25.58,
+        "avg_cv": 0.1038
+      },
+      "opus": {
+        "avg_range_pp": 16.36,
+        "max_range_pp": 24.72,
+        "avg_cv": 0.1116
+      }
+    }
+  },
+  "marginal_rates": {
+    "model": {
+      "deepseek": 0.6663,
+      "gemini3pro": 0.6935,
+      "gpt52": 0.6918,
+      "llama4": 0.6875,
+      "mistral": 0.6967,
+      "opus": 0.8035
+    },
+    "scaffold": {
+      "direct": 0.7282,
+      "map_reduce": 0.6551,
+      "multi_agent": 0.7221,
+      "react": 0.7208
+    },
+    "benchmark": {
+      "bbq": 0.8648,
+      "sycophancy": 0.3096,
+      "truthfulqa": 0.7922,
+      "xstest_orbench": 0.7104
+    },
+    "scaffold_x_benchmark": {
+      "direct_bbq": 0.9069,
+      "direct_sycophancy": 0.2923,
+      "direct_truthfulqa": 0.8315,
+      "direct_xstest_orbench": 0.7093,
+      "map_reduce_bbq": 0.8223,
+      "map_reduce_sycophancy": 0.3177,
+      "map_reduce_truthfulqa": 0.6361,
+      "map_reduce_xstest_orbench": 0.7563,
+      "multi_agent_bbq": 0.8296,
+      "multi_agent_sycophancy": 0.313,
+      "multi_agent_truthfulqa": 0.8735,
+      "multi_agent_xstest_orbench": 0.712,
+      "react_bbq": 0.9006,
+      "react_sycophancy": 0.3153,
+      "react_truthfulqa": 0.8276,
+      "react_xstest_orbench": 0.664
+    }
+  },
+  "framework_assessment": {
+    "key_findings": [
+      "Largest variance component: benchmark (eta\u00b2=0.1932, 19.3%)",
+      "Total variance explained by all factors: 25.3%",
+      "Residual (within-cell, item-level): 74.7%",
+      "Main effects explain 20.7% vs interactions 4.6%",
+      "Most scaffold-sensitive model: opus (eta\u00b2=0.0255)",
+      "Least scaffold-sensitive model: gemini3pro (eta\u00b2=0.0004)"
+    ],
+    "comparison_to_existing": [
+      "OR/RD/NNH tell you DIRECTION and MAGNITUDE of scaffold effects on safety",
+      "Variance decomposition tells you RELATIVE IMPORTANCE \u2014 which factors matter most",
+      "Key insight: benchmark choice may explain more variance than scaffold choice (or vice versa)",
+      "Interactions reveal NON-ADDITIVITY \u2014 some scaffolds hurt only on specific benchmarks",
+      "Per-model profiles are NOVEL: they show which models are robust vs fragile to scaffolding",
+      "This complements (not replaces) the paper's inferential statistics"
+    ],
+    "reusability_assessment": [
+      "Framework is fully reusable: any new model x scaffold x benchmark data can be plugged in",
+      "eta\u00b2/omega\u00b2 provide standardized, comparable effect sizes across studies",
+      "Per-model profiles enable model-selection decisions (pick robust models)",
+      "Scaffold sensitivity index enables scaffold-selection decisions",
+      "Could be extended to include additional factors (prompt format, temperature, etc.)",
+      "Natural fit for a 'safety scorecard' that decomposes risk into factor contributions"
+    ]
+  }
+}

@@ -1,0 +1,197 @@
+% =============================================================================
+% Implementation Constraints Table — Safety Under Scaffolding
+% Enhancement 5: Per-model API constraints documentation
+%
+% Generated from codebase analysis of pipeline/config.py, pipeline/providers.py,
+% pipeline/run_mistral.py, pipeline/batch_runner.py, pipeline/experiment.py,
+% and paper/main.tex (Methods, Section 3.2).
+%
+% This file is standalone LaTeX suitable for inclusion via \input{} in the
+% main paper or supplementary materials.
+% =============================================================================
+
+% -----------------------------------------------------------------------------
+% Table: Implementation Constraints
+% -----------------------------------------------------------------------------
+
+\begin{table}[htbp]
+\caption{Per-model API implementation constraints.  All models were accessed via
+LiteLLM's unified completion interface with \texttt{litellm.drop\_params\,=\,True},
+which silently drops unsupported parameters rather than raising errors.
+Pre-registered parameters: \texttt{temperature\,=\,0},
+\texttt{max\_tokens\,=\,1024}, \texttt{seed\,=\,42}, \texttt{top\_p\,=\,1.0}.
+Superscripts refer to notes below the table.}
+\label{tab:api-constraints}
+\centering
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lllccccc@{}}
+\toprule
+\textbf{Model} &
+\textbf{API Identifier} &
+\textbf{Provider} &
+\textbf{Temp.} &
+\textbf{Seed} &
+\textbf{Batch API} &
+\textbf{Max Tokens} &
+\textbf{Streaming} \\
+\midrule
+Claude Opus 4.6
+  & \texttt{claude-opus-4-6}
+  & Anthropic
+  & 0\textsuperscript{a}
+  & Dropped\textsuperscript{b}
+  & Yes\textsuperscript{c}
+  & 1024
+  & No \\
+GPT-5.2
+  & \texttt{gpt-5.2}
+  & OpenAI
+  & N/A\textsuperscript{d}
+  & 42\textsuperscript{e}
+  & Yes\textsuperscript{f}
+  & 1024
+  & No \\
+Gemini 3 Pro
+  & \texttt{gemini-3-pro-preview}
+  & Vertex AI / AI Studio\textsuperscript{g}
+  & 0
+  & 42\textsuperscript{h}
+  & No
+  & 1024
+  & No \\
+Llama 4 Maverick
+  & {\scriptsize\texttt{Llama-4-Maverick-17B-128E-Instruct-FP8}}
+  & Together AI
+  & 0
+  & 42\textsuperscript{h}
+  & No
+  & 1024
+  & No \\
+DeepSeek V3.2
+  & \texttt{deepseek-chat}
+  & DeepSeek
+  & 0
+  & 42\textsuperscript{h}
+  & No
+  & 1024
+  & No \\
+Mistral Large 2
+  & \texttt{mistral-large-latest}
+  & Mistral AI
+  & 0
+  & 42\textsuperscript{h}
+  & No
+  & 1024
+  & No \\
+\bottomrule
+\end{tabular}%
+}
+
+\vspace{4pt}
+{\footnotesize
+\noindent\textbf{Notes.}\\[2pt]
+\textsuperscript{a}~Anthropic's API rejects simultaneous \texttt{temperature} and \texttt{top\_p}; \texttt{top\_p} was omitted so \texttt{temperature\,=\,0} could be passed.\\
+\textsuperscript{b}~Anthropic's Messages API does not support \texttt{seed}; silently dropped by LiteLLM.  Determinism relies on \texttt{temperature\,=\,0}.\\
+\textsuperscript{c}~Anthropic Messages Batches API (max 10K requests/batch, 50\% cost reduction); used for all Opus primary data.\\
+\textsuperscript{d}~GPT-5.2 is a reasoning model that rejects the \texttt{temperature} parameter; the pipeline conditionally omits it.\\
+\textsuperscript{e}~OpenAI's API accepts \texttt{seed} for reasoning models, though reproducibility is best-effort.\\
+\textsuperscript{f}~OpenAI Batch API used for primary data collection.\\
+\textsuperscript{g}~Primary collection via Vertex AI; recovery via AI Studio with 6-key rotation and OpenRouter fallback (25 RPM/key on AI Studio; ${\sim}$200 RPM on Vertex).\\
+\textsuperscript{h}~\texttt{seed\,=\,42} passed to API; whether the provider honours it varies.
+}
+\end{table}
+
+
+% -----------------------------------------------------------------------------
+% Table: Additional API Constraints and Operational Details
+% -----------------------------------------------------------------------------
+
+\begin{table}[htbp]
+\caption{Additional operational constraints per model.  Rate limits reflect
+the effective per-key limits used during data collection.  Retry policy was
+uniform: exponential backoff (base delay 1\,s, max 60\,s) with up to 3 retries,
+plus circuit-breaker logic for daily quota exhaustion.}
+\label{tab:api-operational}
+\centering
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}llllll@{}}
+\toprule
+\textbf{Model} &
+\textbf{Rate Limit (RPM)} &
+\textbf{Key Rotation} &
+\textbf{Data Collection Mode} &
+\textbf{Architecture} &
+\textbf{Other Constraints} \\
+\midrule
+Claude Opus 4.6
+  & 50
+  & Single key
+  & Batch API (async)
+  & Proprietary (Constitutional AI)
+  & No \texttt{seed}; no \texttt{top\_p} with \texttt{temp} \\
+GPT-5.2
+  & 60
+  & Single key
+  & Batch API (async)
+  & Proprietary (reasoning model)
+  & No \texttt{temperature} control \\
+Gemini 3 Pro
+  & 25 (AI Studio) / 200 (Vertex)
+  & 6-key rotation + Vertex
+  & Real-time (multi-pathway)
+  & Proprietary
+  & ${\sim}$90\% error rate required recovery \\
+Llama 4 Maverick
+  & 60
+  & Single key
+  & Real-time
+  & Open-weight (MoE, FP8)
+  & Via Together AI; FP8 quantisation \\
+DeepSeek V3.2
+  & 60
+  & Single key
+  & Real-time
+  & Open-weight (non-thinking mode)
+  & Chinese-origin; non-thinking mode \\
+Mistral Large 2
+  & Adaptive (2--8 RPS)
+  & Single key
+  & Real-time
+  & Proprietary
+  & Exploratory (not pre-registered) \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+
+% -----------------------------------------------------------------------------
+% Methodological paragraph for Methods or Supplementary
+% -----------------------------------------------------------------------------
+
+\paragraph{Cross-model comparability.}
+All six models were accessed through LiteLLM's unified completion interface,
+which normalises the OpenAI-format message protocol across providers.
+The pipeline set \texttt{litellm.drop\_params\,=\,True}, causing unsupported
+parameters to be silently dropped rather than raising errors.  This design
+choice maximises cross-model comparability (identical code path for all models)
+but introduces an asymmetry: Anthropic's API silently drops the \texttt{seed}
+parameter, meaning Claude Opus~4.6 responses rely solely on
+\texttt{temperature\,=\,0} for approximate determinism, whereas other
+providers received both \texttt{temperature\,=\,0} and \texttt{seed\,=\,42}.
+GPT-5.2 is a reasoning model and rejects the \texttt{temperature}
+parameter outright; its internal sampling runs through OpenAI's
+reasoning infrastructure rather than user-specified decoding parameters.
+Gemini~3~Pro required multiple API pathways (Vertex AI for primary collection,
+Google AI Studio with 6-key rotation and OpenRouter as fallback for recovery)
+due to aggressive per-key rate limits (25~RPM on AI Studio, ${\sim}$200~RPM on
+Vertex AI).  The high error rate during Gemini collection (${\sim}$90\% of rows
+were errors requiring deduplication) reflects rate-limit throttling rather than
+model failures.  Llama~4~Maverick was accessed via Together AI in FP8
+quantised form; any effect of quantisation on safety behaviour is uncontrolled.
+Despite these asymmetries, the core experimental design (identical prompt
+content, identical scaffold implementations, and identical scoring
+pipeline) ensures that the primary source of variation is scaffold
+architecture, not API-level differences.

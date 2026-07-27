@@ -1,0 +1,5 @@
+\paragraph{Item-level flip rates.}
+To complement the aggregate direction-of-divergence analysis (Section~\ref{sec:h2}), we compute item-level flip rates: the proportion of (model, case) pairs whose safety classification changes under each scaffold.
+Across all scaffold--benchmark combinations, 15.1\% of paired items flip classification (9.2\% degradation, 5.9\% improvement; Figure~\ref{fig:flip-rate}).
+Map-reduce exhibits the highest flip rate (21.8\%), confirming it as the most disruptive scaffold, while ReAct (11.9\%) and multi-agent (11.7\%) produce substantially fewer flips.
+The net direction (degradation minus improvement) varies by benchmark: TruthfulQA shows the largest net degradation under map-reduce (+19.5~pp), while Self-Awareness Acc. shows a net \emph{improvement} (-0.8~pp), consistent with the depth-of-encoding hypothesis---deeply-encoded properties can actually benefit from scaffold-induced reformulation, whereas shallowly-encoded ones are predominantly harmed.

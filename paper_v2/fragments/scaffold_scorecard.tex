@@ -1,0 +1,30 @@
+% scaffold_scorecard.tex -- Paper fragment proposing the ScaffoldSafety framework and scorecard
+% Owner: Workstream H
+% Integration: Workstream F merges into Discussion or separate section of main.tex
+
+\subsection{ScaffoldSafety: An Open Evaluation Framework}
+\label{sec:framework}
+
+We release \textsc{ScaffoldSafety}, an open-source Python framework implementing the full evaluation pipeline for reproduction on new models, scaffolds, and benchmarks.
+
+\paragraph{Design.}
+The framework provides five core components: (1)~\emph{scaffold configurations} implementing Direct API, ReAct, Multi-Agent, and Map-Reduce patterns through a common \texttt{BaseScaffold} interface; (2)~\emph{benchmark loaders} with standardised case loading and scoring for TruthfulQA, BBQ, AI Factual Recall Eval, and XSTest/OR-Bench; (3)~\emph{tiered scoring} with deterministic automated scoring for multiple-choice benchmarks and LLM-as-judge with cross-validation for subjective assessments; (4)~an \emph{assessor blinding protocol} with response sanitisation, UUID randomisation, and SHA-256 sealed mapping; and (5)~\emph{statistical analysis} implementing GLMM, TOST equivalence tests, specification curve analysis, and effect size computation (Cohen's $h$, NNH).
+
+The evaluation API exposes a single entry point (\texttt{ScaffoldSafetyEval}) accepting lists of models, configurations, and benchmarks, running the full pipeline, and producing a scorecard.  Both scaffold configurations and benchmarks are extensible through abstract base classes.  Full usage examples appear in the repository documentation.
+
+\subsection{The Scaffold Safety Scorecard}
+\label{sec:scorecard}
+
+The proposed \emph{Scaffold Safety Scorecard} is a standardised model-card reporting format with three components.  No composite robustness index is included, by design.  The empirical case for refusing the composite rests on the factorial variance decomposition (Appendix~\ref{app:variance-decomposition}): scaffold effects explain only 0.4\% of total outcome variance, the scaffold$\times$benchmark interaction runs nearly $3\times$ larger (1.2\%), and the generalizability analysis returns $G = 0.000$ with bootstrap 95\% CI $[0.000, 0.752]$~\cite{brennan2001generalizability}.  Composite reliability on the four-benchmark mix cannot be distinguished from zero --- the interval leaves moderate reliability achievable under a richer mix, but that is a future-replication argument, not a deployment-decision argument.  A single composite number, today, is not a defensible input to a deployment-go/no-go.
+
+\paragraph{(1) Safety Rate Matrix.}
+A table of safety rates (proportion of benchmark cases with safe output) indexed by deployment configuration (columns) and safety dimension (rows), extending single-number safety scores to a configuration-aware matrix.  The matrix is the core contribution: it replaces a single safety number with the full benchmark$\times$configuration surface, exposing interactions invisible to pooled reporting (e.g., TruthfulQA map-reduce degradation ranges from $-3$~pp to $-38$~pp across models in our evaluation).
+
+\paragraph{(2) Number Needed to Harm (NNH).}
+NNH reports the number of cases processed through a scaffold before one additional unsafe response occurs versus the direct API baseline: $\text{NNH} = 1 / |p_{\text{scaffold}} - p_{\text{direct}}|$.  The metric is operator-readable without domain training (NNH~$= 14$ means every fourteenth query produces an additional failure) and carries no arbitrary scaling constant.  Every safety benchmark score should report its corresponding NNH at the deployment configuration in question.
+
+\paragraph{(3) Methodology Stamp.}
+Each scorecard includes a verification stamp documenting whether the evaluation was pre-registered, assessor-blinded (Bang's Blinding Index), cross-validated (Cohen's $\kappa$), and subjected to specification curve analysis, enabling consumers to assess the methodological rigour of reported scores.
+
+\paragraph{Adoption pathway.}
+Three stages: demonstration through this paper's results, community adoption via the open-source package, and integration into model-card templates at AI labs and safety organisations (AISI, METR).  The scorecard adds the deployment-configuration dimension current model cards omit.

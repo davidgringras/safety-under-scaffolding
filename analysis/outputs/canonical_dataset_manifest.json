@@ -1,0 +1,190 @@
+{
+  "created_at": "2026-02-21T16:39:43.169398+00:00",
+  "description": "Canonical primary dataset with real sycophancy (exp4) replacing old self-awareness items",
+  "sources": {
+    "main_experiment": "results/experiment_results_clean.jsonl",
+    "sycophancy": "results/sycophancy_primary_results.jsonl",
+    "sycophancy_ground_truth": "data/benchmarks/sycophancy_eval_exp4.jsonl",
+    "xstest_judge_scores": "results/xstest_judge_results.jsonl"
+  },
+  "exclusions": [
+    "benchmark_id='sycophancy' from experiment_results_clean.jsonl (self-awareness items, NOT real sycophancy)"
+  ],
+  "total_rows": 62808,
+  "total_safe": 44378,
+  "overall_safe_rate": 0.7065660425423513,
+  "by_benchmark": {
+    "bbq": 19200,
+    "sycophancy": 12000,
+    "truthfulqa": 19608,
+    "xstest_orbench": 12000
+  },
+  "scoring_stats": {
+    "bbq_scored": 19023,
+    "bbq_parse_fail": 177,
+    "xstest_orbench_judge": 12000,
+    "truthfulqa_scored": 18865,
+    "truthfulqa_parse_fail": 743,
+    "sycophancy_scored": 10386,
+    "sycophancy_parse_fail": 1614
+  },
+  "model_config_benchmark_counts": {
+    "llama4": {
+      "multi_agent": {
+        "bbq": 800,
+        "xstest_orbench": 500,
+        "truthfulqa": 817,
+        "sycophancy": 500
+      },
+      "react": {
+        "bbq": 800,
+        "xstest_orbench": 500,
+        "truthfulqa": 817,
+        "sycophancy": 500
+      },
+      "direct": {
+        "bbq": 800,
+        "xstest_orbench": 500,
+        "truthfulqa": 817,
+        "sycophancy": 500
+      },
+      "map_reduce": {
+        "bbq": 800,
+        "xstest_orbench": 500,
+        "truthfulqa": 817,
+        "sycophancy": 500
+      }
+    },
+    "deepseek": {
+      "react": {
+        "bbq": 800,
+        "xstest_orbench": 500,
+        "truthfulqa": 817,
+        "sycophancy": 500
+      },
+      "direct": {
+        "bbq": 800,
+        "xstest_orbench": 500,
+        "truthfulqa": 817,
+        "sycophancy": 500
+      },
+      "multi_agent": {
+        "bbq": 800,
+        "xstest_orbench": 500,
+        "truthfulqa": 817,
+        "sycophancy": 500
+      },
+      "map_reduce": {
+        "bbq": 800,
+        "xstest_orbench": 500,
+        "truthfulqa": 817,
+        "sycophancy": 500
+      }
+    },
+    "gpt52": {
+      "direct": {
+        "bbq": 800,
+        "truthfulqa": 817,
+        "xstest_orbench": 500,
+        "sycophancy": 500
+      },
+      "react": {
+        "bbq": 800,
+        "truthfulqa": 817,
+        "xstest_orbench": 500,
+        "sycophancy": 500
+      },
+      "multi_agent": {
+        "bbq": 800,
+        "truthfulqa": 817,
+        "xstest_orbench": 500,
+        "sycophancy": 500
+      },
+      "map_reduce": {
+        "bbq": 800,
+        "truthfulqa": 817,
+        "xstest_orbench": 500,
+        "sycophancy": 500
+      }
+    },
+    "gemini3pro": {
+      "direct": {
+        "bbq": 800,
+        "truthfulqa": 817,
+        "xstest_orbench": 500,
+        "sycophancy": 500
+      },
+      "multi_agent": {
+        "bbq": 800,
+        "xstest_orbench": 500,
+        "truthfulqa": 817,
+        "sycophancy": 500
+      },
+      "map_reduce": {
+        "bbq": 800,
+        "truthfulqa": 817,
+        "xstest_orbench": 500,
+        "sycophancy": 500
+      },
+      "react": {
+        "bbq": 800,
+        "truthfulqa": 817,
+        "xstest_orbench": 500,
+        "sycophancy": 500
+      }
+    },
+    "opus": {
+      "direct": {
+        "truthfulqa": 817,
+        "bbq": 800,
+        "xstest_orbench": 500,
+        "sycophancy": 500
+      },
+      "react": {
+        "truthfulqa": 817,
+        "bbq": 800,
+        "xstest_orbench": 500,
+        "sycophancy": 500
+      },
+      "multi_agent": {
+        "truthfulqa": 817,
+        "bbq": 800,
+        "xstest_orbench": 500,
+        "sycophancy": 500
+      },
+      "map_reduce": {
+        "truthfulqa": 817,
+        "bbq": 800,
+        "xstest_orbench": 500,
+        "sycophancy": 500
+      }
+    },
+    "mistral": {
+      "map_reduce": {
+        "xstest_orbench": 500,
+        "truthfulqa": 817,
+        "bbq": 800,
+        "sycophancy": 500
+      },
+      "multi_agent": {
+        "bbq": 800,
+        "truthfulqa": 817,
+        "xstest_orbench": 500,
+        "sycophancy": 500
+      },
+      "direct": {
+        "truthfulqa": 817,
+        "xstest_orbench": 500,
+        "bbq": 800,
+        "sycophancy": 500
+      },
+      "react": {
+        "bbq": 800,
+        "truthfulqa": 817,
+        "xstest_orbench": 500,
+        "sycophancy": 500
+      }
+    }
+  },
+  "all_cells_complete": true
+}

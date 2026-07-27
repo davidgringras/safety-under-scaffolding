@@ -1,0 +1,263 @@
+{
+  "meta": {
+    "analysis": "cluster_bootstrap_tost",
+    "description": "Cluster bootstrap robustness check for TOST equivalence conclusions",
+    "analysis_date": "2026-02-14T18:49:32.086961",
+    "data_file": "results/experiment_results_clean.jsonl",
+    "n_observations": 62808,
+    "n_clusters": 2617,
+    "n_bootstrap": 2000,
+    "random_seed": 42,
+    "tost_delta": 0.02,
+    "clustering_variable": "case_id"
+  },
+  "standard_results": {
+    "H1a": {
+      "config": "react",
+      "direct_rate": 0.7970322251942428,
+      "scaffold_rate": 0.7886256527830849,
+      "direct_n": 15702,
+      "scaffold_n": 15702,
+      "RD": -0.008406572411157831,
+      "SE_RD": 0.004573708109268351,
+      "CI95": [
+        -0.0173710403053238,
+        0.0005578954830081379
+      ],
+      "CI90": [
+        -0.01593032225090427,
+        -0.0008828225714113931
+      ],
+      "CI95_width": 0.017928935788331934,
+      "CI90_width": 0.015047499679492878,
+      "TOST_p": 0.005625604228952974,
+      "TOST_equivalent": true,
+      "CI90_within_delta": true
+    },
+    "H1b": {
+      "config": "multi_agent",
+      "direct_rate": 0.7970322251942428,
+      "scaffold_rate": 0.792128391287734,
+      "direct_n": 15702,
+      "scaffold_n": 15702,
+      "RD": -0.0049038339065087255,
+      "SE_RD": 0.004559523397351092,
+      "CI95": [
+        -0.013840499765316866,
+        0.004032831952299415
+      ],
+      "CI90": [
+        -0.012404249895151272,
+        0.0025965820821338215
+      ],
+      "CI95_width": 0.01787333171761628,
+      "CI90_width": 0.015000831977285092,
+      "TOST_p": 0.00046496757154912416,
+      "TOST_equivalent": true,
+      "CI90_within_delta": true
+    },
+    "H1c": {
+      "config": "map_reduce",
+      "direct_rate": 0.7970322251942428,
+      "scaffold_rate": 0.7118201502993249,
+      "direct_n": 15702,
+      "scaffold_n": 15702,
+      "RD": -0.08521207489491789,
+      "SE_RD": 0.004833912498669402,
+      "CI95": [
+        -0.09468654339230992,
+        -0.07573760639752586
+      ],
+      "CI90": [
+        -0.09316386095522905,
+        -0.07726028883460673
+      ],
+      "CI95_width": 0.01894893699478406,
+      "CI90_width": 0.015903572120622322,
+      "TOST_p": 1.0,
+      "TOST_equivalent": false,
+      "CI90_within_delta": false
+    }
+  },
+  "bootstrap_results": {
+    "H1a": {
+      "config": "react",
+      "RD_mean": -0.008438733919245956,
+      "RD_median": -0.008470258565787758,
+      "RD_se_bootstrap": 0.0027838072100915836,
+      "CI95": [
+        -0.013819895554706418,
+        -0.00280219080371924
+      ],
+      "CI90": [
+        -0.013055661699146626,
+        -0.003693796968539109
+      ],
+      "CI95_width": 0.011017704750987178,
+      "CI90_width": 0.009361864730607516,
+      "CI90_within_delta": true,
+      "TOST_p_bootstrap": 0.0,
+      "TOST_equivalent": true,
+      "frac_above_delta": 0.0,
+      "frac_below_neg_delta": 0.0
+    },
+    "H1b": {
+      "config": "multi_agent",
+      "RD_mean": -0.004901923321869824,
+      "RD_median": -0.004967520061138653,
+      "RD_se_bootstrap": 0.0032443834408891047,
+      "CI95": [
+        -0.011208763214877071,
+        0.001655840020379551
+      ],
+      "CI90": [
+        -0.010192969048528844,
+        0.00032161508088146264
+      ],
+      "CI95_width": 0.012864603235256622,
+      "CI90_width": 0.010514584129410306,
+      "CI90_within_delta": true,
+      "TOST_p_bootstrap": 0.0,
+      "TOST_equivalent": true,
+      "frac_above_delta": 0.0,
+      "frac_below_neg_delta": 0.0
+    },
+    "H1c": {
+      "config": "map_reduce",
+      "RD_mean": -0.08519847790090433,
+      "RD_median": -0.08527576104954782,
+      "RD_se_bootstrap": 0.004162722662746902,
+      "CI95": [
+        -0.09298178575977578,
+        -0.07680550248376006
+      ],
+      "CI90": [
+        -0.09177174882180616,
+        -0.07827028404024972
+      ],
+      "CI95_width": 0.016176283276015724,
+      "CI90_width": 0.01350146478155645,
+      "CI90_within_delta": false,
+      "TOST_p_bootstrap": 1.0,
+      "TOST_equivalent": false,
+      "frac_above_delta": 0.0,
+      "frac_below_neg_delta": 1.0
+    }
+  },
+  "comparison": {
+    "H1a": {
+      "config": "react",
+      "standard_RD": -0.008406572411157831,
+      "bootstrap_RD_mean": -0.008438733919245956,
+      "standard_CI95": [
+        -0.0173710403053238,
+        0.0005578954830081379
+      ],
+      "bootstrap_CI95": [
+        -0.013819895554706418,
+        -0.00280219080371924
+      ],
+      "standard_CI90": [
+        -0.01593032225090427,
+        -0.0008828225714113931
+      ],
+      "bootstrap_CI90": [
+        -0.013055661699146626,
+        -0.003693796968539109
+      ],
+      "CI95_width_standard": 0.017928935788331934,
+      "CI95_width_bootstrap": 0.011017704750987178,
+      "CI95_width_ratio": 0.6145208439062763,
+      "CI90_width_standard": 0.015047499679492878,
+      "CI90_width_bootstrap": 0.009361864730607516,
+      "CI90_width_ratio": 0.6221541737838419,
+      "CI95_bootstrap_wider": false,
+      "CI90_bootstrap_wider": false,
+      "standard_TOST_p": 0.005625604228952974,
+      "bootstrap_TOST_p": 0.0,
+      "standard_equivalent": true,
+      "bootstrap_equivalent": true,
+      "TOST_conclusion_changed": false,
+      "standard_CI90_within_delta": true,
+      "bootstrap_CI90_within_delta": true
+    },
+    "H1b": {
+      "config": "multi_agent",
+      "standard_RD": -0.0049038339065087255,
+      "bootstrap_RD_mean": -0.004901923321869824,
+      "standard_CI95": [
+        -0.013840499765316866,
+        0.004032831952299415
+      ],
+      "bootstrap_CI95": [
+        -0.011208763214877071,
+        0.001655840020379551
+      ],
+      "standard_CI90": [
+        -0.012404249895151272,
+        0.0025965820821338215
+      ],
+      "bootstrap_CI90": [
+        -0.010192969048528844,
+        0.00032161508088146264
+      ],
+      "CI95_width_standard": 0.01787333171761628,
+      "CI95_width_bootstrap": 0.012864603235256622,
+      "CI95_width_ratio": 0.7197652591305645,
+      "CI90_width_standard": 0.015000831977285092,
+      "CI90_width_bootstrap": 0.010514584129410306,
+      "CI90_width_ratio": 0.7009333979163251,
+      "CI95_bootstrap_wider": false,
+      "CI90_bootstrap_wider": false,
+      "standard_TOST_p": 0.00046496757154912416,
+      "bootstrap_TOST_p": 0.0,
+      "standard_equivalent": true,
+      "bootstrap_equivalent": true,
+      "TOST_conclusion_changed": false,
+      "standard_CI90_within_delta": true,
+      "bootstrap_CI90_within_delta": true
+    },
+    "H1c": {
+      "config": "map_reduce",
+      "standard_RD": -0.08521207489491789,
+      "bootstrap_RD_mean": -0.08519847790090433,
+      "standard_CI95": [
+        -0.09468654339230992,
+        -0.07573760639752586
+      ],
+      "bootstrap_CI95": [
+        -0.09298178575977578,
+        -0.07680550248376006
+      ],
+      "standard_CI90": [
+        -0.09316386095522905,
+        -0.07726028883460673
+      ],
+      "bootstrap_CI90": [
+        -0.09177174882180616,
+        -0.07827028404024972
+      ],
+      "CI95_width_standard": 0.01894893699478406,
+      "CI95_width_bootstrap": 0.016176283276015724,
+      "CI95_width_ratio": 0.8536776115973395,
+      "CI90_width_standard": 0.015903572120622322,
+      "CI90_width_bootstrap": 0.01350146478155645,
+      "CI90_width_ratio": 0.8489580000740188,
+      "CI95_bootstrap_wider": false,
+      "CI90_bootstrap_wider": false,
+      "standard_TOST_p": 1.0,
+      "bootstrap_TOST_p": 1.0,
+      "standard_equivalent": false,
+      "bootstrap_equivalent": false,
+      "TOST_conclusion_changed": false,
+      "standard_CI90_within_delta": false,
+      "bootstrap_CI90_within_delta": false
+    }
+  },
+  "summary": {
+    "H1a_conclusion_changed": false,
+    "H1b_conclusion_changed": false,
+    "H1c_conclusion_changed": false,
+    "any_conclusion_changed": false
+  }
+}

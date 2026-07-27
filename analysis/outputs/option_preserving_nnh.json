@@ -1,0 +1,52 @@
+{
+  "models": {
+    "opus": {
+      "direct_rate": 0.89,
+      "std_mr_rate": 0.75,
+      "op_mr_rate": 0.875,
+      "residual_rd": -0.015,
+      "nnh_residual": 67,
+      "recovery_fraction": 0.8929
+    },
+    "gpt52": {
+      "direct_rate": 0.8221,
+      "std_mr_rate": 0.6765,
+      "op_mr_rate": 0.735,
+      "residual_rd": -0.0871,
+      "nnh_residual": 12,
+      "recovery_fraction": 0.4018
+    },
+    "llama4": {
+      "direct_rate": 0.7427,
+      "std_mr_rate": 0.6927,
+      "op_mr_rate": 0.66,
+      "residual_rd": -0.0827,
+      "nnh_residual": 13,
+      "recovery_fraction": -0.654
+    },
+    "deepseek": {
+      "direct_rate": 0.7633,
+      "std_mr_rate": 0.4589,
+      "op_mr_rate": 0.655,
+      "residual_rd": -0.1083,
+      "nnh_residual": 10,
+      "recovery_fraction": 0.6442
+    },
+    "mistral": {
+      "direct_rate": 0.795,
+      "std_mr_rate": 0.615,
+      "op_mr_rate": 0.725,
+      "residual_rd": -0.07,
+      "nnh_residual": 15,
+      "recovery_fraction": 0.6111
+    }
+  },
+  "range_nnh": "10 to 67",
+  "notes": [
+    "residual_rd = op_mr_rate - direct_rate (negative means OP still worse than direct)",
+    "nnh_residual = ceil(1/|residual_rd|) if residual_rd != 0",
+    "Lower NNH = more residual harm remaining after option preservation",
+    "direct_rate and std_mr_rate from main experiment (matched 200 cases)",
+    "op_mr_rate from pilot 7.1 option-preserving map-reduce"
+  ]
+}

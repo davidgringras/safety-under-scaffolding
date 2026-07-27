@@ -1,0 +1,537 @@
+{
+  "error_distributions": {
+    "deepseek|direct|bbq": {
+      "factual_correction": 64,
+      "under_cautious": 11,
+      "factual_error": 7
+    },
+    "gemini3pro|direct|bbq": {
+      "under_cautious": 4,
+      "format_noncompliance": 15,
+      "factual_correction": 35,
+      "factual_error": 5
+    },
+    "gpt52|direct|bbq": {
+      "under_cautious": 8,
+      "factual_correction": 67,
+      "factual_error": 5
+    },
+    "llama4|direct|bbq": {
+      "under_cautious": 26,
+      "factual_error": 9,
+      "factual_correction": 27
+    },
+    "mistral|direct|bbq": {
+      "factual_correction": 83,
+      "under_cautious": 16,
+      "factual_error": 5
+    },
+    "opus|direct|bbq": {
+      "under_cautious": 10,
+      "factual_correction": 44,
+      "factual_error": 6
+    },
+    "deepseek|react|bbq": {
+      "under_cautious": 6,
+      "factual_correction": 50,
+      "factual_error": 7,
+      "format_noncompliance": 1
+    },
+    "gemini3pro|react|bbq": {
+      "under_cautious": 9,
+      "format_noncompliance": 73,
+      "factual_error": 6,
+      "factual_correction": 15
+    },
+    "gpt52|react|bbq": {
+      "under_cautious": 7,
+      "factual_correction": 67,
+      "factual_error": 6
+    },
+    "llama4|react|bbq": {
+      "under_cautious": 34,
+      "factual_correction": 26,
+      "factual_error": 6
+    },
+    "mistral|react|bbq": {
+      "factual_correction": 81,
+      "under_cautious": 10,
+      "factual_error": 8
+    },
+    "opus|react|bbq": {
+      "under_cautious": 7,
+      "factual_correction": 50,
+      "factual_error": 7,
+      "format_noncompliance": 1
+    },
+    "deepseek|multi_agent|bbq": {
+      "under_cautious": 4,
+      "factual_correction": 145,
+      "factual_error": 5,
+      "format_noncompliance": 5
+    },
+    "gemini3pro|multi_agent|bbq": {
+      "factual_correction": 47,
+      "format_noncompliance": 36,
+      "factual_error": 6,
+      "under_cautious": 1
+    },
+    "gpt52|multi_agent|bbq": {
+      "factual_correction": 170,
+      "factual_error": 4,
+      "under_cautious": 1
+    },
+    "llama4|multi_agent|bbq": {
+      "under_cautious": 14,
+      "factual_correction": 64,
+      "factual_error": 6
+    },
+    "mistral|multi_agent|bbq": {
+      "factual_correction": 207,
+      "factual_error": 8,
+      "format_noncompliance": 9,
+      "under_cautious": 3
+    },
+    "opus|multi_agent|bbq": {
+      "factual_correction": 76,
+      "factual_error": 6,
+      "under_cautious": 1
+    },
+    "deepseek|map_reduce|bbq": {
+      "under_cautious": 116,
+      "factual_correction": 97,
+      "factual_error": 27,
+      "format_noncompliance": 2
+    },
+    "gemini3pro|map_reduce|bbq": {
+      "factual_correction": 38,
+      "format_noncompliance": 34,
+      "under_cautious": 7,
+      "factual_error": 6
+    },
+    "gpt52|map_reduce|bbq": {
+      "under_cautious": 5,
+      "factual_correction": 128,
+      "factual_error": 9,
+      "format_noncompliance": 1
+    },
+    "llama4|map_reduce|bbq": {
+      "under_cautious": 48,
+      "factual_correction": 73,
+      "factual_error": 18
+    },
+    "mistral|map_reduce|bbq": {
+      "factual_correction": 140,
+      "under_cautious": 13,
+      "factual_error": 6
+    },
+    "opus|map_reduce|bbq": {
+      "under_cautious": 8,
+      "factual_correction": 74,
+      "factual_error": 3
+    },
+    "deepseek|direct|sycophancy": {
+      "sycophantic": 284,
+      "format_noncompliance": 43
+    },
+    "gemini3pro|direct|sycophancy": {
+      "format_noncompliance": 404,
+      "sycophantic": 66
+    },
+    "gpt52|direct|sycophancy": {
+      "sycophantic": 285,
+      "format_noncompliance": 2
+    },
+    "llama4|direct|sycophancy": {
+      "sycophantic": 445
+    },
+    "mistral|direct|sycophancy": {
+      "sycophantic": 336,
+      "format_noncompliance": 3
+    },
+    "opus|direct|sycophancy": {
+      "sycophantic": 248,
+      "format_noncompliance": 7
+    },
+    "deepseek|react|sycophancy": {
+      "sycophantic": 248,
+      "format_noncompliance": 45
+    },
+    "gemini3pro|react|sycophancy": {
+      "format_noncompliance": 305,
+      "sycophantic": 105
+    },
+    "gpt52|react|sycophancy": {
+      "sycophantic": 291
+    },
+    "llama4|react|sycophancy": {
+      "sycophantic": 446
+    },
+    "mistral|react|sycophancy": {
+      "sycophantic": 335,
+      "format_noncompliance": 15
+    },
+    "opus|react|sycophancy": {
+      "sycophantic": 262,
+      "format_noncompliance": 2
+    },
+    "deepseek|multi_agent|sycophancy": {
+      "sycophantic": 264,
+      "format_noncompliance": 51
+    },
+    "gemini3pro|multi_agent|sycophancy": {
+      "format_noncompliance": 405,
+      "sycophantic": 57
+    },
+    "gpt52|multi_agent|sycophancy": {
+      "sycophantic": 272
+    },
+    "llama4|multi_agent|sycophancy": {
+      "sycophantic": 419,
+      "format_noncompliance": 3
+    },
+    "mistral|multi_agent|sycophancy": {
+      "sycophantic": 335,
+      "format_noncompliance": 6
+    },
+    "opus|multi_agent|sycophancy": {
+      "sycophantic": 244,
+      "format_noncompliance": 5
+    },
+    "deepseek|map_reduce|sycophancy": {
+      "sycophantic": 334,
+      "format_noncompliance": 14
+    },
+    "gemini3pro|map_reduce|sycophancy": {
+      "format_noncompliance": 295,
+      "sycophantic": 110
+    },
+    "gpt52|map_reduce|sycophancy": {
+      "sycophantic": 270,
+      "format_noncompliance": 1
+    },
+    "llama4|map_reduce|sycophancy": {
+      "sycophantic": 351
+    },
+    "mistral|map_reduce|sycophancy": {
+      "sycophantic": 325,
+      "format_noncompliance": 8
+    },
+    "opus|map_reduce|sycophancy": {
+      "sycophantic": 339
+    },
+    "deepseek|direct|truthfulqa": {
+      "factual_error": 189,
+      "format_noncompliance": 10
+    },
+    "gemini3pro|direct|truthfulqa": {
+      "factual_error": 49,
+      "format_noncompliance": 23
+    },
+    "gpt52|direct|truthfulqa": {
+      "factual_error": 108,
+      "format_noncompliance": 7
+    },
+    "llama4|direct|truthfulqa": {
+      "factual_error": 249,
+      "format_noncompliance": 18
+    },
+    "mistral|direct|truthfulqa": {
+      "factual_error": 148,
+      "format_noncompliance": 11
+    },
+    "opus|direct|truthfulqa": {
+      "factual_error": 14
+    },
+    "deepseek|react|truthfulqa": {
+      "factual_error": 155,
+      "format_noncompliance": 35
+    },
+    "gemini3pro|react|truthfulqa": {
+      "factual_error": 47,
+      "format_noncompliance": 76
+    },
+    "gpt52|react|truthfulqa": {
+      "factual_error": 123,
+      "format_noncompliance": 5
+    },
+    "llama4|react|truthfulqa": {
+      "factual_error": 197,
+      "format_noncompliance": 2
+    },
+    "mistral|react|truthfulqa": {
+      "factual_error": 166,
+      "format_noncompliance": 14
+    },
+    "opus|react|truthfulqa": {
+      "factual_error": 23,
+      "format_noncompliance": 2
+    },
+    "deepseek|multi_agent|truthfulqa": {
+      "factual_error": 109,
+      "format_noncompliance": 11
+    },
+    "gemini3pro|multi_agent|truthfulqa": {
+      "factual_error": 33,
+      "format_noncompliance": 16
+    },
+    "gpt52|multi_agent|truthfulqa": {
+      "factual_error": 116,
+      "format_noncompliance": 10
+    },
+    "llama4|multi_agent|truthfulqa": {
+      "factual_error": 163,
+      "format_noncompliance": 9
+    },
+    "mistral|multi_agent|truthfulqa": {
+      "factual_error": 110,
+      "format_noncompliance": 25
+    },
+    "opus|multi_agent|truthfulqa": {
+      "factual_error": 17,
+      "format_noncompliance": 1
+    },
+    "deepseek|map_reduce|truthfulqa": {
+      "factual_error": 507,
+      "format_noncompliance": 1
+    },
+    "gemini3pro|map_reduce|truthfulqa": {
+      "factual_error": 56,
+      "format_noncompliance": 44
+    },
+    "gpt52|map_reduce|truthfulqa": {
+      "format_noncompliance": 10,
+      "factual_error": 300
+    },
+    "llama4|map_reduce|truthfulqa": {
+      "factual_error": 298,
+      "format_noncompliance": 8
+    },
+    "mistral|map_reduce|truthfulqa": {
+      "factual_error": 293,
+      "format_noncompliance": 51
+    },
+    "opus|map_reduce|truthfulqa": {
+      "factual_error": 99,
+      "format_noncompliance": 117
+    },
+    "deepseek|direct|xstest_orbench": {
+      "other": 79,
+      "over_refusal": 86,
+      "under_refusal": 7
+    },
+    "gemini3pro|direct|xstest_orbench": {
+      "over_refusal": 104,
+      "under_refusal": 6,
+      "other": 87
+    },
+    "gpt52|direct|xstest_orbench": {
+      "over_refusal": 218,
+      "under_refusal": 14,
+      "other": 11
+    },
+    "llama4|direct|xstest_orbench": {
+      "over_refusal": 71,
+      "other": 12,
+      "under_refusal": 7
+    },
+    "mistral|direct|xstest_orbench": {
+      "over_refusal": 70,
+      "other": 32,
+      "under_refusal": 6
+    },
+    "opus|direct|xstest_orbench": {
+      "over_refusal": 9,
+      "under_refusal": 30,
+      "other": 23
+    },
+    "deepseek|react|xstest_orbench": {
+      "over_refusal": 113,
+      "other": 110,
+      "under_refusal": 3
+    },
+    "gemini3pro|react|xstest_orbench": {
+      "other": 98,
+      "over_refusal": 100,
+      "under_refusal": 6
+    },
+    "gpt52|react|xstest_orbench": {
+      "over_refusal": 215,
+      "under_refusal": 16,
+      "other": 13
+    },
+    "llama4|react|xstest_orbench": {
+      "over_refusal": 54,
+      "other": 24,
+      "under_refusal": 12
+    },
+    "mistral|react|xstest_orbench": {
+      "other": 20,
+      "over_refusal": 130,
+      "under_refusal": 4
+    },
+    "opus|react|xstest_orbench": {
+      "other": 58,
+      "over_refusal": 15,
+      "under_refusal": 17
+    },
+    "deepseek|multi_agent|xstest_orbench": {
+      "other": 83,
+      "over_refusal": 81,
+      "under_refusal": 7
+    },
+    "gemini3pro|multi_agent|xstest_orbench": {
+      "over_refusal": 92,
+      "other": 91,
+      "under_refusal": 6
+    },
+    "gpt52|multi_agent|xstest_orbench": {
+      "over_refusal": 208,
+      "under_refusal": 17,
+      "other": 10
+    },
+    "llama4|multi_agent|xstest_orbench": {
+      "over_refusal": 68,
+      "other": 14,
+      "under_refusal": 6
+    },
+    "mistral|multi_agent|xstest_orbench": {
+      "over_refusal": 71,
+      "under_refusal": 6,
+      "other": 32
+    },
+    "opus|multi_agent|xstest_orbench": {
+      "over_refusal": 7,
+      "other": 40,
+      "under_refusal": 25
+    },
+    "deepseek|map_reduce|xstest_orbench": {
+      "over_refusal": 37,
+      "under_refusal": 14,
+      "other": 26
+    },
+    "gemini3pro|map_reduce|xstest_orbench": {
+      "over_refusal": 60,
+      "under_refusal": 14,
+      "other": 116
+    },
+    "gpt52|map_reduce|xstest_orbench": {
+      "over_refusal": 191,
+      "other": 15,
+      "under_refusal": 20
+    },
+    "llama4|map_reduce|xstest_orbench": {
+      "over_refusal": 12,
+      "other": 12,
+      "under_refusal": 20
+    },
+    "mistral|map_reduce|xstest_orbench": {
+      "over_refusal": 3,
+      "under_refusal": 23,
+      "other": 8
+    },
+    "opus|map_reduce|xstest_orbench": {
+      "other": 120,
+      "over_refusal": 12,
+      "under_refusal": 28
+    }
+  },
+  "benchmark_summaries": {
+    "bbq": {
+      "total_errors": 2595,
+      "by_config": {
+        "direct": {
+          "under_cautious": 75,
+          "factual_correction": 320,
+          "factual_error": 37,
+          "format_noncompliance": 15
+        },
+        "react": {
+          "under_cautious": 73,
+          "factual_correction": 289,
+          "factual_error": 40,
+          "format_noncompliance": 75
+        },
+        "multi_agent": {
+          "under_cautious": 24,
+          "factual_correction": 709,
+          "factual_error": 35,
+          "format_noncompliance": 50
+        },
+        "map_reduce": {
+          "under_cautious": 197,
+          "factual_correction": 550,
+          "factual_error": 69,
+          "format_noncompliance": 37
+        }
+      }
+    },
+    "sycophancy": {
+      "total_errors": 8285,
+      "by_config": {
+        "direct": {
+          "sycophantic": 1664,
+          "format_noncompliance": 459
+        },
+        "react": {
+          "sycophantic": 1687,
+          "format_noncompliance": 367
+        },
+        "multi_agent": {
+          "sycophantic": 1591,
+          "format_noncompliance": 470
+        },
+        "map_reduce": {
+          "sycophantic": 1729,
+          "format_noncompliance": 318
+        }
+      }
+    },
+    "truthfulqa": {
+      "total_errors": 4075,
+      "by_config": {
+        "direct": {
+          "factual_error": 757,
+          "format_noncompliance": 69
+        },
+        "react": {
+          "factual_error": 711,
+          "format_noncompliance": 134
+        },
+        "multi_agent": {
+          "factual_error": 548,
+          "format_noncompliance": 72
+        },
+        "map_reduce": {
+          "factual_error": 1553,
+          "format_noncompliance": 231
+        }
+      }
+    },
+    "xstest_orbench": {
+      "total_errors": 3475,
+      "by_config": {
+        "direct": {
+          "over_refusal": 558,
+          "other": 244,
+          "under_refusal": 70
+        },
+        "react": {
+          "over_refusal": 627,
+          "other": 323,
+          "under_refusal": 58
+        },
+        "multi_agent": {
+          "other": 270,
+          "over_refusal": 527,
+          "under_refusal": 67
+        },
+        "map_reduce": {
+          "over_refusal": 315,
+          "other": 297,
+          "under_refusal": 119
+        }
+      }
+    }
+  }
+}

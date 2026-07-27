@@ -1,0 +1,121 @@
+{
+  "summary_matrix": {
+    "react": {
+      "system_prompt_propagation": 1.0,
+      "mc_option_propagation": 0.3538,
+      "format_instruction_propagation": 0.6226,
+      "n_subcalls": 212
+    },
+    "multi_agent": {
+      "system_prompt_propagation": 1.0,
+      "mc_option_propagation": 0.4886,
+      "format_instruction_propagation": 0.3429,
+      "n_subcalls": 350
+    },
+    "map_reduce": {
+      "system_prompt_propagation": 0.7967,
+      "mc_option_propagation": 0.2185,
+      "format_instruction_propagation": 0.4799,
+      "n_subcalls": 723
+    }
+  },
+  "per_scaffold_detail": {
+    "react": {
+      "react_iter_0": {
+        "n": 150,
+        "system_prompt_propagation": 1.0,
+        "mc_option_propagation": 0.5,
+        "format_instruction_propagation": 0.6
+      },
+      "react_iter_1": {
+        "n": 62,
+        "system_prompt_propagation": 1.0,
+        "mc_option_propagation": 0.0,
+        "format_instruction_propagation": 0.6774
+      }
+    },
+    "multi_agent": {
+      "critic_round_0": {
+        "n": 150,
+        "system_prompt_propagation": 1.0,
+        "mc_option_propagation": 0.5,
+        "format_instruction_propagation": 0.0067
+      },
+      "primary_initial": {
+        "n": 150,
+        "system_prompt_propagation": 1.0,
+        "mc_option_propagation": 0.5,
+        "format_instruction_propagation": 0.6
+      },
+      "primary_revision_0": {
+        "n": 50,
+        "system_prompt_propagation": 1.0,
+        "mc_option_propagation": 0.42,
+        "format_instruction_propagation": 0.58
+      }
+    },
+    "map_reduce": {
+      "decompose": {
+        "n": 150,
+        "system_prompt_propagation": 0.02,
+        "mc_option_propagation": 0.5,
+        "format_instruction_propagation": 0.0
+      },
+      "map_chunk_0": {
+        "n": 150,
+        "system_prompt_propagation": 1.0,
+        "mc_option_propagation": 0.0,
+        "format_instruction_propagation": 0.6
+      },
+      "map_chunk_1": {
+        "n": 148,
+        "system_prompt_propagation": 1.0,
+        "mc_option_propagation": 0.0203,
+        "format_instruction_propagation": 0.6014
+      },
+      "map_chunk_2": {
+        "n": 125,
+        "system_prompt_propagation": 1.0,
+        "mc_option_propagation": 0.04,
+        "format_instruction_propagation": 0.624
+      },
+      "reduce": {
+        "n": 150,
+        "system_prompt_propagation": 1.0,
+        "mc_option_propagation": 0.5,
+        "format_instruction_propagation": 0.6
+      }
+    }
+  },
+  "overall": {
+    "system_prompt_propagation": 0.8856,
+    "mc_option_propagation": 0.3144,
+    "format_instruction_propagation": 0.4661,
+    "n_total_subcalls": 1285
+  },
+  "n_total_subcalls": 1285,
+  "metadata": {
+    "seed": 42,
+    "n_sampled_cases": 450,
+    "n_completed_cases": 450,
+    "n_errors": 0,
+    "n_total_subcalls": 1285,
+    "scaffolds": [
+      "react",
+      "multi_agent",
+      "map_reduce"
+    ],
+    "models": [
+      "deepseek",
+      "gpt52",
+      "gemini3pro"
+    ],
+    "benchmark_sample_counts": {
+      "truthfulqa": 15,
+      "bbq": 15,
+      "sycophancy": 10,
+      "xstest_orbench": 10
+    },
+    "errors": []
+  }
+}

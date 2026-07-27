@@ -1,0 +1,65 @@
+% dual_mechanism_finding.tex
+% Pilot-stage observations motivating the pre-registered design
+% Generated: 2026-02-11
+% Source: P3 RLM propagation analysis + mini-pilot Map-Reduce data
+
+% Pilot data identified two distinct degradation mechanisms on TruthfulQA~MC1.
+% These pilot-stage observations motivated the pre-registered two-mechanism
+% framework tested in the full experiment (Section~\ref{sec:two-mechanisms}).
+
+Pilot data revealed two mechanisms by which scaffolding alters safety-relevant outputs on TruthfulQA~MC1, motivating the pre-registered design.
+\textbf{Map-Reduce} degrades through \emph{content loss}: decomposition strips answer choices~(A)--(F), yielding 33.3\% accuracy on DeepSeek ($n{=}57$, short context) versus 69.7\% ($n{=}66$, long context).
+\textbf{RLM} preserves content (87.9\% of DeepSeek sub-calls retain MC choices) but replaces the system prompt with a REPL instruction, achieving 80.0\% on DeepSeek ($n{=}5$) and 65.0\% on GPT-5.2 ($n{=}20$).
+These pilot observations (content loss versus safety-framing loss; Table~\ref{tab:dual-mechanism}) motivated the two-mechanism framework confirmed in the full experiment.
+
+\begin{table}[t]
+\centering
+\caption{Pilot-stage dual-mechanism comparison: Map-Reduce vs.\ RLM on TruthfulQA~MC1.  These pilot observations motivated the pre-registered two-mechanism framework (Section~\ref{sec:two-mechanisms}).}
+\label{tab:dual-mechanism}
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Dimension} & \textbf{Map-Reduce} & \textbf{RLM} \\
+\midrule
+MC choices in sub-calls    & 0\% (decomposition strips)     & 77.9--87.9\% (context var.)   \\
+System prompt propagation  & Yes (template includes it)     & 0\% (REPL replaces it)        \\
+Content transformation     & Abstract sub-questions         & Full context via variable ref. \\
+Sub-call count             & 3--5 (fixed pipeline)          & 3--12 (model-decided)         \\
+\midrule
+\multicolumn{3}{@{}l}{\textit{DeepSeek accuracy on TruthfulQA MC1}} \\
+\quad Short context        & 33.3\% ($n{=}57$)              & ---                           \\
+\quad Long context         & 69.7\% ($n{=}66$)              & 80.0\% ($n{=}5$, long only)   \\
+\midrule
+\multicolumn{3}{@{}l}{\textit{GPT-5.2 accuracy on TruthfulQA MC1}} \\
+\quad RLM only             & ---                            & 65.0\% ($n{=}20$)             \\
+\midrule
+Primary degradation        & Content loss (structural)      & Safety-framing loss (behav.)  \\
+Failure mode               & Answers without MC options     & Processes correctly when MC   \\
+                           &                                & preserved; fails on condens.  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+% ============================================================
+% SUPPLEMENTARY: CONDENSATION SUB-TABLE (optional)
+% ============================================================
+
+\begin{table}[t]
+\centering
+\caption{Pilot-stage DeepSeek RLM condensation analysis.  Condensed sub-calls ($<$5{,}000 chars) show higher MC choice loss, motivating the content-preservation metric in the full experiment.}
+\label{tab:condensation}
+\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+& \textbf{Full context} & \textbf{Condensed} \\
+& ($\geq$5{,}000 chars)      & ($<$5{,}000 chars) \\
+\midrule
+Sub-call count                  & 28 (84.8\%)         & 5 (15.2\%)          \\
+MC choices preserved            & 27/28 (96.4\%)      & 2/5 (40.0\%)        \\
+Mean prompt length (chars)      & $\sim$15{,}400      & $\sim$1{,}800       \\
+Typical prefix category         & extraction           & refinement/summary  \\
+Cases with errors               & 0/3 cases           & 1/2 cases affected  \\
+\bottomrule
+\end{tabular}
+\end{table}

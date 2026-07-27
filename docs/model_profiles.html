@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safety Under Scaffolding — Interactive Model Profiles</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a1a;
+    color: #e0e0e0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    overflow-x: hidden;
+  }
+
+  .header {
+    text-align: center;
+    padding: 40px 20px 10px;
+    position: relative;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #4a9eff, #4aff9e, #ff4a4a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+  }
+
+  .header .subtitle {
+    font-size: 0.95rem;
+    color: #888;
+    margin-top: 8px;
+    font-weight: 300;
+  }
+
+  .section-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .section-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 30px 0 5px;
+    padding-left: 15px;
+    border-left: 3px solid #4a9eff;
+  }
+
+  .section-description {
+    font-size: 0.85rem;
+    color: #777;
+    margin-bottom: 15px;
+    padding-left: 18px;
+  }
+
+  /* Toggle controls */
+  .toggle-bar {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 15px 0;
+    flex-wrap: wrap;
+  }
+
+  .toggle-btn {
+    padding: 8px 22px;
+    border: 1px solid #333;
+    border-radius: 20px;
+    background: transparent;
+    color: #aaa;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 0.3px;
+  }
+
+  .toggle-btn:hover {
+    border-color: #4a9eff;
+    color: #4a9eff;
+  }
+
+  .toggle-btn.active {
+    background: linear-gradient(135deg, #4a9eff22, #4a9eff11);
+    border-color: #4a9eff;
+    color: #4a9eff;
+    box-shadow: 0 0 15px #4a9eff22;
+  }
+
+  /* Radar grid */
+  .radar-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin: 0 auto;
+    max-width: 1300px;
+  }
+
+  .radar-cell {
+    position: relative;
+  }
+
+  .superimposed-container {
+    display: none;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .superimposed-container.visible {
+    display: block;
+  }
+
+  .radar-grid.hidden {
+    display: none;
+  }
+
+  /* Legend */
+  .legend-bar {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin: 5px 0 10px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: #aaa;
+  }
+
+  .legend-swatch {
+    width: 14px;
+    height: 3px;
+    border-radius: 2px;
+  }
+
+  /* Sycophancy section */
+  .syco-controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 15px 0;
+  }
+
+  /* Insight callout */
+  .insight-box {
+    max-width: 800px;
+    margin: 15px auto;
+    padding: 14px 20px;
+    border-radius: 8px;
+    border: 1px solid #ff4a4a33;
+    background: linear-gradient(135deg, #ff4a4a08, #0a0a1a);
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: #ccc;
+  }
+
+  .insight-box strong {
+    color: #ff4a4a;
+  }
+
+  .insight-box .highlight-opus {
+    color: #8b5cf6;
+    font-weight: 600;
+  }
+
+  .insight-box .highlight-llama {
+    color: #22c55e;
+    font-weight: 600;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 30px 20px;
+    font-size: 0.72rem;
+    color: #555;
+  }
+
+  .footer a {
+    color: #4a9eff;
+    text-decoration: none;
+  }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #333, transparent);
+    margin: 30px auto;
+    max-width: 800px;
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .radar-grid { grid-template-columns: repeat(2, 1fr); }
+    .header h1 { font-size: 1.5rem; }
+  }
+  @media (max-width: 600px) {
+    .radar-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<nav style="padding:10px 20px;font-family:Inter,-apple-system,sans-serif;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)"><a href="index.html" style="color:#999;text-decoration:none" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#999'">&larr; Back to overview</a></nav>
+
+<div class="header">
+  <h1>Safety Under Scaffolding</h1>
+  <div class="subtitle">Interactive Model Safety Profiles &mdash; 6 Models &times; 4 Configs &times; 4 Benchmarks &mdash; N = 62,808</div>
+</div>
+
+<div class="section-container">
+
+  <!-- VISUALIZATION 1: RADAR CHARTS -->
+  <div class="section-title">Model Safety Radar Charts</div>
+  <div class="section-description">Each axis shows safety rate (0&ndash;100%) for a benchmark. Polygons show how scaffolding distorts each model's safety fingerprint.</div>
+
+  <div class="legend-bar">
+    <div class="legend-item"><div class="legend-swatch" style="background:#ffffff"></div> Direct (baseline)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#4a9eff"></div> ReAct</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#4aff9e"></div> Multi-agent</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#ff4a4a"></div> Map-reduce</div>
+  </div>
+
+  <div class="toggle-bar">
+    <button class="toggle-btn active" id="btn-individual" onclick="showView('individual')">Individual Models</button>
+    <button class="toggle-btn" id="btn-superimposed" onclick="showView('superimposed')">Superimposed (All Models)</button>
+  </div>
+
+  <div class="radar-grid" id="radar-grid"></div>
+  <div class="superimposed-container" id="superimposed-container"></div>
+
+  <div class="divider"></div>
+
+  <!-- VISUALIZATION 2: SYCOPHANCY -->
+  <div class="section-title">Sycophancy Scaffold Effects</div>
+  <div class="section-description">Diverging bars show change in non-sycophantic rate (pp) from baseline. Right = scaffold helps; Left = scaffold hurts.</div>
+
+  <div class="syco-controls">
+    <button class="toggle-btn active" id="btn-effects" onclick="showSycoView('effects')">Scaffold Effects (&#916;pp)</button>
+    <button class="toggle-btn" id="btn-absolute" onclick="showSycoView('absolute')">Absolute Rates</button>
+  </div>
+
+  <div id="syco-effects-chart" style="max-width:1000px; margin:0 auto;"></div>
+  <div id="syco-absolute-chart" style="max-width:1000px; margin:0 auto; display:none;"></div>
+
+  <div class="insight-box">
+    <strong>Sign-level reversal:</strong>
+    <span class="highlight-opus">Opus</span> drops <strong>&minus;16.8pp</strong> under map-reduce (sycophancy increases),
+    while <span class="highlight-llama">Llama 4</span> gains <strong>+18.8pp</strong> (sycophancy decreases).
+    Same architecture, opposite safety consequences &mdash; model identity determines scaffold impact direction.
+  </div>
+
+</div>
+
+<div class="footer">
+  Safety Under Scaffolding &mdash; Gringras 2026 &mdash; <a href="https://github.com/davidgringras/safety-under-scaffolding">GitHub</a>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+
+const MODELS = ['opus', 'gpt52', 'gemini3pro', 'deepseek', 'llama4', 'mistral'];
+const MODEL_LABELS = {
+  opus: 'Claude Opus 4', gpt52: 'GPT-5.2', gemini3pro: 'Gemini 3 Pro',
+  deepseek: 'DeepSeek-R1', llama4: 'Llama 4 Maverick', mistral: 'Mistral Large'
+};
+const MODEL_COLORS = {
+  opus: '#8b5cf6', gpt52: '#06b6d4', gemini3pro: '#f59e0b',
+  deepseek: '#ef4444', llama4: '#22c55e', mistral: '#ec4899'
+};
+
+const CONFIGS = ['direct', 'react', 'multi_agent', 'map_reduce'];
+const CONFIG_LABELS = { direct: 'Direct', react: 'ReAct', multi_agent: 'Multi-agent', map_reduce: 'Map-reduce' };
+const CONFIG_COLORS = { direct: '#ffffff', react: '#4a9eff', multi_agent: '#4aff9e', map_reduce: '#ff4a4a' };
+
+const BENCHMARKS = ['bbq', 'truthfulqa', 'xstest_orbench', 'sycophancy'];
+const BENCH_LABELS = { bbq: 'BBQ', truthfulqa: 'TruthfulQA', xstest_orbench: 'XSTest', sycophancy: 'Sycophancy' };
+
+// Cell means from CSV (model -> config -> benchmark -> safe_rate)
+const DATA = {
+  deepseek: {
+    direct:      { bbq: 0.8975, truthfulqa: 0.7564, xstest_orbench: 0.656, sycophancy: 0.346 },
+    react:       { bbq: 0.92,   truthfulqa: 0.7674, xstest_orbench: 0.548, sycophancy: 0.414 },
+    multi_agent: { bbq: 0.8013, truthfulqa: 0.8531, xstest_orbench: 0.658, sycophancy: 0.370 },
+    map_reduce:  { bbq: 0.6975, truthfulqa: 0.3782, xstest_orbench: 0.846, sycophancy: 0.304 }
+  },
+  gemini3pro: {
+    direct:      { bbq: 0.9263, truthfulqa: 0.9119, xstest_orbench: 0.606, sycophancy: 0.060 },
+    react:       { bbq: 0.8713, truthfulqa: 0.8494, xstest_orbench: 0.592, sycophancy: 0.180 },
+    multi_agent: { bbq: 0.8875, truthfulqa: 0.9400, xstest_orbench: 0.622, sycophancy: 0.076 },
+    map_reduce:  { bbq: 0.8938, truthfulqa: 0.8776, xstest_orbench: 0.620, sycophancy: 0.190 }
+  },
+  gpt52: {
+    direct:      { bbq: 0.900,  truthfulqa: 0.8592, xstest_orbench: 0.514, sycophancy: 0.426 },
+    react:       { bbq: 0.900,  truthfulqa: 0.8433, xstest_orbench: 0.512, sycophancy: 0.418 },
+    multi_agent: { bbq: 0.7813, truthfulqa: 0.8458, xstest_orbench: 0.530, sycophancy: 0.456 },
+    map_reduce:  { bbq: 0.8213, truthfulqa: 0.6206, xstest_orbench: 0.548, sycophancy: 0.458 }
+  },
+  llama4: {
+    direct:      { bbq: 0.9225, truthfulqa: 0.6732, xstest_orbench: 0.820, sycophancy: 0.110 },
+    react:       { bbq: 0.9175, truthfulqa: 0.7564, xstest_orbench: 0.820, sycophancy: 0.108 },
+    multi_agent: { bbq: 0.895,  truthfulqa: 0.7895, xstest_orbench: 0.824, sycophancy: 0.156 },
+    map_reduce:  { bbq: 0.8263, truthfulqa: 0.6255, xstest_orbench: 0.912, sycophancy: 0.298 }
+  },
+  mistral: {
+    direct:      { bbq: 0.870,  truthfulqa: 0.8054, xstest_orbench: 0.784, sycophancy: 0.322 },
+    react:       { bbq: 0.8763, truthfulqa: 0.7797, xstest_orbench: 0.692, sycophancy: 0.300 },
+    multi_agent: { bbq: 0.7163, truthfulqa: 0.8348, xstest_orbench: 0.782, sycophancy: 0.318 },
+    map_reduce:  { bbq: 0.8013, truthfulqa: 0.5789, xstest_orbench: 0.932, sycophancy: 0.334 }
+  },
+  opus: {
+    direct:      { bbq: 0.925,  truthfulqa: 0.9829, xstest_orbench: 0.876, sycophancy: 0.490 },
+    react:       { bbq: 0.9188, truthfulqa: 0.9694, xstest_orbench: 0.820, sycophancy: 0.472 },
+    multi_agent: { bbq: 0.8963, truthfulqa: 0.9780, xstest_orbench: 0.856, sycophancy: 0.502 },
+    map_reduce:  { bbq: 0.8938, truthfulqa: 0.7356, xstest_orbench: 0.680, sycophancy: 0.322 }
+  }
+};
+
+// Sycophancy effects (scaffold_rate - direct_rate)
+const SYCO_EFFECTS = {
+  deepseek:   { react: 0.068,  multi_agent: 0.024,  map_reduce: -0.042 },
+  gemini3pro: { react: 0.120,  multi_agent: 0.016,  map_reduce: 0.130  },
+  gpt52:      { react: -0.008, multi_agent: 0.030,  map_reduce: 0.032  },
+  llama4:     { react: -0.002, multi_agent: 0.046,  map_reduce: 0.188  },
+  mistral:    { react: -0.022, multi_agent: -0.004, map_reduce: 0.012  },
+  opus:       { react: -0.018, multi_agent: 0.012,  map_reduce: -0.168 }
+};
+
+// Sycophancy absolute rates
+const SYCO_ABS = {
+  deepseek:   { direct: 0.346, react: 0.414, multi_agent: 0.370, map_reduce: 0.304 },
+  gemini3pro: { direct: 0.060, react: 0.180, multi_agent: 0.076, map_reduce: 0.190 },
+  gpt52:      { direct: 0.426, react: 0.418, multi_agent: 0.456, map_reduce: 0.458 },
+  llama4:     { direct: 0.110, react: 0.108, multi_agent: 0.156, map_reduce: 0.298 },
+  mistral:    { direct: 0.322, react: 0.300, multi_agent: 0.318, map_reduce: 0.334 },
+  opus:       { direct: 0.490, react: 0.472, multi_agent: 0.502, map_reduce: 0.322 }
+};
+
+// ============================================================
+// PLOTLY CONFIG
+// ============================================================
+
+const PLOTLY_CFG = { displayModeBar: false, responsive: true };
+
+const DARK_LAYOUT = {
+  paper_bgcolor: 'rgba(0,0,0,0)',
+  plot_bgcolor: 'rgba(0,0,0,0)',
+  font: { family: 'Inter, sans-serif', color: '#ccc' },
+  margin: { t: 40, b: 20, l: 30, r: 30 }
+};
+
+// ============================================================
+// RADAR CHARTS
+// ============================================================
+
+function makeRadarTrace(model, config, showLegend) {
+  const vals = BENCHMARKS.map(b => DATA[model][config][b] * 100);
+  vals.push(vals[0]); // close polygon
+  const labels = BENCHMARKS.map(b => BENCH_LABELS[b]);
+  labels.push(labels[0]);
+
+  return {
+    type: 'scatterpolar',
+    r: vals,
+    theta: labels,
+    fill: 'toself',
+    fillcolor: CONFIG_COLORS[config] + '12',
+    line: { color: CONFIG_COLORS[config], width: config === 'direct' ? 2.5 : 1.8 },
+    name: CONFIG_LABELS[config],
+    showlegend: showLegend,
+    hovertemplate: `${CONFIG_LABELS[config]}<br>%{theta}: %{r:.1f}%<extra>${MODEL_LABELS[model]}</extra>`
+  };
+}
+
+function radarLayout(title, size) {
+  return {
+    ...DARK_LAYOUT,
+    width: size,
+    height: size,
+    margin: { t: 45, b: 15, l: 45, r: 45 },
+    title: {
+      text: title,
+      font: { size: 13, color: '#fff', family: 'Inter, sans-serif' },
+      y: 0.97
+    },
+    polar: {
+      bgcolor: 'rgba(0,0,0,0)',
+      radialaxis: {
+        visible: true,
+        range: [0, 100],
+        tickvals: [20, 40, 60, 80, 100],
+        ticktext: ['20', '40', '60', '80', '100'],
+        tickfont: { size: 9, color: '#555' },
+        gridcolor: '#222',
+        linecolor: '#222'
+      },
+      angularaxis: {
+        tickfont: { size: 10.5, color: '#999' },
+        gridcolor: '#1a1a2e',
+        linecolor: '#1a1a2e'
+      }
+    },
+    showlegend: false
+  };
+}
+
+function buildIndividualRadars() {
+  const grid = document.getElementById('radar-grid');
+  grid.innerHTML = '';
+
+  MODELS.forEach((model, i) => {
+    const div = document.createElement('div');
+    div.className = 'radar-cell';
+    div.id = `radar-${model}`;
+    grid.appendChild(div);
+
+    const traces = CONFIGS.map((c, ci) => makeRadarTrace(model, c, i === 0));
+    const layout = radarLayout(MODEL_LABELS[model], 420);
+    Plotly.newPlot(div, traces, layout, PLOTLY_CFG);
+  });
+}
+
+function buildSuperimposedRadar() {
+  const container = document.getElementById('superimposed-container');
+  container.innerHTML = '<div id="superimposed-chart"></div>';
+  const chartDiv = document.getElementById('superimposed-chart');
+
+  // Show only "direct" config for all models, superimposed
+  const traces = MODELS.map(model => {
+    const vals = BENCHMARKS.map(b => DATA[model]['direct'][b] * 100);
+    vals.push(vals[0]);
+    const labels = BENCHMARKS.map(b => BENCH_LABELS[b]);
+    labels.push(labels[0]);
+
+    return {
+      type: 'scatterpolar',
+      r: vals,
+      theta: labels,
+      fill: 'toself',
+      fillcolor: MODEL_COLORS[model] + '18',
+      line: { color: MODEL_COLORS[model], width: 2 },
+      name: MODEL_LABELS[model],
+      showlegend: true,
+      hovertemplate: `${MODEL_LABELS[model]}<br>%{theta}: %{r:.1f}%<extra></extra>`
+    };
+  });
+
+  const layout = {
+    ...DARK_LAYOUT,
+    width: 700,
+    height: 550,
+    margin: { t: 50, b: 30, l: 60, r: 60 },
+    title: {
+      text: 'All Models — Direct (Baseline) Safety Fingerprints',
+      font: { size: 15, color: '#fff' }
+    },
+    polar: {
+      bgcolor: 'rgba(0,0,0,0)',
+      radialaxis: {
+        visible: true,
+        range: [0, 100],
+        tickvals: [20, 40, 60, 80, 100],
+        ticktext: ['20%', '40%', '60%', '80%', '100%'],
+        tickfont: { size: 10, color: '#555' },
+        gridcolor: '#222',
+        linecolor: '#222'
+      },
+      angularaxis: {
+        tickfont: { size: 12, color: '#bbb' },
+        gridcolor: '#1a1a2e',
+        linecolor: '#1a1a2e'
+      }
+    },
+    legend: {
+      font: { size: 11, color: '#ccc' },
+      bgcolor: 'rgba(0,0,0,0)',
+      x: 1.08, y: 0.5
+    }
+  };
+
+  Plotly.newPlot(chartDiv, traces, layout, PLOTLY_CFG);
+
+  // Add config toggle within superimposed
+  addSuperimposedConfigToggle(chartDiv);
+}
+
+function addSuperimposedConfigToggle(chartDiv) {
+  // We add small buttons above the superimposed chart to pick which config to overlay
+  const bar = document.createElement('div');
+  bar.className = 'toggle-bar';
+  bar.id = 'super-config-bar';
+  bar.innerHTML = CONFIGS.map(c =>
+    `<button class="toggle-btn ${c === 'direct' ? 'active' : ''}" onclick="updateSuperimposedConfig('${c}', this)">${CONFIG_LABELS[c]}</button>`
+  ).join('');
+  chartDiv.parentNode.insertBefore(bar, chartDiv);
+}
+
+function updateSuperimposedConfig(config, btn) {
+  // Update button states
+  document.querySelectorAll('#super-config-bar .toggle-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const chartDiv = document.getElementById('superimposed-chart');
+  const traces = MODELS.map(model => {
+    const vals = BENCHMARKS.map(b => DATA[model][config][b] * 100);
+    vals.push(vals[0]);
+    const labels = BENCHMARKS.map(b => BENCH_LABELS[b]);
+    labels.push(labels[0]);
+
+    return {
+      type: 'scatterpolar',
+      r: vals,
+      theta: labels,
+      fill: 'toself',
+      fillcolor: MODEL_COLORS[model] + '18',
+      line: { color: MODEL_COLORS[model], width: 2 },
+      name: MODEL_LABELS[model],
+      showlegend: true,
+      hovertemplate: `${MODEL_LABELS[model]}<br>%{theta}: %{r:.1f}%<extra></extra>`
+    };
+  });
+
+  const titleConfig = CONFIG_LABELS[config];
+  Plotly.animate(chartDiv, {
+    data: traces,
+    layout: {
+      title: {
+        text: `All Models — ${titleConfig} Safety Fingerprints`,
+        font: { size: 15, color: '#fff' }
+      }
+    }
+  }, {
+    transition: { duration: 600, easing: 'cubic-in-out' },
+    frame: { duration: 600 }
+  });
+}
+
+function showView(view) {
+  document.getElementById('btn-individual').classList.toggle('active', view === 'individual');
+  document.getElementById('btn-superimposed').classList.toggle('active', view === 'superimposed');
+
+  document.getElementById('radar-grid').classList.toggle('hidden', view === 'superimposed');
+  document.getElementById('superimposed-container').classList.toggle('visible', view === 'superimposed');
+}
+
+// ============================================================
+// SYCOPHANCY DIVERGING BAR
+// ============================================================
+
+function buildSycoEffectsChart() {
+  const scaffolds = ['react', 'multi_agent', 'map_reduce'];
+  const scaffoldLabels = { react: 'ReAct', multi_agent: 'Multi-agent', map_reduce: 'Map-reduce' };
+  const scaffoldColors = { react: '#4a9eff', multi_agent: '#4aff9e', map_reduce: '#ff4a4a' };
+
+  const modelOrder = ['opus', 'gpt52', 'deepseek', 'mistral', 'llama4', 'gemini3pro'];
+
+  const traces = scaffolds.map(s => {
+    return {
+      type: 'bar',
+      name: scaffoldLabels[s],
+      x: modelOrder.map(m => SYCO_EFFECTS[m][s] * 100),
+      y: modelOrder.map(m => MODEL_LABELS[m]),
+      orientation: 'h',
+      marker: {
+        color: modelOrder.map(m => {
+          const val = SYCO_EFFECTS[m][s];
+          return val >= 0 ? scaffoldColors[s] : scaffoldColors[s] + 'aa';
+        }),
+        line: { color: scaffoldColors[s], width: 1 }
+      },
+      hovertemplate: modelOrder.map(m =>
+        `${MODEL_LABELS[m]}<br>${scaffoldLabels[s]}: ${(SYCO_EFFECTS[m][s]*100).toFixed(1)}pp<extra></extra>`
+      ),
+      textposition: 'outside',
+      textfont: { size: 10, color: '#aaa' }
+    };
+  });
+
+  const layout = {
+    ...DARK_LAYOUT,
+    height: 400,
+    margin: { t: 30, b: 50, l: 130, r: 60 },
+    barmode: 'group',
+    bargap: 0.25,
+    bargroupgap: 0.08,
+    xaxis: {
+      title: { text: 'Change in non-sycophantic rate (pp)', font: { size: 12, color: '#999' } },
+      zeroline: true,
+      zerolinecolor: '#555',
+      zerolinewidth: 2,
+      gridcolor: '#1a1a2e',
+      tickfont: { size: 11, color: '#888' },
+      range: [-22, 22],
+      dtick: 5
+    },
+    yaxis: {
+      tickfont: { size: 12, color: '#ccc' },
+      gridcolor: 'rgba(0,0,0,0)'
+    },
+    legend: {
+      font: { size: 11, color: '#ccc' },
+      bgcolor: 'rgba(0,0,0,0)',
+      orientation: 'h',
+      x: 0.5, xanchor: 'center',
+      y: 1.1
+    },
+    annotations: [
+      {
+        x: -19, y: 'Claude Opus 4',
+        text: '<b>-16.8pp</b>',
+        showarrow: false,
+        font: { size: 10, color: '#ff4a4a' },
+        xanchor: 'right'
+      },
+      {
+        x: 21, y: 'Llama 4 Maverick',
+        text: '<b>+18.8pp</b>',
+        showarrow: false,
+        font: { size: 10, color: '#ff4a4a' },
+        xanchor: 'left'
+      },
+      {
+        x: 0, y: -0.7,
+        text: '&larr; scaffold hurts &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; scaffold helps &rarr;',
+        showarrow: false,
+        font: { size: 10, color: '#666' },
+        xref: 'x', yref: 'paper',
+        yanchor: 'top'
+      }
+    ],
+    shapes: [
+      // Highlight band for map-reduce sign reversal
+      {
+        type: 'rect',
+        x0: -22, x1: 22,
+        y0: -0.45, y1: 0.45,
+        yref: 'y',
+        fillcolor: '#8b5cf608',
+        line: { width: 0 }
+      },
+      {
+        type: 'rect',
+        x0: -22, x1: 22,
+        y0: 3.55, y1: 4.45,
+        yref: 'y',
+        fillcolor: '#22c55e08',
+        line: { width: 0 }
+      }
+    ]
+  };
+
+  Plotly.newPlot('syco-effects-chart', traces, layout, PLOTLY_CFG);
+}
+
+function buildSycoAbsoluteChart() {
+  const modelOrder = ['opus', 'gpt52', 'deepseek', 'mistral', 'llama4', 'gemini3pro'];
+
+  const traces = CONFIGS.map(c => ({
+    type: 'bar',
+    name: CONFIG_LABELS[c],
+    x: modelOrder.map(m => SYCO_ABS[m][c] * 100),
+    y: modelOrder.map(m => MODEL_LABELS[m]),
+    orientation: 'h',
+    marker: {
+      color: CONFIG_COLORS[c] + (c === 'direct' ? 'cc' : '99'),
+      line: { color: CONFIG_COLORS[c], width: 1 }
+    },
+    hovertemplate: modelOrder.map(m =>
+      `${MODEL_LABELS[m]}<br>${CONFIG_LABELS[c]}: ${(SYCO_ABS[m][c]*100).toFixed(1)}%<extra></extra>`
+    )
+  }));
+
+  const layout = {
+    ...DARK_LAYOUT,
+    height: 400,
+    margin: { t: 30, b: 50, l: 130, r: 60 },
+    barmode: 'group',
+    bargap: 0.2,
+    bargroupgap: 0.05,
+    xaxis: {
+      title: { text: 'Non-sycophantic rate (%)', font: { size: 12, color: '#999' } },
+      gridcolor: '#1a1a2e',
+      tickfont: { size: 11, color: '#888' },
+      range: [0, 55],
+      dtick: 10
+    },
+    yaxis: {
+      tickfont: { size: 12, color: '#ccc' },
+      gridcolor: 'rgba(0,0,0,0)'
+    },
+    legend: {
+      font: { size: 11, color: '#ccc' },
+      bgcolor: 'rgba(0,0,0,0)',
+      orientation: 'h',
+      x: 0.5, xanchor: 'center',
+      y: 1.1
+    }
+  };
+
+  Plotly.newPlot('syco-absolute-chart', traces, layout, PLOTLY_CFG);
+}
+
+function showSycoView(view) {
+  document.getElementById('btn-effects').classList.toggle('active', view === 'effects');
+  document.getElementById('btn-absolute').classList.toggle('active', view === 'absolute');
+  document.getElementById('syco-effects-chart').style.display = view === 'effects' ? 'block' : 'none';
+  document.getElementById('syco-absolute-chart').style.display = view === 'absolute' ? 'block' : 'none';
+}
+
+// ============================================================
+// INIT
+// ============================================================
+
+buildIndividualRadars();
+buildSuperimposedRadar();
+buildSycoEffectsChart();
+buildSycoAbsoluteChart();
+</script>
+
+</body>
+</html>

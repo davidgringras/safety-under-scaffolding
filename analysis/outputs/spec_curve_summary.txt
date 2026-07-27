@@ -1,0 +1,115 @@
+======================================================================
+SPECIFICATION CURVE ANALYSIS SUMMARY
+Safety Under Scaffolding
+======================================================================
+
+Total specifications run: 384
+Failed specifications: 0
+Models: deepseek, gemini3pro, gpt52, llama4, opus
+Reference config: direct
+
+----------------------------------------------------------------------
+CONFIG EFFECTS (vs. direct)
+----------------------------------------------------------------------
+
+  map_reduce:
+    Median OR:  0.7224  (IQR: 0.6193 - 0.8568)
+    Mean OR:    0.7265
+    Range OR:   0.5107 - 0.9638
+    Median p:   0.0000
+    %% sig (0.05): 92.6%  (237/256)
+
+  multi_agent:
+    Median OR:  1.0657  (IQR: 1.0311 - 1.1409)
+    Mean OR:    1.0954
+    Range OR:   0.9746 - 1.3211
+    Median p:   0.1114
+    %% sig (0.05): 43.5%  (167/384)
+
+  react:
+    Median OR:  1.0372  (IQR: 1.0087 - 1.3002)
+    Mean OR:    1.4068
+    Range OR:   0.9866 - 4.8161
+    Median p:   0.4858
+    %% sig (0.05): 34.4%  (132/384)
+
+----------------------------------------------------------------------
+DOF SENSITIVITY (ranked by impact on median OR)
+----------------------------------------------------------------------
+
+  include_mapreduce:
+    Effect size (diff means): 0.2094
+    t-test p-value: 0.0000
+      True: mean median OR = 1.0350 (n=256)
+      False: mean median OR = 1.2444 (n=128)
+
+  min_response_len:
+    Effect size (diff means): 0.1661
+    t-test p-value: 0.0000
+      0: mean median OR = 1.0217 (n=192)
+      10: mean median OR = 1.1878 (n=192)
+
+  parse_failure:
+    Effect size (diff means): 0.1279
+    t-test p-value: 0.0000
+      exclude: mean median OR = 1.0408 (n=192)
+      code_as_incorrect: mean median OR = 1.1688 (n=192)
+
+  context_condition:
+    Effect size (diff means): 0.1043
+    t-test p-value: 0.0001
+      short_only: mean median OR = 1.1396 (n=256)
+      include_long_for_mapreduce: mean median OR = 1.0352 (n=128)
+
+  benchmark_treatment:
+    Effect size (diff means): 0.0521
+    t-test p-value: 0.0348
+      separate: mean median OR = 1.1308 (n=192)
+      pooled: mean median OR = 1.0788 (n=192)
+
+  benchmark_subset:
+    Effect size (diff means): 0.0431
+    t-test p-value: 0.0812
+      all4: mean median OR = 1.0833 (n=192)
+      exclude_sycophancy: mean median OR = 1.1263 (n=192)
+
+  model_treatment:
+    Effect size (diff means): 0.0218
+    t-test p-value: 0.3771
+      fixed_effects: mean median OR = 1.1157 (n=192)
+      excluded: mean median OR = 1.0939 (n=192)
+
+  bbq_context:
+    Effect size (diff means): 0.0129
+    t-test p-value: 0.6029
+      ambiguous_only: mean median OR = 1.1112 (n=192)
+      both: mean median OR = 1.0984 (n=192)
+
+  xstest_strict:
+    Effect size (diff means): 0.0025
+    t-test p-value: 0.9198
+      True: mean median OR = 1.1060 (n=192)
+      False: mean median OR = 1.1035 (n=192)
+
+----------------------------------------------------------------------
+PERMUTATION TEST
+----------------------------------------------------------------------
+
+  Observed median |log-OR|: 0.0880
+  Null distribution mean:   0.0245
+  Null distribution SD:     0.0157
+  Null 95th percentile:     0.0540
+  Permutation p-value:      0.0000
+  N permutations completed: 200
+
+----------------------------------------------------------------------
+INTERPRETATION
+----------------------------------------------------------------------
+
+  map_reduce vs direct: decreased safety (OR=0.722) in 93% of specifications.
+
+  Most impactful DOF: include_mapreduce (effect size = 0.2094)
+
+  Total runtime: 455.5s
+
+======================================================================

@@ -1,0 +1,124 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage{natbib}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue
+}
+
+\setlength{\parskip}{0.4em}
+\setlength{\parindent}{0pt}
+
+\title{\textbf{Phase 2 Pre-Registration: Mechanistic Drivers of\\Scaffold-Induced Safety Degradation}}
+\author{Dr.\ David Gringras\\Harvard University}
+\date{February 15, 2026}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+
+\noindent\textit{Pre-registration addendum to the parent study ``Safety Under Scaffolding: Which Safety Properties Survive Agentic Deployment?'' (DOI: \href{https://doi.org/10.17605/OSF.IO/CJW92}{10.17605/OSF.IO/CJW92}).}
+
+\section{Background}
+
+The parent study found that map-reduce scaffolding significantly degrades LLM safety performance (OR\,=\,0.61, RD\,=\,$-8.5$\,pp, NNH\,=\,12, $p < 10^{-86}$). Exploratory mechanistic probes ($N=50$ per condition, 3 models) identified a monotonic dose-response relationship: degradation is driven by property-specific invocation language embedded in review prompts, not by chain structure itself. A minimal (neutral) 4-step chain variant produced zero measurable degradation relative to passthrough.
+
+\section{Pilot Data Summary}
+
+Table~\ref{tab:pilot} reports exploratory pilot results ($N=50$ per cell).
+
+\begin{table}[h]
+\centering
+\small
+\caption{Pilot results ($N=50$ per condition). $\Delta$ denotes change from passthrough.}
+\label{tab:pilot}
+\begin{tabular}{@{}llcccc@{}}
+\toprule
+Benchmark & Model & Passthrough & Minimal & Moderate & Aggressive \\
+\midrule
+BBQ & DeepSeek V3.2 & 94.0\% & 94.0\% (+0.0) & 88.0\% ($-$6.0) & 82.0\% ($-$12.0) \\
+BBQ & Opus 4.6      & 90.0\% & 92.0\% (+2.0) & 94.0\% (+4.0)   & 94.0\% (+4.0) \\
+BBQ & GPT-5.2       & 94.0\% & 94.0\% (+0.0) & 88.0\% ($-$6.0) & 72.0\% ($-$22.0) \\
+BBQ & Llama 4       & 94.0\% & 92.0\% ($-$2.0) & 88.0\% ($-$6.0) & 88.0\% ($-$6.0) \\
+BBQ & Mistral       & 86.0\% & 88.0\% (+2.0) & 80.0\% ($-$6.0) & 72.0\% ($-$14.0) \\
+\midrule
+TruthfulQA & DeepSeek V3.2 & 74.0\% & 76.0\% (+2.0) & 82.0\% (+8.0) & 92.0\% (+18.0) \\
+TruthfulQA & Opus 4.6      & 98.0\% & 98.0\% (+0.0) & 98.0\% (+0.0) & 98.0\% (+0.0) \\
+TruthfulQA & GPT-5.2       & 88.0\% & 82.0\% ($-$6.0) & 84.0\% ($-$4.0) & 90.0\% (+2.0) \\
+TruthfulQA & Llama 4       & 70.0\% & 76.0\% (+6.0) & 80.0\% (+10.0) & 90.0\% (+20.0) \\
+TruthfulQA & Mistral       & 88.0\% & 80.0\% ($-$8.0) & 88.0\% (+0.0) & 88.0\% (+0.0) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Pilot data ($N=50$, 10 cells) reveal three distinct response architectures. \textbf{BBQ:} Four of five models (DeepSeek, GPT-5.2, Llama 4, Mistral) show dose-dependent degradation at moderate/aggressive intensities, confirming cross-architectural semantic vulnerability; Opus alone shows immunity. \textbf{TruthfulQA:} Models with baseline headroom (DeepSeek 74\%, Llama 4 70\%) show strong monotonic improvement up to $+20$\,pp, demonstrating a ``System 2 rescue'' effect. Near-ceiling models (Opus 98\%) remain invariant. Intermediate models (GPT-5.2 88\%, Mistral 88\%) exhibit a ``V-shaped'' pattern: the minimal (neutral) chain induces a 6--8\,pp structural doubt penalty, which is subsequently rescued by the aggressive (semantic) condition. The confirmatory Phase 2 trial will proceed on all six parent-study models.
+
+\section{Hypotheses}
+
+\begin{enumerate}[label=\textbf{H5\alph*.}, leftmargin=2em]
+    \item \textbf{BBQ Dose-Response.} BBQ accuracy will show a significant aggregate negative dose-response to bias-invocation prompt intensity, tested via a linear trend predictor. The minimal (neutral) variant will be TOST-equivalent to passthrough within $\pm 3$\,pp.
+
+    \item \textbf{TruthfulQA Semantic Rescue.} Unlike the uniform degradation predicted for BBQ, TruthfulQA accuracy will exhibit heterogeneous, baseline-dependent responses to misconception-checking prompt intensity. We predict a significant model $\times$ intensity interaction: models with baseline headroom (e.g., DeepSeek V3.2, Llama 4) will show a strong positive dose-response, while models operating near ceiling (e.g., Opus 4.6) will remain statistically invariant. Across non-ceiling models, the semantic invocation (Aggressive condition) will yield significantly higher accuracy than the structural baseline (Minimal condition), demonstrating a factual rescue effect.
+
+    \item \textbf{Model Gradient.} The magnitude of the dose-response slope will differ significantly across models (a significant model $\times$ intensity interaction), reflecting varying `encoding depths' of safety properties. Models demonstrating pilot immunity (e.g., Opus 4.6) are predicted to remain robust, while vulnerable models (e.g., GPT-5.2, DeepSeek V3.2) are predicted to exhibit steep negative gradients.
+
+    \item \textbf{Benchmark-Specific Structural Effects.} On BBQ, the minimal (neutral) chain will be TOST-equivalent to passthrough within $\pm 3$\,pp, confirming that chain structure alone does not drive bias degradation. On TruthfulQA, the minimal chain may induce structural penalties (accuracy drops) in specific models due to `scaffold-induced doubt,' but the subsequent addition of semantic invocation (Aggressive condition) will drive positive variance.
+\end{enumerate}
+
+\section{Design}
+
+\begin{itemize}[leftmargin=1.5em]
+    \item $N=300$ novel, non-overlapping items per benchmark (BBQ and TruthfulQA), drawn from the remaining item pool after excluding the 50 pilot items (seed\,=\,43 for reproducibility).
+    \item Within-item repeated measures: each item tested under all 4 intensity levels (passthrough, minimal, moderate, aggressive).
+    \item Models: All six frontier models evaluated in the parent study, explicitly to test the interaction between vulnerable and immune architectures.
+    \item Prompt templates: identical to Phase 1 pilot (specified in supplementary materials and locked before data collection).
+    \item Temperature: 0.0 for all models; \texttt{max\_tokens}: 1024.
+    \item Scoring: deterministic multiple-choice answer extraction (identical to parent study).
+\end{itemize}
+
+\section{Power Analysis}
+
+Based on pilot effect sizes:
+\begin{itemize}[leftmargin=1.5em]
+    \item \textit{Adjacent-level contrast} (e.g., 94\%\,$\to$\,88\%, $\Delta=6$\,pp): $N=300$ within-item design provides $>$80\% power (McNemar test, estimated discordant proportion 0.08).
+    \item \textit{Endpoint contrast} (94\%\,$\to$\,82\%, $\Delta=12$\,pp): $N=300$ provides $>$95\% power.
+    \item \textit{Ordinal trend test} (primary): substantially more powerful than pairwise contrasts due to the 1-df test exploiting monotonic structure.
+    \item The within-item design eliminates item-difficulty variance, the dominant noise source, providing approximately 2$\times$ effective sample size relative to a between-item design.
+\end{itemize}
+
+\section{Statistical Analysis Plan}
+
+\textbf{Primary test.} Mixed-effects logistic regression predicting binary safety outcome, with prompt intensity specified as a continuous/linear trend predictor (0, 1, 2, 3), model as a fixed effect, the model $\times$ intensity interaction, and item as a random intercept. The primary test for the aggregate dose-response is the 1-df Wald test for the main intensity slope.
+
+\textbf{Secondary.} (a) Pairwise adjacent-level contrasts with Holm--Bonferroni correction. (b) Model $\times$ intensity interaction (Wald test). (c) TOST equivalence for minimal vs.\ passthrough ($\Delta = \pm 3$\,pp; this margin is widened from the parent study's $\pm 2$\,pp to account for the wider confidence intervals inherent to the $N=300$ sample size while maintaining practical equivalence). (d) Cochran--Armitage trend test and Jonckheere--Terpstra test as non-parametric alternatives. (e) For TruthfulQA, where ceiling effects and non-monotonic structural penalties are predicted, a primary contrast of interest will be the pairwise comparison between the Minimal and Aggressive conditions to isolate the semantic rescue effect from structural confounds.
+
+\textbf{Sensitivity.} Specification variants including probit link, random slopes for intensity within item, and exclusion of items with parse failures.
+
+\section{Data Exclusion}
+
+\begin{itemize}[leftmargin=1.5em]
+    \item Items where any of the 4 conditions produces an API error are excluded from that model's analysis (per-protocol, matching parent study).
+    \item Parse failures are excluded from the analysis (Per-Protocol approach). Because this Phase 2 experiment isolates semantic reasoning vulnerability, we exclude structural format failures to prevent them from confounding the reasoning-drop measurement. (Note: The parent study utilized Intent-to-Treat scoring for its primary headline; we use Per-Protocol here strictly to isolate the semantic mechanism.)
+    \item No items are excluded based on outcome.
+\end{itemize}
+
+\section{Relation to Parent Study}
+
+This Phase 2 follows the sequential logic of clinical drug development: Phase 1 ($N=50$ pilot) identified a candidate mechanism; Phase 2 ($N=300$ confirmatory) tests it with adequate power and pre-registration. The pilot data informed hypotheses and power analysis but will not be pooled with confirmatory data. The $N=50$ pilot results are reported as exploratory in the parent paper (Section 4.8); the $N=300$ confirmatory results will be reported as pre-registered in a revised Section 4.8.
+
+\vfill
+
+\small\noindent\textit{Parent study registration:} \href{https://doi.org/10.17605/OSF.IO/CJW92}{DOI: 10.17605/OSF.IO/CJW92}
+
+\end{document}

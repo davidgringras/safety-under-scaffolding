@@ -1,0 +1,65 @@
+# ============================================================
+# Safety Under Scaffolding — .gitignore
+# ============================================================
+
+# Credentials and secrets
+.env
+.env.*
+credentials/
+*.key
+*.pem
+
+# Raw results and run logs (large; available from the author on request)
+results/
+logs/
+*.jsonl
+!data/benchmarks/*.jsonl
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv*/
+*.egg-info/
+dist/
+build/
+
+# OS, editor, and tooling
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.claude/
+
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.synctex.gz
+!paper_v2/main.bbl
+
+# Figure build artifacts (paper figures are committed under figures/output/)
+paper_v2/figures/*.png
+paper_v2/figures/output/*.html
+**/page_renders/
+
+# Draft manuscripts and rendered previews
+/*.pdf
+paper_v2/main.pdf
+paper_v2/V*.pdf
+
+# Working notes (the public release tracks final documents only)
+*.md
+!README.md
+!**/README.md
+!data/benchmarks/benchmark_manifest.md
+!analysis/human_eval/instructions.md
+!preregistration/osf_preregistration.md
+!preregistration/supplementary_materials.md
+
+# Local working directories, not part of the public release
+scripts/

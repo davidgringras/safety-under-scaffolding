@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safety Under Scaffolding - 3D Coverage Matrix</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a1a;
+    color: #e0e0e0;
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+    height: 100vh;
+  }
+  #canvas-container {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+  }
+  canvas { display: block; }
+
+  /* Header */
+  #header {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    padding: 18px 30px;
+    background: linear-gradient(180deg, rgba(10,10,26,0.95) 0%, rgba(10,10,26,0.0) 100%);
+    pointer-events: none;
+    z-index: 10;
+  }
+  #header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: #fff;
+  }
+  #header .subtitle {
+    font-size: 13px;
+    color: #8888aa;
+    margin-top: 4px;
+    font-weight: 400;
+  }
+
+  /* Tooltip */
+  #tooltip {
+    position: absolute;
+    display: none;
+    background: rgba(15, 15, 35, 0.95);
+    border: 1px solid rgba(120, 120, 180, 0.3);
+    border-radius: 10px;
+    padding: 14px 18px;
+    pointer-events: none;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    min-width: 220px;
+  }
+  #tooltip .tt-model {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  #tooltip .tt-row {
+    font-size: 12.5px;
+    color: #aab;
+    margin: 3px 0;
+  }
+  #tooltip .tt-row span {
+    color: #dde;
+    font-weight: 600;
+  }
+  #tooltip .tt-rate {
+    font-size: 22px;
+    font-weight: 800;
+    margin-top: 8px;
+    letter-spacing: -0.5px;
+  }
+
+  /* Legend */
+  #legend {
+    position: absolute;
+    bottom: 24px;
+    right: 30px;
+    z-index: 10;
+    pointer-events: none;
+  }
+  #legend .legend-title {
+    font-size: 11px;
+    color: #8888aa;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    text-align: center;
+  }
+  #legend-bar {
+    width: 24px;
+    height: 180px;
+    border-radius: 4px;
+    margin: 0 auto;
+  }
+  #legend .legend-labels {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 180px;
+    position: absolute;
+    right: 34px;
+    top: 20px;
+    font-size: 11px;
+    color: #8888aa;
+  }
+
+  /* Controls */
+  #controls {
+    position: absolute;
+    bottom: 24px;
+    left: 30px;
+    z-index: 10;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    max-width: 500px;
+  }
+  .ctrl-btn {
+    background: rgba(30,30,60,0.8);
+    border: 1px solid rgba(100,100,160,0.3);
+    color: #aab;
+    font-size: 12px;
+    padding: 7px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    backdrop-filter: blur(8px);
+  }
+  .ctrl-btn:hover {
+    background: rgba(50,50,90,0.9);
+    color: #fff;
+    border-color: rgba(140,140,200,0.5);
+  }
+  .ctrl-btn.active {
+    background: rgba(70,70,140,0.8);
+    color: #fff;
+    border-color: rgba(160,160,220,0.6);
+  }
+
+  /* Filter panel */
+  #filter-panel {
+    position: absolute;
+    top: 80px;
+    right: 24px;
+    z-index: 10;
+    background: rgba(15,15,35,0.9);
+    border: 1px solid rgba(100,100,160,0.25);
+    border-radius: 10px;
+    padding: 14px 18px;
+    backdrop-filter: blur(12px);
+    max-width: 220px;
+  }
+  #filter-panel h3 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #8888aa;
+    margin-bottom: 10px;
+  }
+  .filter-group { margin-bottom: 12px; }
+  .filter-group label {
+    font-size: 11px;
+    color: #8888aa;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .filter-group select {
+    width: 100%;
+    background: rgba(30,30,60,0.8);
+    border: 1px solid rgba(80,80,140,0.3);
+    color: #dde;
+    padding: 5px 8px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  /* Stats bar */
+  #stats-bar {
+    position: absolute;
+    top: 80px;
+    left: 30px;
+    z-index: 10;
+    pointer-events: none;
+  }
+  .stat-chip {
+    display: inline-block;
+    background: rgba(20,20,50,0.8);
+    border: 1px solid rgba(80,80,140,0.2);
+    border-radius: 6px;
+    padding: 5px 12px;
+    margin: 0 4px 4px 0;
+    font-size: 11px;
+    color: #8888aa;
+    backdrop-filter: blur(8px);
+  }
+  .stat-chip b { color: #dde; font-weight: 700; }
+
+  /* Benchmark layer labels */
+  .layer-label {
+    position: absolute;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(200,200,240,0.7);
+    pointer-events: none;
+    z-index: 5;
+    text-shadow: 0 0 10px rgba(0,0,0,0.8);
+  }
+</style>
+</head>
+<body>
+<nav style="padding:10px 20px;font-family:Inter,-apple-system,sans-serif;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)"><a href="index.html" style="color:#999;text-decoration:none" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#999'">&larr; Back to overview</a></nav>
+
+<div id="canvas-container">
+  <div id="header">
+    <h1>Safety Under Scaffolding</h1>
+    <div class="subtitle">3D Coverage Matrix &mdash; 6 Models &times; 4 Scaffolds &times; 4 Benchmarks &mdash; N = 62,808 scored observations</div>
+  </div>
+
+  <div id="stats-bar">
+    <span class="stat-chip">Cells: <b>96</b></span>
+    <span class="stat-chip">Overall safe: <b>70.7%</b></span>
+    <span class="stat-chip">Range: <b>6.0% &ndash; 98.3%</b></span>
+  </div>
+
+  <div id="tooltip">
+    <div class="tt-model"></div>
+    <div class="tt-row">Scaffold: <span class="tt-config"></span></div>
+    <div class="tt-row">Benchmark: <span class="tt-bench"></span></div>
+    <div class="tt-row">N = <span class="tt-n"></span></div>
+    <div class="tt-rate"></div>
+  </div>
+
+  <div id="filter-panel">
+    <h3>Filters</h3>
+    <div class="filter-group">
+      <label>Benchmark</label>
+      <select id="filter-benchmark">
+        <option value="all">All Benchmarks</option>
+        <option value="0">BBQ</option>
+        <option value="1">TruthfulQA</option>
+        <option value="2">XSTest</option>
+        <option value="3">Sycophancy</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Scaffold</label>
+      <select id="filter-config">
+        <option value="all">All Scaffolds</option>
+        <option value="0">Direct</option>
+        <option value="1">ReAct</option>
+        <option value="2">Multi-Agent</option>
+        <option value="3">Map-Reduce</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Model</label>
+      <select id="filter-model">
+        <option value="all">All Models</option>
+        <option value="0">Claude Opus 4.6</option>
+        <option value="1">GPT-5.2</option>
+        <option value="2">Gemini 3 Pro</option>
+        <option value="3">DeepSeek V3.2</option>
+        <option value="4">Llama 4 Maverick</option>
+        <option value="5">Mistral Large 2</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="legend">
+    <div class="legend-title">Safety Rate</div>
+    <div style="position:relative">
+      <canvas id="legend-bar" width="24" height="180"></canvas>
+      <div class="legend-labels">
+        <span>100%</span>
+        <span>75%</span>
+        <span>50%</span>
+        <span>25%</span>
+        <span>0%</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="controls">
+    <button class="ctrl-btn" onclick="resetCamera()">Reset View</button>
+    <button class="ctrl-btn" id="btn-rotate" onclick="toggleAutoRotate()">Auto-Rotate: ON</button>
+    <button class="ctrl-btn" onclick="viewFront()">Front View</button>
+    <button class="ctrl-btn" onclick="viewTop()">Top View</button>
+    <button class="ctrl-btn" onclick="viewSide()">Side View</button>
+    <button class="ctrl-btn" id="btn-mode" onclick="toggleMode()">Mode: Bars</button>
+  </div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+
+// ===========================================
+// DATA
+// ===========================================
+const DATA = [{"model":"deepseek","model_name":"DeepSeek V3.2","config":"direct","config_name":"Direct","benchmark":"bbq","benchmark_name":"BBQ","safe_rate":0.8975,"n":800,"mi":3,"ci":0,"bi":0},{"model":"deepseek","model_name":"DeepSeek V3.2","config":"direct","config_name":"Direct","benchmark":"sycophancy","benchmark_name":"Sycophancy","safe_rate":0.346,"n":500,"mi":3,"ci":0,"bi":3},{"model":"deepseek","model_name":"DeepSeek V3.2","config":"direct","config_name":"Direct","benchmark":"truthfulqa","benchmark_name":"TruthfulQA","safe_rate":0.7564,"n":817,"mi":3,"ci":0,"bi":1},{"model":"deepseek","model_name":"DeepSeek V3.2","config":"direct","config_name":"Direct","benchmark":"xstest_orbench","benchmark_name":"XSTest","safe_rate":0.656,"n":500,"mi":3,"ci":0,"bi":2},{"model":"deepseek","model_name":"DeepSeek V3.2","config":"map_reduce","config_name":"Map-Reduce","benchmark":"bbq","benchmark_name":"BBQ","safe_rate":0.6975,"n":800,"mi":3,"ci":3,"bi":0},{"model":"deepseek","model_name":"DeepSeek V3.2","config":"map_reduce","config_name":"Map-Reduce","benchmark":"sycophancy","benchmark_name":"Sycophancy","safe_rate":0.304,"n":500,"mi":3,"ci":3,"bi":3},{"model":"deepseek","model_name":"DeepSeek V3.2","config":"map_reduce","config_name":"Map-Reduce","benchmark":"truthfulqa","benchmark_name":"TruthfulQA","safe_rate":0.3782,"n":817,"mi":3,"ci":3,"bi":1},{"model":"deepseek","model_name":"DeepSeek V3.2","config":"map_reduce","config_name":"Map-Reduce","benchmark":"xstest_orbench","benchmark_name":"XSTest","safe_rate":0.846,"n":500,"mi":3,"ci":3,"bi":2},{"model":"deepseek","model_name":"DeepSeek V3.2","config":"multi_agent","config_name":"Multi-Agent","benchmark":"bbq","benchmark_name":"BBQ","safe_rate":0.8013,"n":800,"mi":3,"ci":2,"bi":0},{"model":"deepseek","model_name":"DeepSeek V3.2","config":"multi_agent","config_name":"Multi-Agent","benchmark":"sycophancy","benchmark_name":"Sycophancy","safe_rate":0.37,"n":500,"mi":3,"ci":2,"bi":3},{"model":"deepseek","model_name":"DeepSeek V3.2","config":"multi_agent","config_name":"Multi-Agent","benchmark":"truthfulqa","benchmark_name":"TruthfulQA","safe_rate":0.8531,"n":817,"mi":3,"ci":2,"bi":1},{"model":"deepseek","model_name":"DeepSeek V3.2","config":"multi_agent","config_name":"Multi-Agent","benchmark":"xstest_orbench","benchmark_name":"XSTest","safe_rate":0.658,"n":500,"mi":3,"ci":2,"bi":2},{"model":"deepseek","model_name":"DeepSeek V3.2","config":"react","config_name":"ReAct","benchmark":"bbq","benchmark_name":"BBQ","safe_rate":0.92,"n":800,"mi":3,"ci":1,"bi":0},{"model":"deepseek","model_name":"DeepSeek V3.2","config":"react","config_name":"ReAct","benchmark":"sycophancy","benchmark_name":"Sycophancy","safe_rate":0.414,"n":500,"mi":3,"ci":1,"bi":3},{"model":"deepseek","model_name":"DeepSeek V3.2","config":"react","config_name":"ReAct","benchmark":"truthfulqa","benchmark_name":"TruthfulQA","safe_rate":0.7674,"n":817,"mi":3,"ci":1,"bi":1},{"model":"deepseek","model_name":"DeepSeek V3.2","config":"react","config_name":"ReAct","benchmark":"xstest_orbench","benchmark_name":"XSTest","safe_rate":0.548,"n":500,"mi":3,"ci":1,"bi":2},{"model":"gemini3pro","model_name":"Gemini 3 Pro","config":"direct","config_name":"Direct","benchmark":"bbq","benchmark_name":"BBQ","safe_rate":0.9263,"n":800,"mi":2,"ci":0,"bi":0},{"model":"gemini3pro","model_name":"Gemini 3 Pro","config":"direct","config_name":"Direct","benchmark":"sycophancy","benchmark_name":"Sycophancy","safe_rate":0.06,"n":500,"mi":2,"ci":0,"bi":3},{"model":"gemini3pro","model_name":"Gemini 3 Pro","config":"direct","config_name":"Direct","benchmark":"truthfulqa","benchmark_name":"TruthfulQA","safe_rate":0.9119,"n":817,"mi":2,"ci":0,"bi":1},{"model":"gemini3pro","model_name":"Gemini 3 Pro","config":"direct","config_name":"Direct","benchmark":"xstest_orbench","benchmark_name":"XSTest","safe_rate":0.606,"n":500,"mi":2,"ci":0,"bi":2},{"model":"gemini3pro","model_name":"Gemini 3 Pro","config":"map_reduce","config_name":"Map-Reduce","benchmark":"bbq","benchmark_name":"BBQ","safe_rate":0.8938,"n":800,"mi":2,"ci":3,"bi":0},{"model":"gemini3pro","model_name":"Gemini 3 Pro","config":"map_reduce","config_name":"Map-Reduce","benchmark":"sycophancy","benchmark_name":"Sycophancy","safe_rate":0.19,"n":500,"mi":2,"ci":3,"bi":3},{"model":"gemini3pro","model_name":"Gemini 3 Pro","config":"map_reduce","config_name":"Map-Reduce","benchmark":"truthfulqa","benchmark_name":"TruthfulQA","safe_rate":0.8776,"n":817,"mi":2,"ci":3,"bi":1},{"model":"gemini3pro","model_name":"Gemini 3 Pro","config":"map_reduce","config_name":"Map-Reduce","benchmark":"xstest_orbench","benchmark_name":"XSTest","safe_rate":0.62,"n":500,"mi":2,"ci":3,"bi":2},{"model":"gemini3pro","model_name":"Gemini 3 Pro","config":"multi_agent","config_name":"Multi-Agent","benchmark":"bbq","benchmark_name":"BBQ","safe_rate":0.8875,"n":800,"mi":2,"ci":2,"bi":0},{"model":"gemini3pro","model_name":"Gemini 3 Pro","config":"multi_agent","config_name":"Multi-Agent","benchmark":"sycophancy","benchmark_name":"Sycophancy","safe_rate":0.076,"n":500,"mi":2,"ci":2,"bi":3},{"model":"gemini3pro","model_name":"Gemini 3 Pro","config":"multi_agent","config_name":"Multi-Agent","benchmark":"truthfulqa","benchmark_name":"TruthfulQA","safe_rate":0.94,"n":817,"mi":2,"ci":2,"bi":1},{"model":"gemini3pro","model_name":"Gemini 3 Pro","config":"multi_agent","config_name":"Multi-Agent","benchmark":"xstest_orbench","benchmark_name":"XSTest","safe_rate":0.622,"n":500,"mi":2,"ci":2,"bi":2},{"model":"gemini3pro","model_name":"Gemini 3 Pro","config":"react","config_name":"ReAct","benchmark":"bbq","benchmark_name":"BBQ","safe_rate":0.8712,"n":800,"mi":2,"ci":1,"bi":0},{"model":"gemini3pro","model_name":"Gemini 3 Pro","config":"react","config_name":"ReAct","benchmark":"sycophancy","benchmark_name":"Sycophancy","safe_rate":0.18,"n":500,"mi":2,"ci":1,"bi":3},{"model":"gemini3pro","model_name":"Gemini 3 Pro","config":"react","config_name":"ReAct","benchmark":"truthfulqa","benchmark_name":"TruthfulQA","safe_rate":0.8494,"n":817,"mi":2,"ci":1,"bi":1},{"model":"gemini3pro","model_name":"Gemini 3 Pro","config":"react","config_name":"ReAct","benchmark":"xstest_orbench","benchmark_name":"XSTest","safe_rate":0.592,"n":500,"mi":2,"ci":1,"bi":2},{"model":"gpt52","model_name":"GPT-5.2","config":"direct","config_name":"Direct","benchmark":"bbq","benchmark_name":"BBQ","safe_rate":0.9,"n":800,"mi":1,"ci":0,"bi":0},{"model":"gpt52","model_name":"GPT-5.2","config":"direct","config_name":"Direct","benchmark":"sycophancy","benchmark_name":"Sycophancy","safe_rate":0.426,"n":500,"mi":1,"ci":0,"bi":3},{"model":"gpt52","model_name":"GPT-5.2","config":"direct","config_name":"Direct","benchmark":"truthfulqa","benchmark_name":"TruthfulQA","safe_rate":0.8592,"n":817,"mi":1,"ci":0,"bi":1},{"model":"gpt52","model_name":"GPT-5.2","config":"direct","config_name":"Direct","benchmark":"xstest_orbench","benchmark_name":"XSTest","safe_rate":0.514,"n":500,"mi":1,"ci":0,"bi":2},{"model":"gpt52","model_name":"GPT-5.2","config":"map_reduce","config_name":"Map-Reduce","benchmark":"bbq","benchmark_name":"BBQ","safe_rate":0.8213,"n":800,"mi":1,"ci":3,"bi":0},{"model":"gpt52","model_name":"GPT-5.2","config":"map_reduce","config_name":"Map-Reduce","benchmark":"sycophancy","benchmark_name":"Sycophancy","safe_rate":0.458,"n":500,"mi":1,"ci":3,"bi":3},{"model":"gpt52","model_name":"GPT-5.2","config":"map_reduce","config_name":"Map-Reduce","benchmark":"truthfulqa","benchmark_name":"TruthfulQA","safe_rate":0.6206,"n":817,"mi":1,"ci":3,"bi":1},{"model":"gpt52","model_name":"GPT-5.2","config":"map_reduce","config_name":"Map-Reduce","benchmark":"xstest_orbench","benchmark_name":"XSTest","safe_rate":0.548,"n":500,"mi":1,"ci":3,"bi":2},{"model":"gpt52","model_name":"GPT-5.2","config":"multi_agent","config_name":"Multi-Agent","benchmark":"bbq","benchmark_name":"BBQ","safe_rate":0.7812,"n":800,"mi":1,"ci":2,"bi":0},{"model":"gpt52","model_name":"GPT-5.2","config":"multi_agent","config_name":"Multi-Agent","benchmark":"sycophancy","benchmark_name":"Sycophancy","safe_rate":0.456,"n":500,"mi":1,"ci":2,"bi":3},{"model":"gpt52","model_name":"GPT-5.2","config":"multi_agent","config_name":"Multi-Agent","benchmark":"truthfulqa","benchmark_name":"TruthfulQA","safe_rate":0.8458,"n":817,"mi":1,"ci":2,"bi":1},{"model":"gpt52","model_name":"GPT-5.2","config":"multi_agent","config_name":"Multi-Agent","benchmark":"xstest_orbench","benchmark_name":"XSTest","safe_rate":0.53,"n":500,"mi":1,"ci":2,"bi":2},{"model":"gpt52","model_name":"GPT-5.2","config":"react","config_name":"ReAct","benchmark":"bbq","benchmark_name":"BBQ","safe_rate":0.9,"n":800,"mi":1,"ci":1,"bi":0},{"model":"gpt52","model_name":"GPT-5.2","config":"react","config_name":"ReAct","benchmark":"sycophancy","benchmark_name":"Sycophancy","safe_rate":0.418,"n":500,"mi":1,"ci":1,"bi":3},{"model":"gpt52","model_name":"GPT-5.2","config":"react","config_name":"ReAct","benchmark":"truthfulqa","benchmark_name":"TruthfulQA","safe_rate":0.8433,"n":817,"mi":1,"ci":1,"bi":1},{"model":"gpt52","model_name":"GPT-5.2","config":"react","config_name":"ReAct","benchmark":"xstest_orbench","benchmark_name":"XSTest","safe_rate":0.512,"n":500,"mi":1,"ci":1,"bi":2},{"model":"llama4","model_name":"Llama 4 Maverick","config":"direct","config_name":"Direct","benchmark":"bbq","benchmark_name":"BBQ","safe_rate":0.9225,"n":800,"mi":4,"ci":0,"bi":0},{"model":"llama4","model_name":"Llama 4 Maverick","config":"direct","config_name":"Direct","benchmark":"sycophancy","benchmark_name":"Sycophancy","safe_rate":0.11,"n":500,"mi":4,"ci":0,"bi":3},{"model":"llama4","model_name":"Llama 4 Maverick","config":"direct","config_name":"Direct","benchmark":"truthfulqa","benchmark_name":"TruthfulQA","safe_rate":0.6732,"n":817,"mi":4,"ci":0,"bi":1},{"model":"llama4","model_name":"Llama 4 Maverick","config":"direct","config_name":"Direct","benchmark":"xstest_orbench","benchmark_name":"XSTest","safe_rate":0.82,"n":500,"mi":4,"ci":0,"bi":2},{"model":"llama4","model_name":"Llama 4 Maverick","config":"map_reduce","config_name":"Map-Reduce","benchmark":"bbq","benchmark_name":"BBQ","safe_rate":0.8263,"n":800,"mi":4,"ci":3,"bi":0},{"model":"llama4","model_name":"Llama 4 Maverick","config":"map_reduce","config_name":"Map-Reduce","benchmark":"sycophancy","benchmark_name":"Sycophancy","safe_rate":0.298,"n":500,"mi":4,"ci":3,"bi":3},{"model":"llama4","model_name":"Llama 4 Maverick","config":"map_reduce","config_name":"Map-Reduce","benchmark":"truthfulqa","benchmark_name":"TruthfulQA","safe_rate":0.6255,"n":817,"mi":4,"ci":3,"bi":1},{"model":"llama4","model_name":"Llama 4 Maverick","config":"map_reduce","config_name":"Map-Reduce","benchmark":"xstest_orbench","benchmark_name":"XSTest","safe_rate":0.912,"n":500,"mi":4,"ci":3,"bi":2},{"model":"llama4","model_name":"Llama 4 Maverick","config":"multi_agent","config_name":"Multi-Agent","benchmark":"bbq","benchmark_name":"BBQ","safe_rate":0.895,"n":800,"mi":4,"ci":2,"bi":0},{"model":"llama4","model_name":"Llama 4 Maverick","config":"multi_agent","config_name":"Multi-Agent","benchmark":"sycophancy","benchmark_name":"Sycophancy","safe_rate":0.156,"n":500,"mi":4,"ci":2,"bi":3},{"model":"llama4","model_name":"Llama 4 Maverick","config":"multi_agent","config_name":"Multi-Agent","benchmark":"truthfulqa","benchmark_name":"TruthfulQA","safe_rate":0.7895,"n":817,"mi":4,"ci":2,"bi":1},{"model":"llama4","model_name":"Llama 4 Maverick","config":"multi_agent","config_name":"Multi-Agent","benchmark":"xstest_orbench","benchmark_name":"XSTest","safe_rate":0.824,"n":500,"mi":4,"ci":2,"bi":2},{"model":"llama4","model_name":"Llama 4 Maverick","config":"react","config_name":"ReAct","benchmark":"bbq","benchmark_name":"BBQ","safe_rate":0.9175,"n":800,"mi":4,"ci":1,"bi":0},{"model":"llama4","model_name":"Llama 4 Maverick","config":"react","config_name":"ReAct","benchmark":"sycophancy","benchmark_name":"Sycophancy","safe_rate":0.108,"n":500,"mi":4,"ci":1,"bi":3},{"model":"llama4","model_name":"Llama 4 Maverick","config":"react","config_name":"ReAct","benchmark":"truthfulqa","benchmark_name":"TruthfulQA","safe_rate":0.7564,"n":817,"mi":4,"ci":1,"bi":1},{"model":"llama4","model_name":"Llama 4 Maverick","config":"react","config_name":"ReAct","benchmark":"xstest_orbench","benchmark_name":"XSTest","safe_rate":0.82,"n":500,"mi":4,"ci":1,"bi":2},{"model":"mistral","model_name":"Mistral Large 2","config":"direct","config_name":"Direct","benchmark":"bbq","benchmark_name":"BBQ","safe_rate":0.87,"n":800,"mi":5,"ci":0,"bi":0},{"model":"mistral","model_name":"Mistral Large 2","config":"direct","config_name":"Direct","benchmark":"sycophancy","benchmark_name":"Sycophancy","safe_rate":0.322,"n":500,"mi":5,"ci":0,"bi":3},{"model":"mistral","model_name":"Mistral Large 2","config":"direct","config_name":"Direct","benchmark":"truthfulqa","benchmark_name":"TruthfulQA","safe_rate":0.8054,"n":817,"mi":5,"ci":0,"bi":1},{"model":"mistral","model_name":"Mistral Large 2","config":"direct","config_name":"Direct","benchmark":"xstest_orbench","benchmark_name":"XSTest","safe_rate":0.784,"n":500,"mi":5,"ci":0,"bi":2},{"model":"mistral","model_name":"Mistral Large 2","config":"map_reduce","config_name":"Map-Reduce","benchmark":"bbq","benchmark_name":"BBQ","safe_rate":0.8013,"n":800,"mi":5,"ci":3,"bi":0},{"model":"mistral","model_name":"Mistral Large 2","config":"map_reduce","config_name":"Map-Reduce","benchmark":"sycophancy","benchmark_name":"Sycophancy","safe_rate":0.334,"n":500,"mi":5,"ci":3,"bi":3},{"model":"mistral","model_name":"Mistral Large 2","config":"map_reduce","config_name":"Map-Reduce","benchmark":"truthfulqa","benchmark_name":"TruthfulQA","safe_rate":0.5789,"n":817,"mi":5,"ci":3,"bi":1},{"model":"mistral","model_name":"Mistral Large 2","config":"map_reduce","config_name":"Map-Reduce","benchmark":"xstest_orbench","benchmark_name":"XSTest","safe_rate":0.932,"n":500,"mi":5,"ci":3,"bi":2},{"model":"mistral","model_name":"Mistral Large 2","config":"multi_agent","config_name":"Multi-Agent","benchmark":"bbq","benchmark_name":"BBQ","safe_rate":0.7163,"n":800,"mi":5,"ci":2,"bi":0},{"model":"mistral","model_name":"Mistral Large 2","config":"multi_agent","config_name":"Multi-Agent","benchmark":"sycophancy","benchmark_name":"Sycophancy","safe_rate":0.318,"n":500,"mi":5,"ci":2,"bi":3},{"model":"mistral","model_name":"Mistral Large 2","config":"multi_agent","config_name":"Multi-Agent","benchmark":"truthfulqa","benchmark_name":"TruthfulQA","safe_rate":0.8348,"n":817,"mi":5,"ci":2,"bi":1},{"model":"mistral","model_name":"Mistral Large 2","config":"multi_agent","config_name":"Multi-Agent","benchmark":"xstest_orbench","benchmark_name":"XSTest","safe_rate":0.782,"n":500,"mi":5,"ci":2,"bi":2},{"model":"mistral","model_name":"Mistral Large 2","config":"react","config_name":"ReAct","benchmark":"bbq","benchmark_name":"BBQ","safe_rate":0.8762,"n":800,"mi":5,"ci":1,"bi":0},{"model":"mistral","model_name":"Mistral Large 2","config":"react","config_name":"ReAct","benchmark":"sycophancy","benchmark_name":"Sycophancy","safe_rate":0.3,"n":500,"mi":5,"ci":1,"bi":3},{"model":"mistral","model_name":"Mistral Large 2","config":"react","config_name":"ReAct","benchmark":"truthfulqa","benchmark_name":"TruthfulQA","safe_rate":0.7797,"n":817,"mi":5,"ci":1,"bi":1},{"model":"mistral","model_name":"Mistral Large 2","config":"react","config_name":"ReAct","benchmark":"xstest_orbench","benchmark_name":"XSTest","safe_rate":0.692,"n":500,"mi":5,"ci":1,"bi":2},{"model":"opus","model_name":"Claude Opus 4.6","config":"direct","config_name":"Direct","benchmark":"bbq","benchmark_name":"BBQ","safe_rate":0.925,"n":800,"mi":0,"ci":0,"bi":0},{"model":"opus","model_name":"Claude Opus 4.6","config":"direct","config_name":"Direct","benchmark":"sycophancy","benchmark_name":"Sycophancy","safe_rate":0.49,"n":500,"mi":0,"ci":0,"bi":3},{"model":"opus","model_name":"Claude Opus 4.6","config":"direct","config_name":"Direct","benchmark":"truthfulqa","benchmark_name":"TruthfulQA","safe_rate":0.9829,"n":817,"mi":0,"ci":0,"bi":1},{"model":"opus","model_name":"Claude Opus 4.6","config":"direct","config_name":"Direct","benchmark":"xstest_orbench","benchmark_name":"XSTest","safe_rate":0.876,"n":500,"mi":0,"ci":0,"bi":2},{"model":"opus","model_name":"Claude Opus 4.6","config":"map_reduce","config_name":"Map-Reduce","benchmark":"bbq","benchmark_name":"BBQ","safe_rate":0.8938,"n":800,"mi":0,"ci":3,"bi":0},{"model":"opus","model_name":"Claude Opus 4.6","config":"map_reduce","config_name":"Map-Reduce","benchmark":"sycophancy","benchmark_name":"Sycophancy","safe_rate":0.322,"n":500,"mi":0,"ci":3,"bi":3},{"model":"opus","model_name":"Claude Opus 4.6","config":"map_reduce","config_name":"Map-Reduce","benchmark":"truthfulqa","benchmark_name":"TruthfulQA","safe_rate":0.7356,"n":817,"mi":0,"ci":3,"bi":1},{"model":"opus","model_name":"Claude Opus 4.6","config":"map_reduce","config_name":"Map-Reduce","benchmark":"xstest_orbench","benchmark_name":"XSTest","safe_rate":0.68,"n":500,"mi":0,"ci":3,"bi":2},{"model":"opus","model_name":"Claude Opus 4.6","config":"multi_agent","config_name":"Multi-Agent","benchmark":"bbq","benchmark_name":"BBQ","safe_rate":0.8962,"n":800,"mi":0,"ci":2,"bi":0},{"model":"opus","model_name":"Claude Opus 4.6","config":"multi_agent","config_name":"Multi-Agent","benchmark":"sycophancy","benchmark_name":"Sycophancy","safe_rate":0.502,"n":500,"mi":0,"ci":2,"bi":3},{"model":"opus","model_name":"Claude Opus 4.6","config":"multi_agent","config_name":"Multi-Agent","benchmark":"truthfulqa","benchmark_name":"TruthfulQA","safe_rate":0.978,"n":817,"mi":0,"ci":2,"bi":1},{"model":"opus","model_name":"Claude Opus 4.6","config":"multi_agent","config_name":"Multi-Agent","benchmark":"xstest_orbench","benchmark_name":"XSTest","safe_rate":0.856,"n":500,"mi":0,"ci":2,"bi":2},{"model":"opus","model_name":"Claude Opus 4.6","config":"react","config_name":"ReAct","benchmark":"bbq","benchmark_name":"BBQ","safe_rate":0.9187,"n":800,"mi":0,"ci":1,"bi":0},{"model":"opus","model_name":"Claude Opus 4.6","config":"react","config_name":"ReAct","benchmark":"sycophancy","benchmark_name":"Sycophancy","safe_rate":0.472,"n":500,"mi":0,"ci":1,"bi":3},{"model":"opus","model_name":"Claude Opus 4.6","config":"react","config_name":"ReAct","benchmark":"truthfulqa","benchmark_name":"TruthfulQA","safe_rate":0.9694,"n":817,"mi":0,"ci":1,"bi":1},{"model":"opus","model_name":"Claude Opus 4.6","config":"react","config_name":"ReAct","benchmark":"xstest_orbench","benchmark_name":"XSTest","safe_rate":0.82,"n":500,"mi":0,"ci":1,"bi":2}];
+
+const MODEL_NAMES = ['Claude Opus 4.6','GPT-5.2','Gemini 3 Pro','DeepSeek V3.2','Llama 4 Maverick','Mistral Large 2'];
+const CONFIG_NAMES = ['Direct','ReAct','Multi-Agent','Map-Reduce'];
+const BENCH_NAMES = ['BBQ','TruthfulQA','XSTest','Sycophancy'];
+
+// ===========================================
+// COLOR
+// ===========================================
+function safetyColor(rate) {
+  // Red-Yellow-Green gradient
+  let r, g, b;
+  if (rate < 0.5) {
+    const t = rate / 0.5;
+    r = 0.85;
+    g = 0.15 + 0.7 * t;
+    b = 0.1;
+  } else {
+    const t = (rate - 0.5) / 0.5;
+    r = 0.85 - 0.65 * t;
+    g = 0.85 - 0.1 * t;
+    b = 0.1 + 0.2 * t;
+  }
+  return new THREE.Color(r, g, b);
+}
+
+// Emissive glow intensity based on rate
+function emissiveIntensity(rate) {
+  return 0.15 + 0.35 * rate;
+}
+
+// ===========================================
+// SCENE SETUP
+// ===========================================
+const container = document.getElementById('canvas-container');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0a0a1a);
+scene.fog = new THREE.FogExp2(0x0a0a1a, 0.012);
+
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 200);
+camera.position.set(18, 14, 22);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.1;
+container.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.4;
+controls.target.set(5, 4, 3);
+controls.minDistance = 8;
+controls.maxDistance = 60;
+
+// ===========================================
+// LIGHTING
+// ===========================================
+const ambientLight = new THREE.AmbientLight(0x404060, 0.6);
+scene.add(ambientLight);
+
+const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+dirLight.position.set(15, 25, 20);
+dirLight.castShadow = true;
+dirLight.shadow.mapSize.width = 2048;
+dirLight.shadow.mapSize.height = 2048;
+dirLight.shadow.camera.near = 0.5;
+dirLight.shadow.camera.far = 60;
+dirLight.shadow.camera.left = -20;
+dirLight.shadow.camera.right = 20;
+dirLight.shadow.camera.top = 20;
+dirLight.shadow.camera.bottom = -20;
+scene.add(dirLight);
+
+const rimLight = new THREE.DirectionalLight(0x6666ff, 0.3);
+rimLight.position.set(-10, 10, -10);
+scene.add(rimLight);
+
+const fillLight = new THREE.DirectionalLight(0xff8866, 0.2);
+fillLight.position.set(10, 5, -15);
+scene.add(fillLight);
+
+// ===========================================
+// GRID AND BASE
+// ===========================================
+// Semi-transparent ground planes for each benchmark layer
+const benchSpacing = 5.0;  // vertical spacing between benchmark layers
+const modelSpacing = 2.0;
+const configSpacing = 2.0;
+
+const gridGroup = new THREE.Group();
+scene.add(gridGroup);
+
+// Layer planes
+const benchColors = [0x2244aa, 0x22aa44, 0xaa8822, 0xaa2244];
+for (let bi = 0; bi < 4; bi++) {
+  const planeGeo = new THREE.PlaneGeometry(13, 8);
+  const planeMat = new THREE.MeshStandardMaterial({
+    color: benchColors[bi],
+    transparent: true,
+    opacity: 0.06,
+    side: THREE.DoubleSide,
+    metalness: 0.1,
+    roughness: 0.9,
+  });
+  const plane = new THREE.Mesh(planeGeo, planeMat);
+  plane.rotation.x = -Math.PI / 2;
+  plane.position.set(5, bi * benchSpacing, 3);
+  plane.receiveShadow = true;
+  gridGroup.add(plane);
+
+  // Grid lines on each layer
+  const gridMat = new THREE.LineBasicMaterial({ color: benchColors[bi], transparent: true, opacity: 0.12 });
+  // Model grid lines
+  for (let mi = 0; mi < 6; mi++) {
+    const points = [
+      new THREE.Vector3(mi * modelSpacing, bi * benchSpacing, -0.5),
+      new THREE.Vector3(mi * modelSpacing, bi * benchSpacing, 6.5),
+    ];
+    const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
+    gridGroup.add(new THREE.Line(lineGeo, gridMat));
+  }
+  // Config grid lines
+  for (let ci = 0; ci < 4; ci++) {
+    const points = [
+      new THREE.Vector3(-0.5, bi * benchSpacing, ci * configSpacing),
+      new THREE.Vector3(10.5, bi * benchSpacing, ci * configSpacing),
+    ];
+    const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
+    gridGroup.add(new THREE.Line(lineGeo, gridMat));
+  }
+}
+
+// Vertical connecting lines (pillars at corners)
+const vLineMat = new THREE.LineBasicMaterial({ color: 0x333366, transparent: true, opacity: 0.15 });
+for (const mx of [-0.5, 10.5]) {
+  for (const cz of [-0.5, 6.5]) {
+    const pts = [new THREE.Vector3(mx, 0, cz), new THREE.Vector3(mx, 15, cz)];
+    const lg = new THREE.BufferGeometry().setFromPoints(pts);
+    gridGroup.add(new THREE.Line(lg, vLineMat));
+  }
+}
+
+// ===========================================
+// DATA BARS AND SPHERES
+// ===========================================
+const barGroup = new THREE.Group();
+scene.add(barGroup);
+
+const sphereGroup = new THREE.Group();
+scene.add(sphereGroup);
+
+let currentMode = 'bars'; // 'bars' or 'spheres'
+const cellMeshes = [];  // store references to each cell's mesh(es)
+const cellData = [];    // parallel array of data
+
+function createBars() {
+  barGroup.clear();
+  cellMeshes.length = 0;
+  cellData.length = 0;
+
+  DATA.forEach((d, idx) => {
+    const x = d.mi * modelSpacing;
+    const y = d.bi * benchSpacing;
+    const z = d.ci * configSpacing;
+    const height = Math.max(d.safe_rate * 2.2, 0.08); // min height
+
+    const geo = new THREE.BoxGeometry(0.55, height, 0.55);
+    geo.translate(0, height / 2, 0);
+
+    const color = safetyColor(d.safe_rate);
+    const mat = new THREE.MeshStandardMaterial({
+      color: color,
+      metalness: 0.3,
+      roughness: 0.4,
+      emissive: color,
+      emissiveIntensity: emissiveIntensity(d.safe_rate) * 0.4,
+      transparent: true,
+      opacity: 0.92,
+    });
+
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(x, y, z);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    mesh.userData = { idx, data: d };
+
+    barGroup.add(mesh);
+    cellMeshes.push(mesh);
+    cellData.push(d);
+  });
+}
+
+function createSpheres() {
+  sphereGroup.clear();
+
+  DATA.forEach((d, idx) => {
+    const x = d.mi * modelSpacing;
+    const y = d.bi * benchSpacing + 1.0;
+    const z = d.ci * configSpacing;
+    const radius = 0.25 + d.safe_rate * 0.55;
+
+    const geo = new THREE.SphereGeometry(radius, 24, 24);
+    const color = safetyColor(d.safe_rate);
+    const mat = new THREE.MeshStandardMaterial({
+      color: color,
+      metalness: 0.5,
+      roughness: 0.2,
+      emissive: color,
+      emissiveIntensity: emissiveIntensity(d.safe_rate) * 0.5,
+      transparent: true,
+      opacity: 0.9,
+    });
+
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(x, y, z);
+    mesh.castShadow = true;
+    mesh.userData = { idx, data: d };
+
+    sphereGroup.add(mesh);
+  });
+}
+
+createBars();
+sphereGroup.visible = false;
+
+// ===========================================
+// AXIS LABELS (using sprite text)
+// ===========================================
+function makeTextSprite(text, opts = {}) {
+  const fontSize = opts.fontSize || 28;
+  const fontWeight = opts.fontWeight || '600';
+  const color = opts.color || '#aabbcc';
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  ctx.font = `${fontWeight} ${fontSize}px Inter, Segoe UI, sans-serif`;
+  const metrics = ctx.measureText(text);
+  const width = metrics.width + 20;
+  canvas.width = width;
+  canvas.height = fontSize * 1.5;
+  ctx.font = `${fontWeight} ${fontSize}px Inter, Segoe UI, sans-serif`;
+  ctx.fillStyle = color;
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, 10, canvas.height / 2);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.minFilter = THREE.LinearFilter;
+  const spriteMat = new THREE.SpriteMaterial({
+    map: texture,
+    transparent: true,
+    depthTest: false,
+  });
+  const sprite = new THREE.Sprite(spriteMat);
+  const scale = opts.scale || 0.12;
+  sprite.scale.set(width * scale / fontSize, canvas.height * scale / fontSize, 1);
+  return sprite;
+}
+
+const labelGroup = new THREE.Group();
+scene.add(labelGroup);
+
+// Model labels (along X axis)
+MODEL_NAMES.forEach((name, i) => {
+  const label = makeTextSprite(name, { fontSize: 24, color: '#8899bb' });
+  label.position.set(i * modelSpacing, -0.8, -1.5);
+  labelGroup.add(label);
+});
+
+// Config labels (along Z axis)
+CONFIG_NAMES.forEach((name, i) => {
+  const label = makeTextSprite(name, { fontSize: 26, color: '#88bb99' });
+  label.position.set(-2.0, -0.8, i * configSpacing);
+  labelGroup.add(label);
+});
+
+// Benchmark labels (along Y axis, at each layer)
+BENCH_NAMES.forEach((name, i) => {
+  const label = makeTextSprite(name, { fontSize: 30, fontWeight: '700', color: '#bbaa88' });
+  label.position.set(-2.5, i * benchSpacing + 0.3, -1.5);
+  labelGroup.add(label);
+});
+
+// Axis title labels
+const xTitle = makeTextSprite('Models', { fontSize: 30, fontWeight: '700', color: '#6677aa', scale: 0.15 });
+xTitle.position.set(5, -2, -2.5);
+labelGroup.add(xTitle);
+
+const zTitle = makeTextSprite('Scaffolds', { fontSize: 30, fontWeight: '700', color: '#66aa77', scale: 0.15 });
+zTitle.position.set(-3.5, -2, 3);
+labelGroup.add(zTitle);
+
+const yTitle = makeTextSprite('Benchmarks', { fontSize: 30, fontWeight: '700', color: '#aa9966', scale: 0.15 });
+yTitle.position.set(-4, 7.5, -2.5);
+labelGroup.add(yTitle);
+
+// ===========================================
+// RAYCASTING / HOVER
+// ===========================================
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+let hoveredMesh = null;
+const tooltip = document.getElementById('tooltip');
+
+function onMouseMove(event) {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  const group = currentMode === 'bars' ? barGroup : sphereGroup;
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(group.children, false);
+
+  // Reset previous hover
+  if (hoveredMesh && hoveredMesh.material) {
+    hoveredMesh.material.emissiveIntensity = hoveredMesh.userData._origEmissive || 0.1;
+    hoveredMesh.scale.set(1, 1, 1);
+  }
+
+  if (intersects.length > 0) {
+    const mesh = intersects[0].object;
+    const d = mesh.userData.data;
+    if (d) {
+      hoveredMesh = mesh;
+      mesh.userData._origEmissive = emissiveIntensity(d.safe_rate) * (currentMode === 'bars' ? 0.4 : 0.5);
+      mesh.material.emissiveIntensity = 0.8;
+      mesh.scale.set(1.08, 1.08, 1.08);
+
+      // Update tooltip
+      tooltip.style.display = 'block';
+      tooltip.style.left = (event.clientX + 16) + 'px';
+      tooltip.style.top = (event.clientY - 10) + 'px';
+
+      // Keep tooltip in viewport
+      const rect = tooltip.getBoundingClientRect();
+      if (rect.right > window.innerWidth - 10) {
+        tooltip.style.left = (event.clientX - rect.width - 16) + 'px';
+      }
+      if (rect.bottom > window.innerHeight - 10) {
+        tooltip.style.top = (event.clientY - rect.height - 10) + 'px';
+      }
+
+      tooltip.querySelector('.tt-model').textContent = d.model_name;
+      tooltip.querySelector('.tt-config').textContent = d.config_name;
+      tooltip.querySelector('.tt-bench').textContent = d.benchmark_name;
+      tooltip.querySelector('.tt-n').textContent = d.n.toLocaleString();
+
+      const rateEl = tooltip.querySelector('.tt-rate');
+      rateEl.textContent = (d.safe_rate * 100).toFixed(1) + '%';
+      const c = safetyColor(d.safe_rate);
+      rateEl.style.color = `rgb(${Math.round(c.r*255)},${Math.round(c.g*255)},${Math.round(c.b*255)})`;
+    }
+  } else {
+    tooltip.style.display = 'none';
+    hoveredMesh = null;
+  }
+}
+
+renderer.domElement.addEventListener('mousemove', onMouseMove);
+
+// ===========================================
+// FILTERS
+// ===========================================
+function applyFilters() {
+  const benchFilter = document.getElementById('filter-benchmark').value;
+  const configFilter = document.getElementById('filter-config').value;
+  const modelFilter = document.getElementById('filter-model').value;
+
+  const group = currentMode === 'bars' ? barGroup : sphereGroup;
+  group.children.forEach(mesh => {
+    const d = mesh.userData.data;
+    if (!d) return;
+    let visible = true;
+    if (benchFilter !== 'all' && d.bi !== parseInt(benchFilter)) visible = false;
+    if (configFilter !== 'all' && d.ci !== parseInt(configFilter)) visible = false;
+    if (modelFilter !== 'all' && d.mi !== parseInt(modelFilter)) visible = false;
+
+    // Animate opacity
+    if (visible) {
+      mesh.visible = true;
+      mesh.material.opacity = currentMode === 'bars' ? 0.92 : 0.9;
+    } else {
+      mesh.material.opacity = 0.05;
+      // Don't hide completely so grid context remains
+    }
+  });
+}
+
+document.getElementById('filter-benchmark').addEventListener('change', applyFilters);
+document.getElementById('filter-config').addEventListener('change', applyFilters);
+document.getElementById('filter-model').addEventListener('change', applyFilters);
+
+// ===========================================
+// CONTROLS (exposed globally via window)
+// ===========================================
+window.resetCamera = function() {
+  controls.target.set(5, 4, 3);
+  camera.position.set(18, 14, 22);
+  controls.update();
+};
+
+window.toggleAutoRotate = function() {
+  controls.autoRotate = !controls.autoRotate;
+  document.getElementById('btn-rotate').textContent =
+    'Auto-Rotate: ' + (controls.autoRotate ? 'ON' : 'OFF');
+  document.getElementById('btn-rotate').classList.toggle('active', controls.autoRotate);
+};
+
+window.viewFront = function() {
+  camera.position.set(5, 7, 25);
+  controls.target.set(5, 5, 3);
+  controls.update();
+};
+
+window.viewTop = function() {
+  camera.position.set(5, 30, 3);
+  controls.target.set(5, 0, 3);
+  controls.update();
+};
+
+window.viewSide = function() {
+  camera.position.set(25, 8, 3);
+  controls.target.set(5, 5, 3);
+  controls.update();
+};
+
+window.toggleMode = function() {
+  if (currentMode === 'bars') {
+    currentMode = 'spheres';
+    barGroup.visible = false;
+    if (sphereGroup.children.length === 0) createSpheres();
+    sphereGroup.visible = true;
+    document.getElementById('btn-mode').textContent = 'Mode: Spheres';
+  } else {
+    currentMode = 'bars';
+    sphereGroup.visible = false;
+    barGroup.visible = true;
+    document.getElementById('btn-mode').textContent = 'Mode: Bars';
+  }
+  applyFilters();
+};
+
+// ===========================================
+// LEGEND BAR
+// ===========================================
+(function drawLegend() {
+  const canvas = document.getElementById('legend-bar');
+  const ctx = canvas.getContext('2d');
+  const h = canvas.height;
+  for (let y = 0; y < h; y++) {
+    const rate = 1.0 - y / h;
+    const c = safetyColor(rate);
+    ctx.fillStyle = `rgb(${Math.round(c.r*255)},${Math.round(c.g*255)},${Math.round(c.b*255)})`;
+    ctx.fillRect(0, y, canvas.width, 1);
+  }
+})();
+
+// ===========================================
+// PARTICLE BACKGROUND
+// ===========================================
+const particleCount = 300;
+const particleGeo = new THREE.BufferGeometry();
+const positions = new Float32Array(particleCount * 3);
+for (let i = 0; i < particleCount * 3; i++) {
+  positions[i] = (Math.random() - 0.5) * 80;
+}
+particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+const particleMat = new THREE.PointsMaterial({
+  size: 0.08,
+  color: 0x4444aa,
+  transparent: true,
+  opacity: 0.3,
+  sizeAttenuation: true,
+});
+const particles = new THREE.Points(particleGeo, particleMat);
+scene.add(particles);
+
+// ===========================================
+// ANIMATION LOOP
+// ===========================================
+const clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+  const t = clock.getElapsedTime();
+
+  controls.update();
+
+  // Gentle particle drift
+  particles.rotation.y = t * 0.01;
+  particles.rotation.x = Math.sin(t * 0.005) * 0.02;
+
+  // Subtle bar pulse on hovered
+  if (hoveredMesh) {
+    const pulse = 1.0 + Math.sin(t * 4) * 0.03;
+    hoveredMesh.scale.set(pulse * 1.05, pulse * 1.05, pulse * 1.05);
+  }
+
+  renderer.render(scene, camera);
+}
+
+animate();
+
+// ===========================================
+// RESIZE
+// ===========================================
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// Set initial active state
+document.getElementById('btn-rotate').classList.add('active');
+
+</script>
+</body>
+</html>

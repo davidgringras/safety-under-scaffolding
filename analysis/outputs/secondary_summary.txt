@@ -1,0 +1,377 @@
+================================================================================
+SECONDARY ANALYSIS SUMMARY
+Safety Under Scaffolding — NeurIPS D&B Submission
+Generated: 2026-02-13 21:34:01 UTC
+Models: opus, gpt52, deepseek, llama4, gemini3pro, mistral (all complete)
+Context condition: short | Status filter: success
+================================================================================
+
+------------------------------------------------------------
+1. SAFETY RATES PER MODEL x CONFIG x BENCHMARK
+------------------------------------------------------------
+
+  Model: deepseek
+    direct        : truthfulqa=75.5%, bbq=89.8%, sycophancy=59.5%, xstest_orbench=77.1%
+    react         : truthfulqa=77.6%, bbq=91.9%, sycophancy=57.8%, xstest_orbench=71.7%
+    map_reduce    : truthfulqa=38.3%, bbq=69.6%, sycophancy=53.5%, xstest_orbench=84.2%
+    multi_agent   : truthfulqa=85.4%, bbq=80.1%, sycophancy=57.5%, xstest_orbench=77.9%
+
+  Model: gemini3pro
+    direct        : truthfulqa=92.9%, bbq=94.2%, sycophancy=54.6%, xstest_orbench=75.7%
+    react         : truthfulqa=90.3%, bbq=93.5%, sycophancy=49.5%, xstest_orbench=75.7%
+    map_reduce    : truthfulqa=92.0%, bbq=92.5%, sycophancy=56.9%, xstest_orbench=84.7%
+    multi_agent   : truthfulqa=94.7%, bbq=92.8%, sycophancy=59.0%, xstest_orbench=77.9%
+
+  Model: gpt52
+    direct        : truthfulqa=86.1%, bbq=90.1%, sycophancy=58.5%, xstest_orbench=53.0%
+    react         : truthfulqa=83.9%, bbq=90.0%, sycophancy=60.0%, xstest_orbench=53.8%
+    map_reduce    : truthfulqa=62.1%, bbq=82.1%, sycophancy=53.3%, xstest_orbench=74.8%
+    multi_agent   : truthfulqa=84.5%, bbq=78.2%, sycophancy=58.9%, xstest_orbench=51.7%
+
+  Model: llama4
+    direct        : truthfulqa=66.9%, bbq=92.2%, sycophancy=75.5%, xstest_orbench=82.9%
+    react         : truthfulqa=75.4%, bbq=91.5%, sycophancy=72.6%, xstest_orbench=84.3%
+    map_reduce    : truthfulqa=62.6%, bbq=82.3%, sycophancy=71.7%, xstest_orbench=87.6%
+    multi_agent   : truthfulqa=78.9%, bbq=89.2%, sycophancy=77.7%, xstest_orbench=82.8%
+
+  Model: mistral
+    direct        : truthfulqa=80.5%, bbq=87.0%, sycophancy=46.8%, xstest_orbench=73.6%
+    react         : truthfulqa=78.0%, bbq=87.6%, sycophancy=51.8%, xstest_orbench=67.8%
+    map_reduce    : truthfulqa=57.9%, bbq=80.1%, sycophancy=64.4%, xstest_orbench=79.2%
+    multi_agent   : truthfulqa=83.5%, bbq=71.6%, sycophancy=47.2%, xstest_orbench=74.8%
+
+  Model: opus
+    direct        : truthfulqa=98.3%, bbq=92.5%, sycophancy=49.2%, xstest_orbench=77.0%
+    react         : truthfulqa=96.8%, bbq=91.9%, sycophancy=49.4%, xstest_orbench=79.6%
+    map_reduce    : truthfulqa=73.6%, bbq=89.5%, sycophancy=60.0%, xstest_orbench=77.8%
+    multi_agent   : truthfulqa=97.7%, bbq=89.6%, sycophancy=48.8%, xstest_orbench=78.6%
+
+  Significant pairwise comparisons (BH-FDR q<0.05): 18 / 72
+    deepseek|truthfulqa|map_reduce_vs_direct: diff=-0.3716 (HARM), p_bh=0.000000
+    deepseek|truthfulqa|multi_agent_vs_direct: diff=+0.0997 (BENEFIT), p_bh=0.000001
+    deepseek|bbq|map_reduce_vs_direct: diff=-0.2017 (HARM), p_bh=0.000000
+    deepseek|bbq|multi_agent_vs_direct: diff=-0.0965 (HARM), p_bh=0.000000
+    deepseek|xstest_orbench|map_reduce_vs_direct: diff=+0.0705 (BENEFIT), p_bh=0.015342
+    gpt52|truthfulqa|map_reduce_vs_direct: diff=-0.2396 (HARM), p_bh=0.000000
+    gpt52|bbq|map_reduce_vs_direct: diff=-0.0796 (HARM), p_bh=0.000017
+    gpt52|bbq|multi_agent_vs_direct: diff=-0.1187 (HARM), p_bh=0.000000
+    gpt52|xstest_orbench|map_reduce_vs_direct: diff=+0.2185 (BENEFIT), p_bh=0.000000
+    llama4|truthfulqa|react_vs_direct: diff=+0.0844 (BENEFIT), p_bh=0.000618
+    llama4|truthfulqa|multi_agent_vs_direct: diff=+0.1197 (BENEFIT), p_bh=0.000000
+    llama4|bbq|map_reduce_vs_direct: diff=-0.0987 (HARM), p_bh=0.000000
+    mistral|truthfulqa|map_reduce_vs_direct: diff=-0.2264 (HARM), p_bh=0.000000
+    mistral|bbq|map_reduce_vs_direct: diff=-0.0687 (HARM), p_bh=0.000933
+    mistral|bbq|multi_agent_vs_direct: diff=-0.1537 (HARM), p_bh=0.000000
+    mistral|sycophancy|map_reduce_vs_direct: diff=+0.1760 (BENEFIT), p_bh=0.000000
+    opus|truthfulqa|map_reduce_vs_direct: diff=-0.2472 (HARM), p_bh=0.000000
+    opus|sycophancy|map_reduce_vs_direct: diff=+0.1080 (BENEFIT), p_bh=0.002558
+
+------------------------------------------------------------
+2. ERROR DIRECTION ANALYSIS
+------------------------------------------------------------
+
+  Overall error category distribution:
+    factual_error            : 1783
+    under_cautious           : 1164
+    factual_correction       : 1008
+    anti_sycophantic         : 974
+    sycophantic              : 840
+    format_noncompliance     : 505
+    other                    : 494
+    over_cautious            : 445
+
+------------------------------------------------------------
+3. NUMBER NEEDED TO HARM (NNH)
+------------------------------------------------------------
+
+  Config: react vs direct
+    deepseek  : NNH=1940.35 (harm), RD=-0.0005 [-0.0229, +0.0219]
+    gemini3pro: NNH=36.6 (harm), RD=-0.0273 [-0.0560, +0.0013]
+    gpt52     : NNH=352.8 (harm), RD=-0.0028 [-0.0257, +0.0200]
+    llama4    : NNH=45.63 (benefit), RD=+0.0219 [+0.0006, +0.0432]
+    mistral   : NNH=130.85 (harm), RD=-0.0076 [-0.0313, +0.0160]
+    opus      : NNH=872.33 (harm), RD=-0.0011 [-0.0215, +0.0192]
+
+  Config: map_reduce vs direct
+    deepseek  : NNH=5.7 (harm), RD=-0.1753 [-0.1997, -0.1509]
+    gemini3pro: NNH=113.23 (benefit), RD=+0.0088 [-0.0193, +0.0369]
+    gpt52     : NNH=14.82 (harm), RD=-0.0675 [-0.0912, -0.0438]
+    llama4    : NNH=24.19 (harm), RD=-0.0413 [-0.0638, -0.0189]
+    mistral   : NNH=21.16 (harm), RD=-0.0473 [-0.0715, -0.0231]
+    opus      : NNH=15.58 (harm), RD=-0.0642 [-0.0859, -0.0425]
+
+  Config: multi_agent vs direct
+    deepseek  : NNH=3604.43 (benefit), RD=+0.0003 [-0.0221, +0.0227]
+    gemini3pro: NNH=79.82 (benefit), RD=+0.0125 [-0.0150, +0.0400]
+    gpt52     : NNH=23.14 (harm), RD=-0.0432 [-0.0666, -0.0198]
+    llama4    : NNH=30.25 (benefit), RD=+0.0331 [+0.0120, +0.0541]
+    mistral   : NNH=28.76 (harm), RD=-0.0348 [-0.0588, -0.0107]
+    opus      : NNH=118.95 (harm), RD=-0.0084 [-0.0289, +0.0121]
+
+------------------------------------------------------------
+4. BBQ DEEP DIVE
+------------------------------------------------------------
+
+  Accuracy by ambiguity condition:
+
+    deepseek:
+      direct        : ambig=97.3% | disambig=82.2%
+      react         : ambig=98.0% | disambig=85.7%
+      map_reduce    : ambig=70.5% | disambig=68.6%
+      multi_agent   : ambig=98.8% | disambig=61.8%
+
+    gemini3pro:
+      direct        : ambig=99.1% | disambig=89.4%
+      react         : ambig=96.3% | disambig=90.9%
+      map_reduce    : ambig=98.1% | disambig=86.5%
+      multi_agent   : ambig=99.5% | disambig=86.4%
+
+    gpt52:
+      direct        : ambig=97.8% | disambig=82.4%
+      react         : ambig=98.0% | disambig=81.9%
+      map_reduce    : ambig=98.5% | disambig=65.8%
+      multi_agent   : ambig=99.8% | disambig=56.7%
+
+    llama4:
+      direct        : ambig=93.3% | disambig=91.1%
+      react         : ambig=90.9% | disambig=92.1%
+      map_reduce    : ambig=87.2% | disambig=77.5%
+      multi_agent   : ambig=95.8% | disambig=82.7%
+
+    mistral:
+      direct        : ambig=96.0% | disambig=77.9%
+      react         : ambig=97.5% | disambig=77.7%
+      map_reduce    : ambig=96.8% | disambig=63.4%
+      multi_agent   : ambig=99.2% | disambig=44.4%
+
+    opus:
+      direct        : ambig=97.5% | disambig=87.5%
+      react         : ambig=98.2% | disambig=85.5%
+      map_reduce    : ambig=98.0% | disambig=81.0%
+      multi_agent   : ambig=99.8% | disambig=79.5%
+
+  Unknown response rates (ambiguous items):
+    deepseek   direct        : 79.0%
+    deepseek   react         : 78.8%
+    deepseek   map_reduce    : 55.5%
+    deepseek   multi_agent   : 79.8%
+    gemini3pro direct        : 79.3%
+    gemini3pro react         : 77.1%
+    gemini3pro map_reduce    : 81.3%
+    gemini3pro multi_agent   : 81.9%
+    gpt52      direct        : 78.4%
+    gpt52      react         : 78.7%
+    gpt52      map_reduce    : 79.2%
+    gpt52      multi_agent   : 80.4%
+    llama4     direct        : 76.8%
+    llama4     react         : 74.8%
+    llama4     map_reduce    : 73.2%
+    llama4     multi_agent   : 77.5%
+    mistral    direct        : 79.3%
+    mistral    react         : 79.5%
+    mistral    map_reduce    : 78.8%
+    mistral    multi_agent   : 79.8%
+    opus       direct        : 79.3%
+    opus       react         : 79.5%
+    opus       map_reduce    : 79.3%
+    opus       multi_agent   : 80.5%
+
+  Biased pick rates (ambiguous items):
+    deepseek   direct        : 2.5%
+    deepseek   react         : 2.0%
+    deepseek   map_reduce    : 29.5%
+    deepseek   multi_agent   : 1.2%
+    gemini3pro direct        : 0.4%
+    gemini3pro react         : 3.7%
+    gemini3pro map_reduce    : 1.4%
+    gemini3pro multi_agent   : 0.0%
+    gpt52      direct        : 2.2%
+    gpt52      react         : 2.0%
+    gpt52      map_reduce    : 1.5%
+    gpt52      multi_agent   : 0.2%
+    llama4     direct        : 6.2%
+    llama4     react         : 8.4%
+    llama4     map_reduce    : 11.1%
+    llama4     multi_agent   : 4.0%
+    mistral    direct        : 3.2%
+    mistral    react         : 2.0%
+    mistral    map_reduce    : 3.2%
+    mistral    multi_agent   : 0.8%
+    opus       direct        : 2.0%
+    opus       react         : 1.5%
+    opus       map_reduce    : 1.8%
+    opus       multi_agent   : 0.2%
+
+------------------------------------------------------------
+5. XSTEST/OR-BENCH REFUSAL ANALYSIS
+------------------------------------------------------------
+
+  Safe prompt refusal rates (over-refusal):
+    deepseek   direct        : 25.9% (103/398)
+    deepseek   react         : 33.9% (133/392)
+    deepseek   map_reduce    : 12.0% (47/393)
+    deepseek   multi_agent   : 25.1% (98/391)
+    gemini3pro direct        : 28.0% (56/200)
+    gemini3pro react         : 28.9% (58/201)
+    gemini3pro map_reduce    : 9.6% (16/167)
+    gemini3pro multi_agent   : 24.1% (47/195)
+    gpt52      direct        : 57.2% (226/395)
+    gpt52      react         : 57.0% (225/395)
+    gpt52      map_reduce    : 26.6% (106/399)
+    gpt52      multi_agent   : 60.1% (238/396)
+    llama4     direct        : 18.8% (72/383)
+    llama4     react         : 14.7% (56/382)
+    llama4     map_reduce    : 3.9% (15/385)
+    llama4     multi_agent   : 19.0% (73/385)
+    mistral    direct        : 22.4% (84/375)
+    mistral    react         : 36.8% (138/375)
+    mistral    map_reduce    : 3.5% (13/376)
+    mistral    multi_agent   : 21.6% (81/375)
+    opus       direct        : 3.2% (12/375)
+    opus       react         : 5.9% (22/375)
+    opus       map_reduce    : 1.9% (7/375)
+    opus       multi_agent   : 3.5% (13/375)
+
+  Unsafe prompt refusal rates (should refuse):
+    deepseek   direct        : 86.6% (110/127)
+    deepseek   react         : 88.5% (116/131)
+    deepseek   map_reduce    : 72.7% (96/132)
+    deepseek   multi_agent   : 86.5% (115/133)
+    gemini3pro direct        : 87.3% (55/63)
+    gemini3pro react         : 89.4% (59/66)
+    gemini3pro map_reduce    : 68.8% (42/61)
+    gemini3pro multi_agent   : 84.1% (53/63)
+    gpt52      direct        : 84.4% (108/128)
+    gpt52      react         : 86.3% (113/131)
+    gpt52      map_reduce    : 79.0% (105/133)
+    gpt52      multi_agent   : 86.6% (116/134)
+    llama4     direct        : 88.1% (111/126)
+    llama4     react         : 81.4% (105/129)
+    llama4     map_reduce    : 62.3% (81/130)
+    llama4     multi_agent   : 88.3% (113/128)
+    mistral    direct        : 61.6% (77/125)
+    mistral    react         : 81.6% (102/125)
+    mistral    map_reduce    : 27.2% (34/125)
+    mistral    multi_agent   : 64.0% (80/125)
+    opus       direct        : 17.6% (22/125)
+    opus       react         : 36.0% (45/125)
+    opus       map_reduce    : 16.8% (21/125)
+    opus       multi_agent   : 24.8% (31/125)
+
+  Discrimination index (unsafe_refusal - safe_refusal):
+    deepseek   direct        : 0.6073
+    deepseek   react         : 0.5462
+    deepseek   map_reduce    : 0.6077
+    deepseek   multi_agent   : 0.6141
+    gemini3pro direct        : 0.5930
+    gemini3pro react         : 0.6053
+    gemini3pro map_reduce    : 0.5927
+    gemini3pro multi_agent   : 0.6003
+    gpt52      direct        : 0.2716
+    gpt52      react         : 0.2930
+    gpt52      map_reduce    : 0.5238
+    gpt52      multi_agent   : 0.2647
+    llama4     direct        : 0.6930
+    llama4     react         : 0.6674
+    llama4     map_reduce    : 0.5841
+    llama4     multi_agent   : 0.6932
+    mistral    direct        : 0.3920
+    mistral    react         : 0.4480
+    mistral    map_reduce    : 0.2374
+    mistral    multi_agent   : 0.4240
+    opus       direct        : 0.1440
+    opus       react         : 0.3013
+    opus       map_reduce    : 0.1493
+    opus       multi_agent   : 0.2133
+
+------------------------------------------------------------
+6. PARSE FAILURE ANALYSIS
+------------------------------------------------------------
+
+  Parse failure rates by model x config x benchmark:
+
+    deepseek:
+      direct        : truthfulqa=3.6%(32), bbq=1.7%(14), sycophancy=5.6%(29), xstest_orbench=2.8%(15)
+      react         : truthfulqa=4.6%(41), bbq=1.7%(14), sycophancy=5.1%(26), xstest_orbench=1.9%(10)
+      map_reduce    : truthfulqa=2.3%(20), bbq=2.1%(17), sycophancy=2.3%(12), xstest_orbench=1.5%(8)
+      multi_agent   : truthfulqa=4.3%(38), bbq=2.3%(19), sycophancy=6.4%(33), xstest_orbench=2.2%(12)
+
+    gemini3pro:
+      direct        : truthfulqa=90.3%(4025), bbq=90.4%(4347), sycophancy=90.8%(2524), xstest_orbench=90.4%(2469)
+      react         : truthfulqa=91.3%(4171), bbq=91.3%(4502), sycophancy=90.9%(2516), xstest_orbench=90.2%(2461)
+      map_reduce    : truthfulqa=91.7%(4266), bbq=92.0%(4609), sycophancy=91.6%(2586), xstest_orbench=92.1%(2674)
+      multi_agent   : truthfulqa=91.1%(4194), bbq=91.2%(4458), sycophancy=91.6%(2616), xstest_orbench=90.8%(2547)
+
+    gpt52:
+      direct        : truthfulqa=19.1%(203), bbq=0.0%(0), sycophancy=32.5%(248), xstest_orbench=21.2%(141)
+      react         : truthfulqa=20.2%(217), bbq=0.0%(0), sycophancy=32.7%(247), xstest_orbench=20.7%(137)
+      map_reduce    : truthfulqa=22.9%(250), bbq=0.1%(1), sycophancy=34.4%(269), xstest_orbench=20.6%(138)
+      multi_agent   : truthfulqa=21.1%(228), bbq=0.0%(0), sycophancy=34.7%(268), xstest_orbench=18.2%(118)
+
+    llama4:
+      direct        : truthfulqa=13.3%(127), bbq=0.4%(3), sycophancy=2.0%(10), xstest_orbench=13.6%(80)
+      react         : truthfulqa=12.8%(123), bbq=0.6%(5), sycophancy=2.4%(12), xstest_orbench=11.1%(64)
+      map_reduce    : truthfulqa=13.5%(130), bbq=0.7%(6), sycophancy=5.0%(26), xstest_orbench=12.9%(76)
+      multi_agent   : truthfulqa=13.8%(133), bbq=0.6%(5), sycophancy=1.4%(7), xstest_orbench=13.1%(77)
+
+    mistral:
+      direct        : truthfulqa=1.4%(11), bbq=0.0%(0), sycophancy=1.4%(7), xstest_orbench=0.0%(0)
+      react         : truthfulqa=1.7%(14), bbq=0.0%(0), sycophancy=5.2%(26), xstest_orbench=0.0%(0)
+      map_reduce    : truthfulqa=6.2%(51), bbq=0.0%(0), sycophancy=0.2%(1), xstest_orbench=0.0%(0)
+      multi_agent   : truthfulqa=3.1%(25), bbq=1.1%(9), sycophancy=1.2%(6), xstest_orbench=0.0%(0)
+
+    opus:
+      direct        : truthfulqa=0.0%(0), bbq=0.0%(0), sycophancy=3.8%(19), xstest_orbench=0.0%(0)
+      react         : truthfulqa=0.2%(2), bbq=0.1%(1), sycophancy=4.0%(20), xstest_orbench=0.0%(0)
+      map_reduce    : truthfulqa=14.3%(117), bbq=0.0%(0), sycophancy=1.0%(5), xstest_orbench=0.0%(0)
+      multi_agent   : truthfulqa=0.1%(1), bbq=0.0%(0), sycophancy=4.0%(20), xstest_orbench=0.0%(0)
+
+  Aggregate parse failure rates by config:
+    direct        : 49.42% (14304/28943)
+    react         : 50.11% (14609/29156)
+    map_reduce    : 51.54% (15262/29612)
+    multi_agent   : 50.47% (14814/29351)
+
+------------------------------------------------------------
+7. COST-EFFECTIVENESS ANALYSIS
+------------------------------------------------------------
+
+    deepseek:
+      direct        : avg_cost=$0.000037, avg_calls=1.0, multiplier=1.0x, total=$0.10
+      react         : avg_cost=$0.000187, avg_calls=2.1, multiplier=5.05x, total=$0.51
+      map_reduce    : avg_cost=$0.000220, avg_calls=4.8, multiplier=5.95x, total=$0.60
+      multi_agent   : avg_cost=$0.000158, avg_calls=2.2, multiplier=4.27x, total=$0.44
+
+    gemini3pro:
+      direct        : avg_cost=$0.000325, avg_calls=0.1, multiplier=1.0x, total=$4.80
+      react         : avg_cost=$0.000602, avg_calls=0.1, multiplier=1.85x, total=$9.03
+      map_reduce    : avg_cost=$0.001418, avg_calls=0.4, multiplier=4.36x, total=$21.82
+      multi_agent   : avg_cost=$0.000710, avg_calls=0.2, multiplier=2.18x, total=$10.75
+
+    gpt52:
+      direct        : avg_cost=$0.001108, avg_calls=0.8, multiplier=1.0x, total=$3.67
+      react         : avg_cost=$0.001351, avg_calls=0.8, multiplier=1.22x, total=$4.47
+      map_reduce    : avg_cost=$0.008214, avg_calls=3.9, multiplier=7.41x, total=$27.59
+      multi_agent   : avg_cost=$0.004817, avg_calls=2.2, multiplier=4.35x, total=$15.98
+
+    llama4:
+      direct        : avg_cost=$0.000065, avg_calls=0.9, multiplier=1.0x, total=$0.19
+      react         : avg_cost=$0.000140, avg_calls=1.1, multiplier=2.15x, total=$0.40
+      map_reduce    : avg_cost=$0.000272, avg_calls=4.6, multiplier=4.18x, total=$0.79
+      multi_agent   : avg_cost=$0.000228, avg_calls=2.0, multiplier=3.51x, total=$0.66
+
+    mistral:
+      direct        : avg_cost=$0.001191, avg_calls=1.0, multiplier=1.0x, total=$3.12
+      react         : avg_cost=$0.001385, avg_calls=1.0, multiplier=1.16x, total=$3.63
+      map_reduce    : avg_cost=$0.007106, avg_calls=5.0, multiplier=5.97x, total=$18.60
+      multi_agent   : avg_cost=$0.005279, avg_calls=2.7, multiplier=4.43x, total=$13.82
+
+    opus:
+      direct        : avg_cost=$0.004891, avg_calls=1.0, multiplier=1.0x, total=$12.80
+      react         : avg_cost=$0.009723, avg_calls=1.1, multiplier=1.99x, total=$25.45
+      map_reduce    : avg_cost=$0.030800, avg_calls=4.3, multiplier=6.3x, total=$80.60
+      multi_agent   : avg_cost=$0.020744, avg_calls=2.2, multiplier=4.24x, total=$54.29
+
+================================================================================
+END OF SECONDARY ANALYSIS SUMMARY
+================================================================================

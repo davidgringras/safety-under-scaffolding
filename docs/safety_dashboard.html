@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safety Under Scaffolding — Interactive Dashboard</title>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root {
+    --bg-page: #fafaf8;
+    --bg-card: #ffffff;
+    --bg-inset: #f5f4f1;
+    --border: #e2e0da;
+    --border-hover: #ccc9c2;
+    --text-primary: #1a1a2e;
+    --text-secondary: #52526a;
+    --text-muted: #8e8ea0;
+    --accent: #4338ca;
+    --accent-light: #eef2ff;
+    --accent-green: #059669;
+    --accent-red: #dc2626;
+    --accent-amber: #d97706;
+    --accent-purple: #7c3aed;
+    --accent-teal: #0d9488;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    background: var(--bg-page);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 40px 40px;
+  }
+
+  /* ====== HEADER ====== */
+  .header {
+    text-align: center;
+    margin-bottom: 36px;
+    padding: 28px 0 24px;
+  }
+
+  .header-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .header h1 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: clamp(26px, 3.5vw, 38px);
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+
+  .header .subtitle {
+    font-size: 15px;
+    color: var(--text-secondary);
+    font-weight: 400;
+    max-width: 640px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .header .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .stat-item { text-align: center; }
+
+  .stat-item .stat-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .stat-item .stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-top: 3px;
+  }
+
+  /* ====== TAB NAV ====== */
+  .tab-nav {
+    display: flex;
+    gap: 6px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 5px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-sm);
+    overflow-x: auto;
+  }
+
+  .tab-btn {
+    flex: 1;
+    min-width: 140px;
+    padding: 11px 18px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .tab-btn:hover {
+    color: var(--text-primary);
+    background: var(--bg-inset);
+  }
+
+  .tab-btn.active {
+    color: #fff;
+    background: var(--accent);
+    box-shadow: 0 2px 8px rgba(67, 56, 202, 0.3);
+  }
+
+  .tab-btn .tab-icon {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 3px;
+    line-height: 1;
+  }
+
+  /* ====== PANELS ====== */
+  .panel {
+    display: none;
+    animation: panelIn 0.35s ease;
+  }
+  .panel.active { display: block; }
+
+  @keyframes panelIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .panel-header { margin-bottom: 20px; }
+
+  .panel-header h2 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+
+  .panel-header p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 780px;
+  }
+
+  /* ====== CARD ====== */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+
+  .card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--border-hover);
+  }
+
+  .card-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+
+  /* ====== HEATMAP DETAIL ====== */
+  .heatmap-detail {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+  }
+
+  .detail-card {
+    background: var(--bg-inset);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+  }
+
+  .detail-card h4 {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+
+  .benchmark-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 10px;
+  }
+
+  .benchmark-bar .bm-label {
+    width: 100px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-align: right;
+    flex-shrink: 0;
+    font-weight: 500;
+  }
+
+  .benchmark-bar .bm-track {
+    flex: 1;
+    height: 26px;
+    background: rgba(0,0,0,0.04);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .benchmark-bar .bm-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.5s ease;
+  }
+
+  .benchmark-bar .bm-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-primary);
+    width: 50px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* ====== NNH PANEL ====== */
+  .nnh-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 16px;
+  }
+
+  .nnh-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    text-align: center;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .nnh-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+
+  .nnh-card.safe::before { background: var(--accent-green); }
+  .nnh-card.caution::before { background: var(--accent-amber); }
+  .nnh-card.danger::before { background: var(--accent-red); }
+
+  .nnh-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  .nnh-scaffold-name {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 16px;
+  }
+
+  .nnh-card.safe .nnh-scaffold-name { color: var(--accent-green); }
+  .nnh-card.caution .nnh-scaffold-name { color: var(--accent-amber); }
+  .nnh-card.danger .nnh-scaffold-name { color: var(--accent-red); }
+
+  .nnh-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .nnh-card.safe .nnh-number { color: var(--accent-green); }
+  .nnh-card.caution .nnh-number { color: var(--accent-amber); }
+  .nnh-card.danger .nnh-number { color: var(--accent-red); }
+
+  .nnh-unit {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 18px;
+  }
+
+  .nnh-interpretation {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    margin-bottom: 18px;
+    min-height: 60px;
+  }
+
+  .nnh-scale-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+
+  /* Person grid */
+  .person-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px;
+    margin: 12px auto;
+    max-width: 260px;
+  }
+
+  .person-icon {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    background: #e8e6e1;
+    transition: all 0.3s;
+  }
+
+  .person-icon.harmed {
+    background: var(--accent-red);
+    box-shadow: 0 0 4px rgba(220, 38, 38, 0.35);
+  }
+
+  .person-icon.safe-person {
+    background: #d1ede0;
+  }
+
+  /* OR badges */
+  .or-badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 6px;
+    margin-top: 12px;
+  }
+
+  .nnh-card.safe .or-badge { background: #ecfdf5; color: var(--accent-green); }
+  .nnh-card.caution .or-badge { background: #fffbeb; color: var(--accent-amber); }
+  .nnh-card.danger .or-badge { background: #fef2f2; color: var(--accent-red); }
+
+  /* ====== VARIANCE ====== */
+  .variance-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 16px;
+    justify-content: center;
+  }
+
+  .variance-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .variance-legend-item .swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+  }
+
+  /* Key insight callout */
+  .key-insight {
+    margin-top: 20px;
+    padding: 16px 20px;
+    background: var(--accent-light);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .key-insight strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* Selection info */
+  .selection-info {
+    font-size: 13px;
+    color: var(--accent);
+    margin-bottom: 12px;
+    min-height: 20px;
+    font-weight: 500;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 28px 0;
+    color: var(--text-muted);
+    font-size: 12px;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+
+  .footer a { color: var(--accent); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+
+  /* ====== RESPONSIVE ====== */
+  @media (max-width: 900px) {
+    .dashboard-container { padding: 16px; }
+    .nnh-grid { grid-template-columns: 1fr; }
+    .heatmap-detail { grid-template-columns: 1fr; }
+    .header .stats-bar { gap: 20px; }
+    .nnh-number { font-size: 40px; }
+  }
+
+  @media (max-width: 600px) {
+    .tab-btn { min-width: 80px; padding: 10px 12px; font-size: 11px; }
+    .tab-btn .tab-icon { font-size: 14px; }
+  }
+
+  /* Plotly overrides */
+  .js-plotly-plot .plotly .modebar { top: 4px !important; right: 4px !important; }
+  .js-plotly-plot .plotly .modebar-btn { color: var(--text-muted) !important; }
+  .js-plotly-plot .plotly .modebar-btn:hover { color: var(--accent) !important; }
+</style>
+</head>
+<body>
+<nav style="padding:10px 24px;font-family:Inter,-apple-system,sans-serif;font-size:13px;border-bottom:1px solid var(--border);background:var(--bg-card)">
+  <a href="index.html" style="color:var(--text-muted);text-decoration:none;font-weight:500" onmouseover="this.style.color='var(--text-primary)'" onmouseout="this.style.color='var(--text-muted)'">&larr; Back to overview</a>
+</nav>
+
+<div class="dashboard-container">
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-tag">Preprint 2026</div>
+    <h1>Safety Under Scaffolding</h1>
+    <p class="subtitle">How Evaluation Conditions Shape Measured Safety<br>
+    6 models, 4 configurations, 4 benchmarks, 62,808 observations</p>
+    <div class="stats-bar">
+      <div class="stat-item"><div class="stat-value">62,808</div><div class="stat-label">Observations</div></div>
+      <div class="stat-item"><div class="stat-value">6</div><div class="stat-label">Models</div></div>
+      <div class="stat-item"><div class="stat-value">4</div><div class="stat-label">Scaffolds</div></div>
+      <div class="stat-item"><div class="stat-value">70.7%</div><div class="stat-label">Overall Safe Rate</div></div>
+    </div>
+  </header>
+
+  <!-- TAB NAV -->
+  <nav class="tab-nav" role="tablist">
+    <button class="tab-btn active" onclick="switchTab('heatmap', this)" role="tab" data-tab="heatmap">
+      <span class="tab-icon">&#9638;</span>Safety Heatmap
+    </button>
+    <button class="tab-btn" onclick="switchTab('bump', this)" role="tab" data-tab="bump">
+      <span class="tab-icon">&#8693;</span>Rank Reversals
+    </button>
+    <button class="tab-btn" onclick="switchTab('variance', this)" role="tab" data-tab="variance">
+      <span class="tab-icon">&#9673;</span>Variance Decomposition
+    </button>
+    <button class="tab-btn" onclick="switchTab('nnh', this)" role="tab" data-tab="nnh">
+      <span class="tab-icon">&#9879;</span>NNH Infographic
+    </button>
+  </nav>
+
+  <!-- PANEL 1: HEATMAP -->
+  <div class="panel active" id="panel-heatmap">
+    <div class="panel-header">
+      <h2>Safety Rate Heatmap</h2>
+      <p>Each cell shows the safety rate for a model-scaffold combination, averaged across benchmarks. Click any cell to see the benchmark-level breakdown below.</p>
+    </div>
+    <div class="card">
+      <div id="heatmap-plot" style="width:100%;height:420px;"></div>
+    </div>
+    <div class="selection-info" id="heatmap-selection">Click any cell above to see benchmark-level detail</div>
+    <div class="heatmap-detail" id="heatmap-detail" style="display:none;">
+      <div class="detail-card" id="detail-left">
+        <h4 id="detail-left-title">Benchmark Breakdown</h4>
+        <div id="detail-bars"></div>
+      </div>
+      <div class="detail-card" id="detail-right">
+        <h4>Model Comparison (selected config)</h4>
+        <div id="detail-comparison-plot" style="width:100%;height:280px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL 2: BUMP CHART -->
+  <div class="panel" id="panel-bump">
+    <div class="panel-header">
+      <h2>Rank Reversals Across Benchmarks</h2>
+      <p>Model safety rankings change dramatically across benchmarks. This is the core Generalizability Theory finding: no single model is universally safest. The lines show how each model's rank shifts from one benchmark to another.</p>
+    </div>
+    <div class="card">
+      <div id="bump-plot" style="width:100%;height:520px;"></div>
+    </div>
+    <div class="key-insight">
+      <strong>Key finding:</strong> Rankings reverse completely across benchmarks. The "safest" model on one benchmark can be the least safe on another. Benchmark accounts for 19.3% of variance in safety scores versus just 8.1% for model identity. Safety is not a stable, unitary property.
+    </div>
+  </div>
+
+  <!-- PANEL 3: VARIANCE DECOMPOSITION -->
+  <div class="panel" id="panel-variance">
+    <div class="panel-header">
+      <h2>Variance Decomposition</h2>
+      <p>Where does variation in safety scores actually come from? The answer is surprising: scaffolding architecture accounts for only 0.4% of total variance, while the choice of benchmark dominates at 19.3%.</p>
+    </div>
+    <div class="card">
+      <div id="variance-plot" style="width:100%;height:500px;"></div>
+      <div class="variance-legend" id="variance-legend"></div>
+    </div>
+    <div class="key-insight">
+      <strong>The scaffold paradox:</strong> Despite map-reduce causing large safety degradation (NNH=13.7), scaffold architecture explains only 0.4% of total variance. The interaction effects (Model x Config: 1.2%, Config x Benchmark: 1.2%) together exceed the main scaffold effect, meaning the <em>type</em> of scaffold matters less than <em>which model</em> uses it and <em>what is being measured</em>.
+    </div>
+  </div>
+
+  <!-- PANEL 4: NNH -->
+  <div class="panel" id="panel-nnh">
+    <div class="panel-header">
+      <h2>Number Needed to Harm</h2>
+      <p>How many queries must pass through a scaffold before one additional unsafe response is generated (compared to direct prompting)? Lower NNH means more frequent harm. Each dot below represents one query at 10,000 queries/day scale.</p>
+    </div>
+    <div class="nnh-grid">
+      <div class="nnh-card safe">
+        <div class="nnh-scaffold-name">ReAct</div>
+        <div class="nnh-number">135</div>
+        <div class="nnh-unit">queries per additional unsafe response</div>
+        <div class="nnh-interpretation">At 10,000 queries/day, scaffolding causes ~74 extra unsafe responses per day. Statistically significant but practically negligible.</div>
+        <div class="nnh-scale-label">10,000 queries visualized</div>
+        <div class="person-grid" id="nnhgrid-react"></div>
+        <div class="or-badge">OR = 0.95 &middot; p = 0.012</div>
+      </div>
+      <div class="nnh-card safe">
+        <div class="nnh-scaffold-name">Multi-Agent</div>
+        <div class="nnh-number">165</div>
+        <div class="nnh-unit">queries per additional unsafe response</div>
+        <div class="nnh-interpretation">At 10,000 queries/day, ~61 extra unsafe responses. Non-significant and TOST-equivalent within &plusmn;2pp. Genuinely preserves safety.</div>
+        <div class="nnh-scale-label">10,000 queries visualized</div>
+        <div class="person-grid" id="nnhgrid-multi"></div>
+        <div class="or-badge">OR = 0.96 &middot; p = 0.066 (NS)</div>
+      </div>
+      <div class="nnh-card danger">
+        <div class="nnh-scaffold-name">Map-Reduce</div>
+        <div class="nnh-number">13.7</div>
+        <div class="nnh-unit">queries per additional unsafe response</div>
+        <div class="nnh-interpretation">At 10,000 queries/day, ~730 extra unsafe responses. Roughly 1 in every 14 queries produces additional harm. Requires mitigation.</div>
+        <div class="nnh-scale-label">10,000 queries visualized</div>
+        <div class="person-grid" id="nnhgrid-map"></div>
+        <div class="or-badge">OR = 0.65 &middot; p &lt; 10<sup>-59</sup></div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    Safety Under Scaffolding &middot; David Gringras &middot; 2026 &middot;
+    <a href="https://github.com/davidgringras/safety-under-scaffolding" target="_blank">GitHub</a>
+  </footer>
+</div>
+
+<script>
+// =====================================================================
+// DATA
+// =====================================================================
+const RAW = [
+  {m:"deepseek",c:"direct",b:"bbq",r:0.8975,n:800},{m:"deepseek",c:"direct",b:"sycophancy",r:0.346,n:500},{m:"deepseek",c:"direct",b:"truthfulqa",r:0.7564,n:817},{m:"deepseek",c:"direct",b:"xstest",r:0.656,n:500},
+  {m:"deepseek",c:"map_reduce",b:"bbq",r:0.6975,n:800},{m:"deepseek",c:"map_reduce",b:"sycophancy",r:0.304,n:500},{m:"deepseek",c:"map_reduce",b:"truthfulqa",r:0.3782,n:817},{m:"deepseek",c:"map_reduce",b:"xstest",r:0.846,n:500},
+  {m:"deepseek",c:"multi_agent",b:"bbq",r:0.8013,n:800},{m:"deepseek",c:"multi_agent",b:"sycophancy",r:0.37,n:500},{m:"deepseek",c:"multi_agent",b:"truthfulqa",r:0.8531,n:817},{m:"deepseek",c:"multi_agent",b:"xstest",r:0.658,n:500},
+  {m:"deepseek",c:"react",b:"bbq",r:0.92,n:800},{m:"deepseek",c:"react",b:"sycophancy",r:0.414,n:500},{m:"deepseek",c:"react",b:"truthfulqa",r:0.7674,n:817},{m:"deepseek",c:"react",b:"xstest",r:0.548,n:500},
+  {m:"gemini3pro",c:"direct",b:"bbq",r:0.9263,n:800},{m:"gemini3pro",c:"direct",b:"sycophancy",r:0.06,n:500},{m:"gemini3pro",c:"direct",b:"truthfulqa",r:0.9119,n:817},{m:"gemini3pro",c:"direct",b:"xstest",r:0.606,n:500},
+  {m:"gemini3pro",c:"map_reduce",b:"bbq",r:0.8938,n:800},{m:"gemini3pro",c:"map_reduce",b:"sycophancy",r:0.19,n:500},{m:"gemini3pro",c:"map_reduce",b:"truthfulqa",r:0.8776,n:817},{m:"gemini3pro",c:"map_reduce",b:"xstest",r:0.62,n:500},
+  {m:"gemini3pro",c:"multi_agent",b:"bbq",r:0.8875,n:800},{m:"gemini3pro",c:"multi_agent",b:"sycophancy",r:0.076,n:500},{m:"gemini3pro",c:"multi_agent",b:"truthfulqa",r:0.94,n:817},{m:"gemini3pro",c:"multi_agent",b:"xstest",r:0.622,n:500},
+  {m:"gemini3pro",c:"react",b:"bbq",r:0.8713,n:800},{m:"gemini3pro",c:"react",b:"sycophancy",r:0.18,n:500},{m:"gemini3pro",c:"react",b:"truthfulqa",r:0.8494,n:817},{m:"gemini3pro",c:"react",b:"xstest",r:0.592,n:500},
+  {m:"gpt52",c:"direct",b:"bbq",r:0.90,n:800},{m:"gpt52",c:"direct",b:"sycophancy",r:0.426,n:500},{m:"gpt52",c:"direct",b:"truthfulqa",r:0.8592,n:817},{m:"gpt52",c:"direct",b:"xstest",r:0.514,n:500},
+  {m:"gpt52",c:"map_reduce",b:"bbq",r:0.8213,n:800},{m:"gpt52",c:"map_reduce",b:"sycophancy",r:0.458,n:500},{m:"gpt52",c:"map_reduce",b:"truthfulqa",r:0.6206,n:817},{m:"gpt52",c:"map_reduce",b:"xstest",r:0.548,n:500},
+  {m:"gpt52",c:"multi_agent",b:"bbq",r:0.7813,n:800},{m:"gpt52",c:"multi_agent",b:"sycophancy",r:0.456,n:500},{m:"gpt52",c:"multi_agent",b:"truthfulqa",r:0.8458,n:817},{m:"gpt52",c:"multi_agent",b:"xstest",r:0.53,n:500},
+  {m:"gpt52",c:"react",b:"bbq",r:0.90,n:800},{m:"gpt52",c:"react",b:"sycophancy",r:0.418,n:500},{m:"gpt52",c:"react",b:"truthfulqa",r:0.8433,n:817},{m:"gpt52",c:"react",b:"xstest",r:0.512,n:500},
+  {m:"llama4",c:"direct",b:"bbq",r:0.9225,n:800},{m:"llama4",c:"direct",b:"sycophancy",r:0.11,n:500},{m:"llama4",c:"direct",b:"truthfulqa",r:0.6732,n:817},{m:"llama4",c:"direct",b:"xstest",r:0.82,n:500},
+  {m:"llama4",c:"map_reduce",b:"bbq",r:0.8263,n:800},{m:"llama4",c:"map_reduce",b:"sycophancy",r:0.298,n:500},{m:"llama4",c:"map_reduce",b:"truthfulqa",r:0.6255,n:817},{m:"llama4",c:"map_reduce",b:"xstest",r:0.912,n:500},
+  {m:"llama4",c:"multi_agent",b:"bbq",r:0.895,n:800},{m:"llama4",c:"multi_agent",b:"sycophancy",r:0.156,n:500},{m:"llama4",c:"multi_agent",b:"truthfulqa",r:0.7895,n:817},{m:"llama4",c:"multi_agent",b:"xstest",r:0.824,n:500},
+  {m:"llama4",c:"react",b:"bbq",r:0.9175,n:800},{m:"llama4",c:"react",b:"sycophancy",r:0.108,n:500},{m:"llama4",c:"react",b:"truthfulqa",r:0.7564,n:817},{m:"llama4",c:"react",b:"xstest",r:0.82,n:500},
+  {m:"mistral",c:"direct",b:"bbq",r:0.87,n:800},{m:"mistral",c:"direct",b:"sycophancy",r:0.322,n:500},{m:"mistral",c:"direct",b:"truthfulqa",r:0.8054,n:817},{m:"mistral",c:"direct",b:"xstest",r:0.784,n:500},
+  {m:"mistral",c:"map_reduce",b:"bbq",r:0.8013,n:800},{m:"mistral",c:"map_reduce",b:"sycophancy",r:0.334,n:500},{m:"mistral",c:"map_reduce",b:"truthfulqa",r:0.5789,n:817},{m:"mistral",c:"map_reduce",b:"xstest",r:0.932,n:500},
+  {m:"mistral",c:"multi_agent",b:"bbq",r:0.7163,n:800},{m:"mistral",c:"multi_agent",b:"sycophancy",r:0.318,n:500},{m:"mistral",c:"multi_agent",b:"truthfulqa",r:0.8348,n:817},{m:"mistral",c:"multi_agent",b:"xstest",r:0.782,n:500},
+  {m:"mistral",c:"react",b:"bbq",r:0.8763,n:800},{m:"mistral",c:"react",b:"sycophancy",r:0.30,n:500},{m:"mistral",c:"react",b:"truthfulqa",r:0.7797,n:817},{m:"mistral",c:"react",b:"xstest",r:0.692,n:500},
+  {m:"opus",c:"direct",b:"bbq",r:0.925,n:800},{m:"opus",c:"direct",b:"sycophancy",r:0.49,n:500},{m:"opus",c:"direct",b:"truthfulqa",r:0.9829,n:817},{m:"opus",c:"direct",b:"xstest",r:0.876,n:500},
+  {m:"opus",c:"map_reduce",b:"bbq",r:0.8938,n:800},{m:"opus",c:"map_reduce",b:"sycophancy",r:0.322,n:500},{m:"opus",c:"map_reduce",b:"truthfulqa",r:0.7356,n:817},{m:"opus",c:"map_reduce",b:"xstest",r:0.68,n:500},
+  {m:"opus",c:"multi_agent",b:"bbq",r:0.8963,n:800},{m:"opus",c:"multi_agent",b:"sycophancy",r:0.502,n:500},{m:"opus",c:"multi_agent",b:"truthfulqa",r:0.978,n:817},{m:"opus",c:"multi_agent",b:"xstest",r:0.856,n:500},
+  {m:"opus",c:"react",b:"bbq",r:0.9188,n:800},{m:"opus",c:"react",b:"sycophancy",r:0.472,n:500},{m:"opus",c:"react",b:"truthfulqa",r:0.9694,n:817},{m:"opus",c:"react",b:"xstest",r:0.82,n:500}
+];
+
+const MODEL_LABELS = {
+  deepseek: "DeepSeek-R1", gemini3pro: "Gemini 3 Pro", gpt52: "GPT-5.2",
+  llama4: "Llama 4 Maverick", mistral: "Mistral Large", opus: "Claude Opus 4"
+};
+const CONFIG_LABELS = { direct: "Direct", react: "ReAct", multi_agent: "Multi-Agent", map_reduce: "Map-Reduce" };
+const BENCH_LABELS = { bbq: "BBQ", sycophancy: "Sycophancy", truthfulqa: "TruthfulQA", xstest: "XSTest" };
+const MODEL_IDS = ["opus","gemini3pro","gpt52","llama4","mistral","deepseek"];
+const CONFIG_IDS = ["direct","react","multi_agent","map_reduce"];
+const BENCH_IDS = ["bbq","truthfulqa","xstest","sycophancy"];
+const MODEL_COLORS = {
+  opus: "#7c3aed", gemini3pro: "#2563eb", gpt52: "#059669",
+  llama4: "#d97706", mistral: "#dc2626", deepseek: "#0d9488"
+};
+
+function getCell(m, c, b) {
+  return RAW.find(d => d.m === m && d.c === c && d.b === b);
+}
+
+// =====================================================================
+// TAB SWITCHING
+// =====================================================================
+function switchTab(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  if (btn) {
+    btn.classList.add('active');
+  } else {
+    const tabBtn = document.querySelector('[data-tab="' + id + '"]');
+    if (tabBtn) tabBtn.classList.add('active');
+  }
+  requestAnimationFrame(() => {
+    const panel = document.getElementById('panel-' + id);
+    panel.querySelectorAll('.js-plotly-plot').forEach(plot => {
+      Plotly.Plots.resize(plot);
+    });
+    if (id === 'variance' && !window._varianceRendered) {
+      buildVariance();
+      window._varianceRendered = true;
+    }
+  });
+}
+
+// =====================================================================
+// PLOTLY DEFAULTS (LIGHT THEME)
+// =====================================================================
+const LAYOUT_BASE = {
+  paper_bgcolor: 'rgba(0,0,0,0)',
+  plot_bgcolor: 'rgba(0,0,0,0)',
+  font: { family: 'Inter, system-ui, sans-serif', color: '#1a1a2e', size: 12 },
+  margin: { l: 120, r: 30, t: 40, b: 60 },
+  xaxis: { gridcolor: 'rgba(0,0,0,0.06)', zerolinecolor: 'rgba(0,0,0,0.1)' },
+  yaxis: { gridcolor: 'rgba(0,0,0,0.06)', zerolinecolor: 'rgba(0,0,0,0.1)' },
+};
+const PLOTLY_CONFIG = { displayModeBar: true, modeBarButtonsToRemove: ['lasso2d','select2d'], displaylogo: false, responsive: true };
+
+// =====================================================================
+// 1. HEATMAP
+// =====================================================================
+function buildHeatmap() {
+  const z = [], text = [];
+  MODEL_IDS.forEach(m => {
+    const row = [], trow = [];
+    CONFIG_IDS.forEach(c => {
+      const vals = BENCH_IDS.map(b => getCell(m, c, b).r);
+      const avg = vals.reduce((a, v) => a + v, 0) / vals.length;
+      row.push(avg);
+      trow.push(
+        `<b>${MODEL_LABELS[m]}</b> + ${CONFIG_LABELS[c]}<br>` +
+        `Safety Rate: <b>${(avg * 100).toFixed(1)}%</b><br><br>` +
+        BENCH_IDS.map(b => `${BENCH_LABELS[b]}: ${(getCell(m,c,b).r * 100).toFixed(1)}%`).join('<br>')
+      );
+    });
+    z.push(row);
+    text.push(trow);
+  });
+
+  const annotations = [];
+  z.forEach((row, i) => {
+    row.forEach((val, j) => {
+      const norm = (val - 0.3) / (0.85 - 0.3);
+      const textColor = (norm > 0.32 && norm < 0.58) ? '#1a1a2e' : '#ffffff';
+      annotations.push({
+        x: CONFIG_IDS[j],
+        y: MODEL_IDS[i],
+        text: (val * 100).toFixed(1) + '%',
+        font: { color: textColor, size: 14, family: 'JetBrains Mono, monospace', weight: 600 },
+        showarrow: false,
+        xref: 'x', yref: 'y'
+      });
+    });
+  });
+
+  const trace = {
+    z: z,
+    x: CONFIG_IDS.map(c => CONFIG_LABELS[c]),
+    y: MODEL_IDS.map(m => MODEL_LABELS[m]),
+    type: 'heatmap',
+    colorscale: [
+      [0, '#991b1b'], [0.2, '#dc2626'], [0.35, '#ea580c'],
+      [0.5, '#eab308'], [0.65, '#65a30d'], [0.8, '#16a34a'],
+      [0.9, '#059669'], [1.0, '#047857']
+    ],
+    zmin: 0.3, zmax: 0.85,
+    hovertext: text,
+    hoverinfo: 'text',
+    showscale: true,
+    colorbar: {
+      title: { text: 'Safety Rate', font: { size: 12, color: '#52526a' } },
+      tickformat: '.0%',
+      tickfont: { size: 11, color: '#52526a', family: 'JetBrains Mono' },
+      len: 0.9, thickness: 14, outlinewidth: 0,
+      bgcolor: 'rgba(0,0,0,0)'
+    },
+    xgap: 4, ygap: 4
+  };
+
+  annotations.forEach(a => {
+    a.x = CONFIG_LABELS[a.x] || a.x;
+    a.y = MODEL_LABELS[a.y] || a.y;
+  });
+
+  const layout = {
+    ...LAYOUT_BASE,
+    annotations: annotations,
+    xaxis: { ...LAYOUT_BASE.xaxis, side: 'top', tickfont: { size: 13, color: '#52526a' } },
+    yaxis: { ...LAYOUT_BASE.yaxis, autorange: 'reversed', tickfont: { size: 13, color: '#52526a' } },
+    margin: { l: 150, r: 80, t: 50, b: 20 },
+  };
+
+  Plotly.newPlot('heatmap-plot', [trace], layout, PLOTLY_CONFIG);
+
+  document.getElementById('heatmap-plot').on('plotly_click', function(data) {
+    if (!data.points.length) return;
+    const pt = data.points[0];
+    const modelIdx = pt.pointIndex[0];
+    const configIdx = pt.pointIndex[1];
+    showHeatmapDetail(MODEL_IDS[modelIdx], CONFIG_IDS[configIdx]);
+  });
+}
+
+function showHeatmapDetail(modelId, configId) {
+  document.getElementById('heatmap-detail').style.display = 'grid';
+  document.getElementById('heatmap-selection').textContent =
+    `Selected: ${MODEL_LABELS[modelId]} + ${CONFIG_LABELS[configId]}`;
+  document.getElementById('detail-left-title').textContent =
+    `${MODEL_LABELS[modelId]} + ${CONFIG_LABELS[configId]} — Benchmark Breakdown`;
+
+  const barsDiv = document.getElementById('detail-bars');
+  barsDiv.innerHTML = '';
+  const benchColors = { bbq: '#2563eb', truthfulqa: '#059669', xstest: '#d97706', sycophancy: '#7c3aed' };
+  BENCH_IDS.forEach(b => {
+    const cell = getCell(modelId, configId, b);
+    const pct = (cell.r * 100).toFixed(1);
+    const bar = document.createElement('div');
+    bar.className = 'benchmark-bar';
+    bar.innerHTML = `
+      <span class="bm-label">${BENCH_LABELS[b]}</span>
+      <div class="bm-track">
+        <div class="bm-fill" style="width:${cell.r * 100}%;background:${benchColors[b]};opacity:0.85;"></div>
+      </div>
+      <span class="bm-value">${pct}%</span>
+    `;
+    barsDiv.appendChild(bar);
+  });
+
+  const traces = MODEL_IDS.map(m => {
+    const vals = BENCH_IDS.map(b => getCell(m, configId, b).r * 100);
+    return {
+      y: BENCH_IDS.map(b => BENCH_LABELS[b]),
+      x: vals,
+      type: 'bar',
+      orientation: 'h',
+      name: MODEL_LABELS[m],
+      marker: { color: MODEL_COLORS[m], opacity: m === modelId ? 1 : 0.25 },
+      hovertemplate: '%{x:.1f}%<extra>' + MODEL_LABELS[m] + '</extra>',
+    };
+  });
+
+  const compLayout = {
+    ...LAYOUT_BASE,
+    barmode: 'group',
+    showlegend: false,
+    margin: { l: 90, r: 20, t: 10, b: 30 },
+    xaxis: { ...LAYOUT_BASE.xaxis, ticksuffix: '%', range: [0, 100] },
+    yaxis: { ...LAYOUT_BASE.yaxis, autorange: 'reversed' },
+  };
+  Plotly.newPlot('detail-comparison-plot', traces, compLayout, PLOTLY_CONFIG);
+}
+
+// =====================================================================
+// 2. BUMP CHART
+// =====================================================================
+function buildBumpChart() {
+  const mbAvg = {};
+  MODEL_IDS.forEach(m => {
+    BENCH_IDS.forEach(b => {
+      const vals = CONFIG_IDS.map(c => getCell(m, c, b).r);
+      mbAvg[m + '|' + b] = vals.reduce((a, v) => a + v, 0) / vals.length;
+    });
+  });
+
+  const ranks = {};
+  BENCH_IDS.forEach(b => {
+    const scores = MODEL_IDS.map(m => ({ m, s: mbAvg[m + '|' + b] }));
+    scores.sort((a, b) => b.s - a.s);
+    scores.forEach((item, idx) => { ranks[item.m + '|' + b] = idx + 1; });
+  });
+
+  const traces = MODEL_IDS.map(m => {
+    const y = BENCH_IDS.map(b => ranks[m + '|' + b]);
+    const rates = BENCH_IDS.map(b => mbAvg[m + '|' + b]);
+    return {
+      x: BENCH_IDS.map(b => BENCH_LABELS[b]),
+      y: y,
+      mode: 'lines+markers+text',
+      name: MODEL_LABELS[m],
+      line: { color: MODEL_COLORS[m], width: 3, shape: 'spline' },
+      marker: { size: 14, color: MODEL_COLORS[m], line: { width: 2, color: '#ffffff' } },
+      text: y.map(r => `#${r}`),
+      textposition: 'middle right',
+      textfont: { size: 11, color: MODEL_COLORS[m], family: 'JetBrains Mono' },
+      hovertemplate: BENCH_IDS.map((b, i) =>
+        `<b>${MODEL_LABELS[m]}</b><br>${BENCH_LABELS[b]}<br>Rank: #${y[i]}<br>Safety: ${(rates[i]*100).toFixed(1)}%<extra></extra>`
+      ),
+    };
+  });
+
+  const layout = {
+    ...LAYOUT_BASE,
+    yaxis: {
+      ...LAYOUT_BASE.yaxis,
+      autorange: 'reversed',
+      range: [0.5, 6.5],
+      dtick: 1,
+      title: { text: 'Safety Rank (1 = safest)', font: { size: 13, color: '#52526a' } },
+      tickfont: { size: 12, color: '#52526a', family: 'JetBrains Mono' },
+      gridcolor: 'rgba(0,0,0,0.05)',
+    },
+    xaxis: {
+      ...LAYOUT_BASE.xaxis,
+      tickfont: { size: 14, color: '#1a1a2e' },
+      gridcolor: 'rgba(0,0,0,0.05)',
+    },
+    legend: {
+      font: { size: 12, color: '#52526a' },
+      bgcolor: 'rgba(255,255,255,0.95)',
+      bordercolor: 'rgba(0,0,0,0.08)',
+      borderwidth: 1,
+      x: 1.02, y: 1, xanchor: 'left',
+    },
+    margin: { l: 70, r: 180, t: 30, b: 60 },
+    hovermode: 'closest',
+  };
+
+  Plotly.newPlot('bump-plot', traces, layout, PLOTLY_CONFIG);
+}
+
+// =====================================================================
+// 3. VARIANCE DECOMPOSITION
+// =====================================================================
+function buildVariance() {
+  const components = [
+    { label: 'Residual', pct: 69.8, color: '#d1d5db' },
+    { label: 'Benchmark', pct: 19.3, color: '#2563eb' },
+    { label: 'Model', pct: 8.1, color: '#7c3aed' },
+    { label: 'Config x Benchmark', pct: 1.2, color: '#d97706' },
+    { label: 'Model x Config', pct: 1.2, color: '#dc2626' },
+    { label: 'Scaffold (Config)', pct: 0.4, color: '#059669' },
+  ];
+
+  const sunburst = {
+    type: 'sunburst',
+    labels: components.map(c => c.label),
+    parents: components.map(() => ''),
+    values: components.map(c => c.pct),
+    branchvalues: 'total',
+    marker: {
+      colors: components.map(c => c.color),
+      line: { width: 2, color: '#ffffff' },
+    },
+    textinfo: 'label+percent entry',
+    insidetextorientation: 'radial',
+    textfont: { size: 13, color: '#ffffff', family: 'Inter' },
+    hovertemplate: '<b>%{label}</b><br>%{value:.1f}% of total variance<extra></extra>',
+    sort: false,
+    domain: { x: [0, 0.48], y: [0, 1] },
+  };
+
+  const smallComponents = components.filter(c => c.pct <= 19.3).reverse();
+  const barTrace = {
+    type: 'bar',
+    y: smallComponents.map(c => c.label),
+    x: smallComponents.map(c => c.pct),
+    orientation: 'h',
+    marker: {
+      color: smallComponents.map(c => c.color),
+      line: { width: 1, color: 'rgba(0,0,0,0.08)' },
+    },
+    text: smallComponents.map(c => c.pct + '%'),
+    textposition: 'outside',
+    textfont: { size: 13, color: '#1a1a2e', family: 'JetBrains Mono' },
+    hovertemplate: '<b>%{y}</b>: %{x:.1f}%<extra></extra>',
+  };
+
+  const layout = {
+    ...LAYOUT_BASE,
+    grid: { rows: 1, columns: 2, pattern: 'independent' },
+    margin: { l: 10, r: 30, t: 30, b: 10 },
+    xaxis: {
+      ...LAYOUT_BASE.xaxis,
+      domain: [0.55, 1],
+      title: { text: '% of Total Variance', font: { size: 12, color: '#52526a' } },
+      ticksuffix: '%',
+      tickfont: { size: 11, color: '#52526a', family: 'JetBrains Mono' },
+      gridcolor: 'rgba(0,0,0,0.06)',
+      range: [0, 22],
+    },
+    yaxis: {
+      ...LAYOUT_BASE.yaxis,
+      domain: [0.05, 0.95],
+      tickfont: { size: 12, color: '#1a1a2e' },
+      gridcolor: 'rgba(0,0,0,0.03)',
+    },
+    annotations: [{
+      text: '<b>Full Decomposition</b>',
+      x: 0.22, y: 1.05, xref: 'paper', yref: 'paper',
+      showarrow: false,
+      font: { size: 13, color: '#52526a' },
+    }, {
+      text: '<b>Zoomed: All Sources</b>',
+      x: 0.77, y: 1.05, xref: 'paper', yref: 'paper',
+      showarrow: false,
+      font: { size: 13, color: '#52526a' },
+    }, {
+      text: 'Scaffold explains<br>only <b style="color:#059669">0.4%</b>',
+      x: 0.22, y: 0.5, xref: 'paper', yref: 'paper',
+      showarrow: false,
+      font: { size: 15, color: '#52526a' },
+    }],
+    showlegend: false,
+  };
+
+  Plotly.newPlot('variance-plot', [sunburst, barTrace], layout, PLOTLY_CONFIG);
+
+  const legendDiv = document.getElementById('variance-legend');
+  legendDiv.innerHTML = '';
+  components.forEach(c => {
+    const item = document.createElement('div');
+    item.className = 'variance-legend-item';
+    item.innerHTML = `<span class="swatch" style="background:${c.color}"></span>${c.label}: <strong style="color:${c.color}">${c.pct}%</strong>`;
+    legendDiv.appendChild(item);
+  });
+}
+
+// =====================================================================
+// 4. NNH PERSON GRIDS
+// =====================================================================
+function buildNNHGrids() {
+  const configs = [
+    { id: 'nnhgrid-react', nnh: 135, total: 200 },
+    { id: 'nnhgrid-multi', nnh: 165, total: 200 },
+    { id: 'nnhgrid-map', nnh: 13.7, total: 200 },
+  ];
+
+  configs.forEach(cfg => {
+    const container = document.getElementById(cfg.id);
+    container.innerHTML = '';
+    const harmedCount = Math.round(cfg.total / (cfg.nnh / 50));
+    const totalIcons = cfg.total;
+
+    const harmedPositions = new Set();
+    if (harmedCount > 0 && harmedCount < totalIcons) {
+      const step = totalIcons / harmedCount;
+      for (let i = 0; i < harmedCount; i++) {
+        harmedPositions.add(Math.floor(i * step));
+      }
+    } else if (harmedCount >= totalIcons) {
+      for (let i = 0; i < totalIcons; i++) harmedPositions.add(i);
+    }
+
+    for (let i = 0; i < totalIcons; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'person-icon' + (harmedPositions.has(i) ? ' harmed' : ' safe-person');
+      container.appendChild(dot);
+    }
+  });
+}
+
+// =====================================================================
+// INIT
+// =====================================================================
+document.addEventListener('DOMContentLoaded', () => {
+  buildHeatmap();
+  buildBumpChart();
+  window._varianceRendered = false;
+  buildNNHGrids();
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('.nnh-number').forEach(el => {
+          const target = parseFloat(el.textContent);
+          animateNumber(el, target);
+        });
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  const nnhPanel = document.getElementById('panel-nnh');
+  if (nnhPanel) observer.observe(nnhPanel);
+});
+
+function animateNumber(el, target) {
+  const duration = 1200;
+  const start = performance.now();
+  const isFloat = target % 1 !== 0;
+
+  function tick(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = eased * target;
+    el.textContent = isFloat ? current.toFixed(1) : Math.round(current);
+    if (progress < 1) requestAnimationFrame(tick);
+    else el.textContent = isFloat ? target.toFixed(1) : target;
+  }
+  requestAnimationFrame(tick);
+}
+</script>
+</body>
+</html>

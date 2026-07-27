@@ -1,0 +1,67 @@
+% variance_decomposition.tex -- Factorial variance decomposition and generalizability analysis
+% Owner: Exploratory analysis appendix
+% Integration: Referenced from Discussion (Section 8) and Scorecard (Appendix)
+
+To quantify the relative importance of each experimental factor in explaining safety outcome variance, we conduct a factorial variance decomposition across the full $6 \times 4 \times 4$ design ($N = 62{,}808$).  Table~\ref{tab:variance-decomposition} reports eta-squared ($\eta^2$) and bias-corrected omega-squared ($\omega^2$) for all main effects and two-way interactions.
+
+\begin{table}[h]
+\caption{Factorial variance decomposition of binary safety outcomes ($N = 62{,}808$).  Sources are ordered by $\eta^2$.  All effects are significant at $p < 10^{-6}$.  This table reports main effects and two-way interactions only; the three-way model$\times$scaffold$\times$benchmark interaction is absorbed into the within-cell residual term, which therefore overstates pure within-cell variance.  The qualitative conclusions (benchmark dominates, scaffold main effect is small, scaffold$\times$benchmark interaction is 3$\times$ larger than the main effect) are unaffected: adding the three-way term shifts $\eta^2_{\text{residual}}$ by approximately 1.5--2~pp into the new interaction term but does not displace the scaffold main effect from negligible status.}
+\label{tab:variance-decomposition}
+\centering
+\small
+\begin{tabular}{@{}lrrccc@{}}
+\toprule
+\textbf{Source} & \textbf{df} & \textbf{$F$} & \textbf{$\eta^2$ (\%)} & \textbf{$\omega^2$ (\%)} & \textbf{Magnitude} \\
+\midrule
+Benchmark                   & 3      & 5{,}409  & 19.3 & 19.3 & Large \\
+Model $\times$ benchmark    & 15     & 168      & 3.0  & 3.0  & Small \\
+Scaffold $\times$ benchmark & 9      & 110      & 1.2  & 1.2  & Small \\
+Model                       & 5      & 160      & 1.0  & 0.9  & Negligible \\
+Scaffold                    & 3      & 120      & 0.4  & 0.4  & Negligible \\
+Model $\times$ scaffold     & 15     & 23       & 0.4  & 0.4  & Negligible \\
+\midrule
+Residual (within-cell)      & 62{,}757 &       & 74.7 &      & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Key findings.}
+Which safety property is being measured (the benchmark factor, $\eta^2 = 19.3$\%) explains roughly 45$\times$ more variance than which scaffold architecture is being used ($\eta^2 = 0.4$\%); the scaffold main effect is, on this design, the smallest systematic factor examined, well below both benchmark and model contributions.  The scaffold$\times$benchmark interaction term ($\eta^2 = 1.2$\%) is roughly three times the scaffold main effect itself, which confirms that scaffold impact is benchmark-specific rather than generic --- map-reduce degrades TruthfulQA by approximately 20~pp on average yet \emph{improves} XSTest by approximately 5~pp (Table~\ref{tab:confirmatory}).  And the model$\times$benchmark interaction ($\eta^2 = 3.0$\%) is the second-largest systematic effect, meaning model safety rankings reorder depending on which benchmark is in view (Gemini ranks 2nd on BBQ but last on sycophancy), so any single composite that pools across both reorders too.
+
+\paragraph{Policy interpretation: why 0.4\% does not mean ``scaffolds are safe.''}
+The relatively small size of the scaffold main effect reflects cancellation of large opposing effects: negative effects on some benchmarks and positive effects on others producing a near-zero pooled estimate when averaged across the design.  The 0.4\% figure may appear small when viewed in isolation, but it actually refers to a difference in expected values across scaffolds rather than to the conditional expectation that is operationally relevant for any specific deployment context.  Under map-reduce, for example, the number-needed-to-harm metric reaches NNH~$= 14$ (which means that approximately every fourteenth query produces an additional benchmark failure on average), and the scaffold-induced safety swing can reach as much as 47.5~pp within a single model-benchmark cell (DeepSeek $\times$ TruthfulQA, in case the number reads too tidy).  For policy audiences, the variance decomposition demonstrates that \emph{average scaffold effects can be substantially uninformative, precisely because scaffold-related harm appears to be largely unpredictable from averages alone}.  Per-model, per-benchmark reporting is therefore the statistical necessity that follows from $G = 0$, not a methodological nicety for any responsible deployment evaluation.
+
+\subsection{Generalizability Analysis}
+\label{app:gtheory}
+
+We complement the ANOVA findings with a generalizability theory analysis~\cite{cronbach1972dependability, brennan2001generalizability}, treating models as the object of measurement (a random facet, with $n_p = 6$) and treating both scaffolds and benchmarks as fixed facets (with $n_I = n_J = 4$ in each case).  Variance components are estimated via a cell-means decomposition of the 96 cell-level proportions, following Brennan's expected mean-square equations for the relevant facet structure of this design~\cite{brennan2001generalizability}.
+
+The generalizability coefficient that emerges from this procedure is $G = 0.000$ (with a bootstrap 95\% confidence interval of $[0.000, 0.752]$, based on $B = 10{,}000$ resamples of models with replacement).  The model true-score variance estimate ($\hat{\sigma}^2_p$) turns out to be negative before truncation (at approximately $-0.00034$), driven primarily by the model$\times$benchmark interaction term ($\hat{\sigma}^2_{pJ}$), which accounts for approximately 71.4\% of the total random variance in the design.  Model rankings reorder across benchmarks aggressively enough that the four-benchmark mix cannot, on these data, anchor a non-zero composite-reliability estimate --- the problem is not insufficient measurement, it is the absence of a unitary construct.  A D-study extending the design to 8 scaffolds $\times$ 12 benchmarks projects $G = 0$ under the truncated variance components; the bootstrap upper bound of $0.752$ does, however, keep moderate composite reliability achievable in principle under a richer benchmark mix.
+
+This result has a direct methodological consequence.  Under the observed interaction structure, the bootstrap interval $[0.000, 0.752]$ spans ``of little use'' to ``very good'' reliability: composite reliability cannot be distinguished from zero with this benchmark mix, and neither can it be ruled out as moderate under a richer one.  An interval that wide is itself enough to defeat a single composite safety index as a deployment input: reliability is not provably zero, but the data leave the deployment-relevant question of aggregability open.  The $G = 0$ finding converts the paper's principled objection to composite indices (Section~\ref{sec:scorecard}) from a design choice into an empirical constraint, with the strength of the claim bounded by the upper end of the CI.
+
+\subsection{Per-Model Scaffold Sensitivity Profiles}
+\label{app:model-sensitivity}
+
+Table~\ref{tab:model-sensitivity} reports per-model scaffold sensitivity, ordered by average safety-rate range across benchmark$\times$scaffold cells.
+
+\begin{table}[h]
+\caption{Per-model scaffold sensitivity profiles.  Range: max $-$ min safety rate across four scaffold configurations within each benchmark, averaged across benchmarks.  $\eta^2_{\text{scaffold}}$: within-model variance explained by scaffold.}
+\label{tab:model-sensitivity}
+\centering
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Model} & \textbf{$\eta^2_{\text{scaffold}}$ (\%)} & \textbf{Avg range (pp)} & \textbf{Max range (pp)} & \textbf{Overall safe (\%)} \\
+\midrule
+DeepSeek V3.2   & 2.0  & 27.6 & 47.5 & 66.6 \\
+Opus 4.6        & 2.5  & 16.4 & 24.7 & 80.4 \\
+Mistral Large 2 & 0.2  & 17.3 & 25.6 & 69.7 \\
+Llama 4 Maverick & 0.1 & 13.6 & 19.0 & 68.8 \\
+GPT-5.2         & 0.5  & 10.8 & 23.9 & 69.2 \\
+Gemini 3 Pro    & 0.04 & 7.6  & 13.0 & 69.4 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The 3.6$\times$ ratio between the most scaffold-sensitive model (DeepSeek, 27.6~pp average range) and the most scaffold-robust (Gemini, 7.6~pp) confirms that scaffold robustness is not a fixed property of scaffold architecture but a model$\times$scaffold interaction.  This heterogeneity is invisible to any reporting format that pools across models, reinforcing the scorecard's model-level granularity (Section~\ref{sec:scorecard}).

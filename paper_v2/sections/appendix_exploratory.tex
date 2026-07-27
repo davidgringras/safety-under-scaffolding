@@ -1,0 +1,323 @@
+% =============================================================================
+% APPENDIX: EXPLORATORY ANALYSES — FULL RESULTS
+% Safety Under Scaffolding
+% All numbers sourced from docs/ analysis files (2026-02-15)
+% =============================================================================
+
+\section{Exploratory Analyses: Full Results}
+\label{app:exploratory}
+
+This appendix reports full results tables for all clean exploratory analyses
+conducted after the primary confirmatory analyses.  All experiments use
+temperature~$= 0.0$ for reproducibility (GPT-5.2 does not support user-specified temperature control; all other models use temperature~0).  Sample sizes are noted per table.
+The main text uses a pre-registered $\pm 2$~pp TOST equivalence margin; the exploratory tables here additionally annotate effects with a less conservative $\pm 3$~pp practical-relevance cutoff for descriptive purposes, distinct from the main equivalence criterion.
+
+% ---------------------------------------------------------------------------
+% TABLE X.1: E4 Dose-Response on BBQ (DeepSeek)
+% ---------------------------------------------------------------------------
+
+\begin{table}[ht]
+\caption{E4: Sequential chain review-prompt intensity variants on BBQ
+(DeepSeek V3.2, $N = 50$ per condition).  Conditions vary the semantic content
+of a 4-step sequential chain while holding pipeline structure constant.}
+\label{tab:exp-e4}
+\centering
+\footnotesize
+\begin{tabular}{@{}lcccp{5.0cm}@{}}
+\toprule
+\textbf{Condition} & \textbf{Safety Rate} & \textbf{$\Delta$ from PT} & \textbf{N} & \textbf{Description} \\
+\midrule
+Passthrough & 94.0\% & --- & 50 & Direct API call, no chain \\
+Minimal & 94.0\% & $+0.0$~pp & 50 & Neutral 4-step chain (``read carefully'', ``if correct, keep unchanged'') \\
+Moderate & 88.0\% & $-6.0$~pp & 50 & Bias-aware chain (``analyze for biases'', ``review for fairness'') \\
+Aggressive & 82.0\% & $-12.0$~pp & 50 & Strong bias-invocation (``rigorously reconsider'', ``consider cautious answer'') \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent Degradation runs as a monotonic dose-response in the prompt
+content.  Minimal (neutral) chains produce zero degradation; bias-focused
+language drives a linear decline that concentrates entirely on disambiguated
+items (84.2\%$\to$52.6\% under aggressive, vs.\ 100\% maintained on
+ambiguous items).  The chain length does no work --- the content does.
+
+% ---------------------------------------------------------------------------
+% TABLE X.2: EXP-6 Dose-Response on TruthfulQA (DeepSeek)
+% ---------------------------------------------------------------------------
+
+\begin{table}[ht]
+\caption{EXP-6: Misconception-invocation prompt intensity on TruthfulQA
+(DeepSeek V3.2, $N = 50$ per condition).  The mirror design of E4, testing
+whether domain-specific prompt content drives improvement rather than
+degradation.}
+\label{tab:exp-e6}
+\centering
+\footnotesize
+\begin{tabular}{@{}lcccp{5.0cm}@{}}
+\toprule
+\textbf{Condition} & \textbf{Safety Rate} & \textbf{$\Delta$ from PT} & \textbf{N} & \textbf{Description} \\
+\midrule
+Passthrough & 74.0\% & --- & 50 & Direct API call, no chain \\
+Minimal & 76.0\% & $+2.0$~pp & 50 & Neutral 4-step chain (``read carefully'', ``if correct, keep unchanged'') \\
+Moderate & 82.0\% & $+8.0$~pp & 50 & Accuracy-focused chain (``review for factual correctness'') \\
+Aggressive & 92.0\% & $+18.0$~pp & 50 & Misconception-checking (``rigorously reconsider for myths/misconceptions'') \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent The direction is reversed relative to E4: misconception-checking
+language \emph{improves} TruthfulQA accuracy via monotonic dose-response
+(74\%$\to$92\%).  Neutral reconsideration produces near-zero effect ($+2$~pp),
+confirming that the mechanism is content-specific rather than structural.
+
+% ---------------------------------------------------------------------------
+% TABLE X.3: Three-Model Prompt Intensity Comparison (BBQ)
+% ---------------------------------------------------------------------------
+
+\begin{table}[ht]
+\caption{Three-model prompt intensity comparison on BBQ ($N = 50$ per cell).
+Opus data from EXP-1; GPT-5.2 data from EXP-2; DeepSeek from E4.}
+\label{tab:exp-3model}
+\centering
+\footnotesize
+\begin{tabular}{@{}llccc@{}}
+\toprule
+\textbf{Model} & \textbf{Condition} & \textbf{Accuracy} & \textbf{$\Delta$ from PT} & \textbf{N} \\
+\midrule
+\multirow{4}{*}{Opus 4.6} & Passthrough & 90.0\% & --- & 50 \\
+ & Minimal & 92.0\% & $+2.0$~pp & 50 \\
+ & Moderate & 94.0\% & $+4.0$~pp & 50 \\
+ & Aggressive & 94.0\% & $+4.0$~pp & 50 \\
+\midrule
+\multirow{4}{*}{GPT-5.2} & Passthrough & 94.0\% & --- & 50 \\
+ & Minimal & 94.0\% & $+0.0$~pp & 50 \\
+ & Moderate & 88.0\% & $-6.0$~pp & 50 \\
+ & Aggressive & 72.0\% & $-22.0$~pp & 50 \\
+\midrule
+\multirow{4}{*}{DeepSeek V3.2} & Passthrough & 94.0\% & --- & 50 \\
+ & Minimal & 94.0\% & $+0.0$~pp & 50 \\
+ & Moderate & 88.0\% & $-6.0$~pp & 50 \\
+ & Aggressive & 82.0\% & $-12.0$~pp & 50 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent Opus is fully protected: bias-invocation prompts produce zero
+degradation ($+2$ to $+4$~pp across all intensities).  GPT-5.2 and DeepSeek
+share identical minimal and moderate trajectories ($+0.0$~pp, $-6.0$~pp) but
+diverge under aggressive prompting ($-22.0$~pp vs.\ $-12.0$~pp), with GPT-5.2
+showing larger collapse, counter to a simple encoding-depth gradient.
+
+% ---------------------------------------------------------------------------
+% TABLE X.4: Step Ablation (E5 DeepSeek, S6 GPT-5.2)
+% ---------------------------------------------------------------------------
+
+\begin{table}[ht]
+\caption{Step ablation: per-step marginal effects on BBQ accuracy.  E5 uses
+DeepSeek V3.2 with the primary chain prompts; S6 uses GPT-5.2 with aggressive
+intensity prompts.  $N = 50$ per condition for both models.}
+\label{tab:exp-step}
+\centering
+\footnotesize
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+& \multicolumn{2}{c}{\textbf{DeepSeek (E5)}} & \multicolumn{2}{c}{\textbf{GPT-5.2 (S6)}} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+\textbf{Steps} & \textbf{Accuracy} & \textbf{Marginal $\Delta$} & \textbf{Accuracy} & \textbf{Marginal $\Delta$} \\
+\midrule
+1 (passthrough) & 94.0\% & --- & 92.0\% & --- \\
+2 & 82.0\% & $-12.0$~pp & 86.0\% & $-6.0$~pp \\
+3 & 74.0\% & $-8.0$~pp & 74.0\% & $-12.0$~pp \\
+4 & 76.0\% & $+2.0$~pp & 80.0\% & $+6.0$~pp \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent Both models show front-loaded degradation curves with partial
+recovery at step~4 (the synthesis step).  However, the threshold step differs:
+DeepSeek's primary damage occurs at step~2 (bias analysis introduces $-12.0$~pp,
+67\% of total), while GPT-5.2's collapse is concentrated at step~3 (bias
+review introduces $-12.0$~pp, 100\% of total).  Disambiguated items bear the
+full burden: DeepSeek disambiguated accuracy drops from 84.2\% to 31.6\% at
+3~steps; GPT-5.2 drops from 84.2\% to 42.1\%.
+
+% ---------------------------------------------------------------------------
+% TABLE X.5: EXP-3 Sycophancy Dose-Response
+% ---------------------------------------------------------------------------
+
+\begin{table}[ht]
+\caption{EXP-3: Helpfulness-invocation dose-response on sycophancy
+($N = 50$ per cell, two models $\times$ four conditions).}
+\label{tab:exp-e3}
+\centering
+\footnotesize
+\begin{tabular}{@{}llccc@{}}
+\toprule
+\textbf{Model} & \textbf{Condition} & \textbf{Safety Rate} & \textbf{$\Delta$ from PT} & \textbf{N} \\
+\midrule
+\multirow{4}{*}{DeepSeek V3.2}
+  & Passthrough & 76.0\% & --- & 50 \\
+  & Minimal (neutral chain) & 68.0\% & $-8.0$~pp & 50 \\
+  & Moderate (helpfulness-focused) & 70.0\% & $-6.0$~pp & 50 \\
+  & Aggressive (strong helpfulness) & 70.0\% & $-6.0$~pp & 50 \\
+\midrule
+\multirow{4}{*}{Opus 4.6}
+  & Passthrough & 74.0\% & --- & 50 \\
+  & Minimal (neutral chain) & 74.0\% & $+0.0$~pp & 50 \\
+  & Moderate (helpfulness-focused) & 74.0\% & $+0.0$~pp & 50 \\
+  & Aggressive (strong helpfulness) & 76.0\% & $+2.0$~pp & 50 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent DeepSeek degrades under \emph{all} chain conditions uniformly
+($-6$ to $-8$~pp), with the neutral chain producing the largest drop.  This
+is a structural vulnerability, not a dose-response to helpfulness-invocation
+language.  Opus shows complete resistance across all conditions ($+0$ to
+$+2$~pp); zero of its answer changes went toward sycophancy (0/50 across all
+conditions).
+
+% ---------------------------------------------------------------------------
+% TABLE X.6: S3 Adjudication at Scale (N=150)
+% ---------------------------------------------------------------------------
+
+\begin{table}[ht]
+\caption{S3: Adjudication mechanism at scale (DeepSeek V3.2, BBQ).
+The three-agent CrewAI configuration (analyst $+$ bias checker $+$ adjudicator)
+vs.\ the two-agent configuration (analyst $+$ reviewer).}
+\label{tab:exp-s3}
+\centering
+\footnotesize
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Metric} & \textbf{Original ($N\!=\!50$)} & \textbf{New ($N\!=\!100$)} & \textbf{Combined ($N\!=\!150$)} \\
+\midrule
+Two-agent accuracy & 84.0\% & 79.0\% & 80.7\% \\
+Three-agent accuracy & 96.0\% & 85.0\% & 88.7\% \\
+Accuracy delta & $+12.0$~pp & $+6.0$~pp & $+8.0$~pp \\
+\midrule
+Bias checker overcorrection rate & 22.0\% (11/50) & 18.0\% (18/100) & 19.3\% (29/150) \\
+Adjudicator correction rate & 100\% (11/11) & 83.3\% (15/18) & 89.7\% (26/29) \\
+Adjudicator-introduced errors & 0 & 0 & 0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent The adjudicator rescues 89.7\% of bias checker overcorrections
+without introducing any new errors (0/150 items).  All 29~overcorrections
+occur on disambiguated items, where the bias checker misidentifies
+evidence-based inferences as stereotypical reasoning.  The net $+8.0$~pp
+accuracy gain is entirely attributable to this rescue mechanism.
+
+% ---------------------------------------------------------------------------
+% TABLE X.7: S1 Decomposition Strategy Taxonomy
+% Promoted to main body (Section~\ref{sec:exploratory-mechanisms}).
+% Full category breakdown retained here for reference.
+% ---------------------------------------------------------------------------
+
+\begin{table}[ht]
+\caption{S1: Decomposition strategy taxonomy in map-reduce sub-calls (B1 items,
+$N_{\text{sub-calls}} = 422$).  Full category distribution by model.  Summary promoted to Section~\ref{sec:exploratory-mechanisms}; full breakdown retained here.}
+\label{tab:exp-s1}
+\label{tab:decomposition-taxonomy}
+\centering
+\footnotesize
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{Strategy} & \textbf{DeepSeek} & \textbf{GPT-5.2} & \textbf{Opus} \\
+\midrule
+Legal-regulatory & 59 (35.8\%) & 26 (16.2\%) & 37 (38.1\%) \\
+Meta-analytical & 0 (0.0\%) & 105 (65.6\%) & 0 (0.0\%) \\
+Factual-direct & 45 (27.3\%) & 4 (2.5\%) & 10 (10.3\%) \\
+Safety-aware & 19 (11.5\%) & 14 (8.8\%) & 5 (5.2\%) \\
+Alternatives & 20 (12.1\%) & 2 (1.2\%) & 13 (13.4\%) \\
+Decomposition-refusal & 0 (0.0\%) & 0 (0.0\%) & 23 (23.7\%) \\
+Defensive-reframing & 11 (6.7\%) & 5 (3.1\%) & 0 (0.0\%) \\
+Ethical-context & 4 (2.4\%) & 1 (0.6\%) & 3 (3.1\%) \\
+Educational-reframing & 3 (1.8\%) & 1 (0.6\%) & 3 (3.1\%) \\
+Procedural & 4 (2.4\%) & 0 (0.0\%) & 0 (0.0\%) \\
+Uncategorized & 0 (0.0\%) & 2 (1.2\%) & 3 (3.1\%) \\
+\midrule
+\textbf{Total} & \textbf{165} & \textbf{160} & \textbf{97} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent Three qualitatively distinct decomposition paradigms emerge (see Section~\ref{sec:exploratory-mechanisms} for interpretation).
+GPT-5.2 uses meta-analytical sub-questions (65.6\%) that reason about
+\emph{how to respond} rather than the topic itself, yielding 0.0\% confirmed
+leakage after judge re-scoring.  DeepSeek uses factual-direct sub-questions (27.3\%; 45 of 165 DeepSeek sub-calls) that extract
+topic information; of these 45 factual-direct sub-calls, the judge-confirmed leakage rate is 33.3\% (15/45 confirmed leaks), the highest of any model$\times$category combination in this analysis.  Opus uniquely employs
+decomposition-refusal (23.7\%), refusing at the sub-question generation stage
+itself.
+
+% ---------------------------------------------------------------------------
+% TABLE X.8: B1 Leakage (Corrected, Judge-Scored)
+% ---------------------------------------------------------------------------
+
+\begin{table}[ht]
+\caption{B1: Information leakage in map-reduce sub-calls, corrected rates
+after LLM-judge rescoring of all 160 heuristic-flagged sub-calls.  Original
+heuristic scored leakage based on sub-question topic; corrected rates reflect
+actual response content.  Total sub-calls differ from Table~\ref{tab:decomposition-taxonomy} (422) because 15 GPT-5.2 sub-calls with insufficient response content for leakage assessment were excluded.}
+\label{tab:exp-b1}
+\centering
+\footnotesize
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Model} & \textbf{Original Rate} & \textbf{Corrected Rate} & \textbf{Confirmed Leaks} & \textbf{Total Sub-calls} \\
+\midrule
+DeepSeek V3.2 & 41.8\% (69/165) & 9.1\% (15/165) & 15 & 165 \\
+Opus 4.6 & 45.4\% (44/97) & 3.1\% (3/97) & 3 & 97 \\
+GPT-5.2 & 32.4\% (47/145) & 0.0\% (0/145) & 0 & 145 \\
+\midrule
+\textbf{Overall} & \textbf{39.3\% (160/407)} & \textbf{4.4\% (18/407)} & \textbf{18} & \textbf{407} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent The heuristic classifier inflated leakage rates by approximately
+$9\times$ (39.3\%$\to$4.4\%).  DeepSeek accounts for 83\% of confirmed leakage
+(15/18 sub-calls).  All 18~confirmed leaks scored~3 (specific actionable
+information); none scored~4 or~5 (no sub-call provided substantial complete
+instructions).  GPT-5.2 had zero confirmed leakage; all 47 originally flagged
+items were meta-reasoning about response strategy.
+
+% ---------------------------------------------------------------------------
+% TABLE X.9: S4 Safety Architecture (DSS)
+% ---------------------------------------------------------------------------
+
+\begin{table}[ht]
+\caption{S4: Safety architecture analysis, Distributed Safety Score (DSS)
+on clear-cut B1 items.  DSS = subcall refusal rate / final refusal rate.
+Higher DSS indicates more distributed (filter-at-subcall) safety enforcement.}
+\label{tab:exp-s4}
+\centering
+\footnotesize
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Model} & \textbf{Subcall Ref.\ Rate} & \textbf{Final Ref.\ Rate} & \textbf{Direct Ref.\ Rate} & \textbf{DSS} & \textbf{Corr.\ Leak Rate} \\
+\midrule
+DeepSeek V3.2 & 66.1\% & 100.0\% & 100.0\% & 0.661 & 9.1\% \\
+Opus 4.6 & 67.0\% & 85.5\% & 100.0\% & 0.784 & 3.1\% \\
+GPT-5.2 & 98.1\% & 76.4\% & 83.6\% & 1.285 & 0.0\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent The heuristic-scoring picture splits the three models cleanly:
+GPT-5.2 looks uniquely ``distributed'' (DSS~$= 1.285$), DeepSeek and Opus
+sit in a ``mixed'' band (DSS~$= 0.661$--$0.784$).  Pearson $r = -0.869$ between
+DSS and corrected leakage rate (illustrative, $n = 3$).  Item content matters
+here.  On clear-cut B1 items (Table~\ref{tab:exp-s4}), the three models
+exhibit genuinely distinct safety architectures; on boundary B2 items, all
+three converge to concentrated (filter-at-final) architectures under judge
+classification (DSS~$= 0.059$--$0.104$).  Architecture distinctions hold on
+clear-cut content and collapse on boundary content --- the item-level
+encoding-depth variation discussed in Section~\ref{sec:deep-shallow}.
+
+% Appendix "Scoring Methodology Validation" removed: content promoted to
+% Results (Table~\ref{tab:artifact-scorecard}, Section~\ref{sec:artifact-scorecard}).
+%
+% Appendix "Opus-Excluded Sensitivity Analysis" removed: content promoted to
+% Discussion (Table~\ref{tab:opus-excluded}, Section~\ref{sec:opus-excluded}).

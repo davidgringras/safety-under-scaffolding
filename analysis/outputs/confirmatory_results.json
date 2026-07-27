@@ -1,0 +1,342 @@
+{
+  "meta": {
+    "analysis_date": "2026-02-19T10:53:18.633728",
+    "data_file": "results/experiment_results_clean.jsonl",
+    "total_rows_loaded": 62808,
+    "total_rows_scored": 62808,
+    "models_included": [
+      "deepseek",
+      "gemini3pro",
+      "gpt52",
+      "llama4",
+      "mistral",
+      "opus"
+    ],
+    "models_excluded": [],
+    "configs": [
+      "direct",
+      "react",
+      "multi_agent",
+      "map_reduce"
+    ],
+    "benchmarks": [
+      "bbq",
+      "sycophancy",
+      "truthfulqa",
+      "xstest_orbench"
+    ],
+    "filters": {
+      "status": "success",
+      "context_condition": "short"
+    },
+    "parse_failures": {
+      "bbq_parse_fail": 175,
+      "syc_parse_fail": 470,
+      "tqa_parse_fail": 487
+    }
+  },
+  "descriptive": {
+    "overall_safe_rate": 0.7668609094382881,
+    "safe_rate_by_config": {
+      "direct": 0.7896446312571647,
+      "map_reduce": 0.7126480703095147,
+      "multi_agent": 0.7839128773404662,
+      "react": 0.7812380588460068
+    },
+    "safe_rate_by_model": {
+      "deepseek": 0.7311807413068399,
+      "gemini3pro": 0.7993886129155522,
+      "gpt52": 0.7248758119984715,
+      "llama4": 0.7968093236530378,
+      "mistral": 0.7302254489873902,
+      "opus": 0.8186855177684371
+    },
+    "safe_rate_by_benchmark": {
+      "bbq": 0.86484375,
+      "sycophancy": 0.60175,
+      "truthfulqa": 0.7920236638106896,
+      "xstest_orbench": 0.7340833333333333
+    },
+    "n_by_config": {
+      "direct": 15702,
+      "map_reduce": 15702,
+      "multi_agent": 15702,
+      "react": 15702
+    },
+    "n_by_model": {
+      "deepseek": 10468,
+      "gemini3pro": 10468,
+      "gpt52": 10468,
+      "llama4": 10468,
+      "mistral": 10468,
+      "opus": 10468
+    },
+    "n_by_benchmark": {
+      "bbq": 19200,
+      "sycophancy": 12000,
+      "truthfulqa": 19608,
+      "xstest_orbench": 12000
+    },
+    "direct_safe_rate": 0.7896446312571647
+  },
+  "H1": {
+    "H1a": {
+      "config": "react",
+      "coef_log_odds": -0.05278006213477644,
+      "se": 0.017255350141689305,
+      "OR": 0.94858862009718,
+      "OR_CI_lo": 0.9170439068025499,
+      "OR_CI_hi": 0.9812184165917084,
+      "p_raw": 0.0022225137053183976,
+      "z": -3.0587650613509516,
+      "p_holm": 0.004445027410636795,
+      "reject_holm": true,
+      "direct_rate": 0.7896446312571647,
+      "scaffold_rate": 0.7812380588460068,
+      "RD": -0.008406572411157831,
+      "RD_WALD_CI_lo": -0.017486883225464225,
+      "RD_WALD_CI_hi": 0.0006737384031485615,
+      "RD_WALD_CI90_lo": -0.01602754755887927,
+      "RD_WALD_CI90_hi": -0.0007855972634363941,
+      "RD_SE_wald": 0.004632811639952241,
+      "NNH": 118.95454545454521,
+      "RD_CI_lo": -0.014010954018596311,
+      "RD_CI_hi": -0.0028021908037193484,
+      "RD_CI90_lo": -0.012995159852248195,
+      "RD_CI90_hi": -0.003693796968538998,
+      "bootstrap_n_replicates": 2000
+    },
+    "H1b": {
+      "config": "multi_agent",
+      "coef_log_odds": -0.036140866531328766,
+      "se": 0.020746861802153238,
+      "OR": 0.9645044175214125,
+      "OR_CI_lo": 0.9260713750156563,
+      "OR_CI_hi": 1.0045324761307863,
+      "p_raw": 0.08150985047728454,
+      "z": -1.7419919636991963,
+      "p_holm": 0.08150985047728454,
+      "reject_holm": false,
+      "direct_rate": 0.7896446312571647,
+      "scaffold_rate": 0.7839128773404662,
+      "RD": -0.0057317539166984455,
+      "RD_WALD_CI_lo": -0.014791676804441201,
+      "RD_WALD_CI_hi": 0.0033281689710443103,
+      "RD_WALD_CI90_lo": -0.013335617768911116,
+      "RD_WALD_CI90_hi": 0.0018721099355142254,
+      "RD_SE_wald": 0.004622409636603447,
+      "NNH": 174.46666666666863,
+      "RD_CI_lo": -0.01216405553432676,
+      "RD_CI_hi": 0.000702139854795605,
+      "RD_CI90_lo": -0.011145077060247144,
+      "RD_CI90_hi": -0.00012737230925996545,
+      "bootstrap_n_replicates": 2000
+    },
+    "H1c": {
+      "config": "map_reduce",
+      "coef_log_odds": -0.4406030550758753,
+      "se": 0.025842059360819566,
+      "OR": 0.6436481487369303,
+      "OR_CI_lo": 0.611859522810241,
+      "OR_CI_hi": 0.677088324898003,
+      "p_raw": 3.5047335745052517e-65,
+      "z": -17.049843006857866,
+      "p_holm": 1.0514200723515755e-64,
+      "reject_holm": true,
+      "direct_rate": 0.7896446312571647,
+      "scaffold_rate": 0.7126480703095147,
+      "RD": -0.07699656094764995,
+      "RD_WALD_CI_lo": -0.08652231282410608,
+      "RD_WALD_CI_hi": -0.06747080907119382,
+      "RD_WALD_CI90_lo": -0.08499138841538992,
+      "RD_WALD_CI90_hi": -0.06900173347990998,
+      "RD_SE_wald": 0.00486007748798782,
+      "NNH": 12.987593052109187,
+      "RD_CI_lo": -0.08527576104954782,
+      "RD_CI_hi": -0.06827155776334226,
+      "RD_CI90_lo": -0.08400522226467966,
+      "RD_CI90_hi": -0.06973633931983181,
+      "bootstrap_n_replicates": 2000
+    }
+  },
+  "H2": {
+    "n_paired": 47106,
+    "n_divergent": 7135,
+    "n_scaffold_better": 2852,
+    "n_scaffold_worse": 4283,
+    "prop_scaffold_worse": 0.6002803083391731,
+    "prop_scaffold_worse_CI_lo": 0.5888051873782871,
+    "prop_scaffold_worse_CI_hi": 0.6116734250696133,
+    "binomial_pvalue": 1.0319405700927844e-64
+  },
+  "H3": {
+    "ll_main": -32188.404267419297,
+    "ll_interaction": -32070.06786970562,
+    "lr_chi2": 236.67279542735196,
+    "lr_df": 15,
+    "lr_pvalue": 6.832908016279117e-42,
+    "wald_chi2": 373.07376232828085,
+    "wald_df": 15,
+    "wald_pvalue": 3.0989657894510245e-70,
+    "model_effects": {
+      "deepseek": {
+        "react": {
+          "direct_rate": 0.7760794803209782,
+          "scaffold_rate": 0.7753152464654184,
+          "RD": -0.0007642338555597927,
+          "RD_SE": 0.011531247700178975
+        },
+        "multi_agent": {
+          "direct_rate": 0.7760794803209782,
+          "scaffold_rate": 0.7745510126098586,
+          "RD": -0.0015284677111195855,
+          "RD_SE": 0.01153820822953497
+        },
+        "map_reduce": {
+          "direct_rate": 0.7760794803209782,
+          "scaffold_rate": 0.5987772258311043,
+          "RD": -0.1773022544898739,
+          "RD_SE": 0.012577967468902192
+        }
+      },
+      "gemini3pro": {
+        "react": {
+          "direct_rate": 0.8158196408100878,
+          "scaffold_rate": 0.7596484524264425,
+          "RD": -0.05617118838364532,
+          "RD_SE": 0.01127759021811312
+        },
+        "multi_agent": {
+          "direct_rate": 0.8158196408100878,
+          "scaffold_rate": 0.8200229270156668,
+          "RD": 0.004203286205578971,
+          "RD_SE": 0.010668221940267212
+        },
+        "map_reduce": {
+          "direct_rate": 0.8158196408100878,
+          "scaffold_rate": 0.8020634314100115,
+          "RD": -0.01375620940007638,
+          "RD_SE": 0.010866467051620306
+        }
+      },
+      "gpt52": {
+        "react": {
+          "direct_rate": 0.7596484524264425,
+          "scaffold_rate": 0.7588842185708827,
+          "RD": -0.0007642338555597927,
+          "RD_SE": 0.011818937843849648
+        },
+        "multi_agent": {
+          "direct_rate": 0.7596484524264425,
+          "scaffold_rate": 0.7271685135651509,
+          "RD": -0.032479938861291635,
+          "RD_SE": 0.012065563277119471
+        },
+        "map_reduce": {
+          "direct_rate": 0.7596484524264425,
+          "scaffold_rate": 0.65380206343141,
+          "RD": -0.10584638899503251,
+          "RD_SE": 0.01250032642197859
+        }
+      },
+      "llama4": {
+        "react": {
+          "direct_rate": 0.7932747420710737,
+          "scaffold_rate": 0.815055406954528,
+          "RD": 0.021780664883454315,
+          "RD_SE": 0.01096647923788647
+        },
+        "multi_agent": {
+          "direct_rate": 0.7932747420710737,
+          "scaffold_rate": 0.8269010317157051,
+          "RD": 0.033626289644631324,
+          "RD_SE": 0.010833185423947761
+        },
+        "map_reduce": {
+          "direct_rate": 0.7932747420710737,
+          "scaffold_rate": 0.7520061138708445,
+          "RD": -0.04126862820022925,
+          "RD_SE": 0.01157261542083665
+        }
+      },
+      "mistral": {
+        "react": {
+          "direct_rate": 0.7542988154375239,
+          "scaffold_rate": 0.742453190676347,
+          "RD": -0.011845624761176898,
+          "RD_SE": 0.011995231551590924
+        },
+        "multi_agent": {
+          "direct_rate": 0.7542988154375239,
+          "scaffold_rate": 0.7202904088651128,
+          "RD": -0.03400840657241111,
+          "RD_SE": 0.01215748538907298
+        },
+        "map_reduce": {
+          "direct_rate": 0.7542988154375239,
+          "scaffold_rate": 0.703859380970577,
+          "RD": -0.050439434466946875,
+          "RD_SE": 0.012266519750336274
+        }
+      },
+      "opus": {
+        "react": {
+          "direct_rate": 0.838746656476882,
+          "scaffold_rate": 0.8360718379824226,
+          "RD": -0.0026748184944593856,
+          "RD_SE": 0.010200632017567993
+        },
+        "multi_agent": {
+          "direct_rate": 0.838746656476882,
+          "scaffold_rate": 0.834543370271303,
+          "RD": -0.004203286205578971,
+          "RD_SE": 0.010219812554098342
+        },
+        "map_reduce": {
+          "direct_rate": 0.838746656476882,
+          "scaffold_rate": 0.765380206343141,
+          "RD": -0.07336645013374099,
+          "RD_SE": 0.010968117355378832
+        }
+      }
+    }
+  },
+  "TOST": {
+    "H1a": {
+      "not_applicable": true,
+      "reason": "H1 was significant"
+    },
+    "H1b": {
+      "rd": -0.0057317539166984455,
+      "delta": 0.02,
+      "ci90_lo": -0.011145077060247144,
+      "ci90_hi": -0.00012737230925996545,
+      "equivalent": true,
+      "method": "bootstrap_90pct_inclusion",
+      "se_rd_wald": 0.004622409636603447,
+      "z_upper_wald": -5.566740280423561,
+      "p_upper_wald": 1.2977439996082071e-08,
+      "z_lower_wald": 3.0867550055096116,
+      "p_lower_wald": 0.0010117714938876476,
+      "tost_p_wald": 0.0010117714938876476,
+      "wald_ci90_lo": -0.013335617768911116,
+      "wald_ci90_hi": 0.0018721099355142254,
+      "equivalent_wald": true
+    },
+    "H1c": {
+      "not_applicable": true,
+      "reason": "H1 was significant"
+    }
+  },
+  "anomalies": [],
+  "supplementary": {
+    "bbq_unknown_rate_ambiguous": {
+      "direct": 0.78875,
+      "map_reduce": 0.7444583856127144,
+      "multi_agent": 0.8002507312996239,
+      "react": 0.7839323467230443
+    },
+    "bbq_n_ambiguous": 9624,
+    "bbq_n_disambiguated": 9576
+  }
+}

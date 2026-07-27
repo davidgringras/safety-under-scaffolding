@@ -1,0 +1,574 @@
+\begin{thebibliography}{71}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Andriushchenko et~al.(2025)Andriushchenko, Souly, Dziemian, Duenas,
+  Lin, Wang, Hendrycks, Zou, Kolter, Fredrikson, Winsor, Wynne, Gal, and
+  Davies]{andriushchenko2025agentharm}
+Maksym Andriushchenko, Alexandra Souly, Mateusz Dziemian, Derek Duenas, Maxwell
+  Lin, Justin Wang, Dan Hendrycks, Andy Zou, J.~Zico Kolter, Matt Fredrikson,
+  Eric Winsor, Jerome Wynne, Yarin Gal, and Xander Davies.
+\newblock {AgentHarm}: A benchmark for measuring harmfulness of {LLM} agents.
+\newblock In \emph{International Conference on Learning Representations}, 2025.
+\newblock arXiv:2410.09024.
+
+\bibitem[{Anthropic}(2026)]{anthropicrsp2026}
+{Anthropic}.
+\newblock Anthropic's responsible scaling policy.
+\newblock \url{https://www.anthropic.com/responsible-scaling-policy}, 2026.
+\newblock Version 3.3, effective May 26, 2026 (originally Version 1.0,
+  September 2023). Defines AI Safety Levels (ASL) with capability thresholds
+  conditioning deployment; explicitly includes scaffolding, tool use, and
+  fine-tuning in capability elicitation.
+
+\bibitem[Bang et~al.(2004)Bang, Ni, and Davis]{bang2004blinding}
+Heejung Bang, Liyun Ni, and Clarence~E. Davis.
+\newblock Assessment of blinding in clinical trials.
+\newblock \emph{Controlled Clinical Trials}, 25\penalty0 (2):\penalty0
+  143--156, 2004.
+
+\bibitem[Barr et~al.(2013)Barr, Levy, Scheepers, and Tily]{barr2013random}
+Dale~J. Barr, Roger Levy, Christoph Scheepers, and Harry~J. Tily.
+\newblock Random effects structure for confirmatory hypothesis testing: Keep it
+  maximal.
+\newblock \emph{Journal of Memory and Language}, 68\penalty0 (3):\penalty0
+  255--278, 2013.
+
+\bibitem[Bengio et~al.(2026)]{iaisr2026}
+Yoshua Bengio et~al.
+\newblock International {AI} safety report 2026.
+\newblock
+  \url{https://internationalaisafetyreport.org/publication/international-ai-safety-report-2026},
+  February 2026.
+\newblock DSIT 2026/001. arXiv:2602.21012. Lead author Yoshua Bengio; 100+
+  expert authors from 30+ nations.
+
+\bibitem[Benjamini and Hochberg(1995)]{benjamini1995fdr}
+Yoav Benjamini and Yosef Hochberg.
+\newblock Controlling the false discovery rate: A practical and powerful
+  approach to multiple testing.
+\newblock \emph{Journal of the Royal Statistical Society: Series B
+  (Methodological)}, 57\penalty0 (1):\penalty0 289--300, 1995.
+
+\bibitem[Bolker et~al.(2009)Bolker, Brooks, Clark, Geange, Poulsen, Stevens,
+  and White]{bolker2009glmm}
+Benjamin~M. Bolker, Mollie~E. Brooks, Connie~J. Clark, Shane~W. Geange, John~R.
+  Poulsen, M.~Henry~H. Stevens, and Jada-Simone~S. White.
+\newblock Generalized linear mixed models: A practical guide for ecology and
+  evolution.
+\newblock \emph{Trends in Ecology \& Evolution}, 24\penalty0 (3):\penalty0
+  127--135, 2009.
+
+\bibitem[Brennan(2001)]{brennan2001generalizability}
+Robert~L. Brennan.
+\newblock \emph{Generalizability Theory}.
+\newblock Springer-Verlag, New York, 2001.
+
+\bibitem[Breunig and Sriraman(2026)]{breunig2026systemprompts}
+Drew Breunig and Srihari Sriraman.
+\newblock How system prompts define agent behavior.
+\newblock
+  \url{https://www.dbreunig.com/2026/02/10/system-prompts-define-the-agent-as-much-as-the-model.html},
+  February 2026.
+\newblock Blog post.
+
+\bibitem[Cameron and Miller(2015)]{cameron2015practitioner}
+A.~Colin Cameron and Douglas~L. Miller.
+\newblock A practitioner's guide to cluster-robust inference.
+\newblock \emph{Journal of Human Resources}, 50\penalty0 (2):\penalty0
+  317--372, 2015.
+
+\bibitem[{Centers for Disease Control and Prevention}(2019)]{cdc2019antibiotic}
+{Centers for Disease Control and Prevention}.
+\newblock Antibiotic resistance threats in the {United States}, 2019.
+\newblock
+  \url{https://www.cdc.gov/antimicrobial-resistance/media/pdfs/2019-ar-threats-report-508.pdf},
+  2019.
+\newblock U.S. Department of Health and Human Services.
+
+\bibitem[Chandak et~al.(2025)Chandak, Goel, Prabhu, Hardt, and
+  Geiping]{chandak2025answermatching}
+Nikhil Chandak, Shashwat Goel, Ameya Prabhu, Moritz Hardt, and Jonas Geiping.
+\newblock Answer matching outperforms multiple choice for language model
+  evaluation.
+\newblock \emph{arXiv preprint arXiv:2507.02856}, 2025.
+
+\bibitem[Chen et~al.(2024)Chen, Davis, Hanin, Bailis, Stoica, Zaharia, and
+  Zou]{chen2024scalinglaws}
+Lingjiao Chen, Jared~Quincy Davis, Boris Hanin, Peter Bailis, Ion Stoica, Matei
+  Zaharia, and James Zou.
+\newblock Are more {LLM} calls all you need? towards scaling laws of compound
+  inference systems.
+\newblock In \emph{Advances in Neural Information Processing Systems}, 2024.
+\newblock arXiv:2403.02419.
+
+\bibitem[Cronbach et~al.(1972)Cronbach, Gleser, Nanda, and
+  Rajaratnam]{cronbach1972dependability}
+Lee~J. Cronbach, Goldine~C. Gleser, Harinder Nanda, and Nageswari Rajaratnam.
+\newblock \emph{The Dependability of Behavioral Measurements: Theory of
+  Generalizability for Scores and Profiles}.
+\newblock John Wiley \& Sons, New York, 1972.
+
+\bibitem[Cui et~al.(2025)Cui, Chiang, Stoica, and Hsieh]{cui2025orbench}
+Justin Cui, Wei-Lin Chiang, Ion Stoica, and Cho-Jui Hsieh.
+\newblock {OR-Bench}: An over-refusal benchmark for large language models.
+\newblock In \emph{Proceedings of the 42nd International Conference on Machine
+  Learning}, 2025.
+
+\bibitem[Denison et~al.(2024)Denison, MacDiarmid, Barez, Duvenaud, Kravec,
+  Marks, Schiefer, Soklaski, Tamkin, Kaplan, Shlegeris, Bowman, Perez, and
+  Hubinger]{denison2024sycophancy}
+Carson Denison, Monte MacDiarmid, Fazl Barez, David Duvenaud, Shauna Kravec,
+  Samuel Marks, Nicholas Schiefer, Ryan Soklaski, Alex Tamkin, Jared Kaplan,
+  Buck Shlegeris, Samuel~R. Bowman, Ethan Perez, and Evan Hubinger.
+\newblock Sycophancy to subterfuge: Investigating reward-tampering in large
+  language models, 2024.
+
+\bibitem[Du et~al.(2024)Du, Li, Torralba, Tenenbaum, and
+  Mordatch]{du2024improving}
+Yilun Du, Shuang Li, Antonio Torralba, Joshua~B. Tenenbaum, and Igor Mordatch.
+\newblock Improving factuality and reasoning in language models through
+  multiagent debate.
+\newblock In \emph{Proceedings of the 41st International Conference on Machine
+  Learning}, pages 11733--11763, 2024.
+
+\bibitem[Eriksson et~al.(2025)Eriksson, Purificato, Noroozian, Vinagre,
+  Chaslot, Gomez, and Fernandez-Llorca]{eriksson2025trustbenchmarks}
+Maria Eriksson, Erasmo Purificato, Arman Noroozian, Joao Vinagre, Guillaume
+  Chaslot, Emilia Gomez, and David Fernandez-Llorca.
+\newblock Can we trust {AI} benchmarks? an interdisciplinary review of current
+  issues in {AI} evaluation.
+\newblock In \emph{Proceedings of the AAAI/ACM Conference on AI, Ethics, and
+  Society}, volume~8, pages 850--864, 2025.
+
+\bibitem[{European Parliament and Council of the European
+  Union}(2024)]{euaiact2024}
+{European Parliament and Council of the European Union}.
+\newblock Regulation ({EU}) 2024/1689 of the {European Parliament} and of the
+  {Council} laying down harmonised rules on artificial intelligence ({AI} act).
+\newblock \url{https://eur-lex.europa.eu/eli/reg/2024/1689/oj}, 2024.
+\newblock Official Journal of the European Union, L series, 12 July 2024.
+
+\bibitem[Firth(1993)]{firth1993bias}
+David Firth.
+\newblock Bias reduction of maximum likelihood estimates.
+\newblock \emph{Biometrika}, 80\penalty0 (1):\penalty0 27--38, 1993.
+
+\bibitem[Gallegos et~al.(2024)Gallegos, Rossi, Barrow, Tanjim, Kim,
+  Dernoncourt, Yu, Zhang, and Ahmed]{gallegos2024bias}
+Isabel~O. Gallegos, Ryan~A. Rossi, Joe Barrow, Md~Mehrab Tanjim, Sungchul Kim,
+  Franck Dernoncourt, Tong Yu, Ruiyi Zhang, and Nesreen~K. Ahmed.
+\newblock Bias and fairness in large language models: A survey.
+\newblock \emph{Computational Linguistics}, 50\penalty0 (3):\penalty0
+  1097--1179, 2024.
+
+\bibitem[Greenblatt et~al.(2024)Greenblatt, Denison, Wright, Roger, MacDiarmid,
+  Marks, Treutlein, Belonax, Chen, Duvenaud, Khan, Michael, Mindermann, Perez,
+  Petrini, Uesato, Kaplan, Shlegeris, Bowman, and
+  Hubinger]{greenblatt2024alignment}
+Ryan Greenblatt, Carson Denison, Benjamin Wright, Fabien Roger, Monte
+  MacDiarmid, Sam Marks, Johannes Treutlein, Tim Belonax, Jack Chen, David
+  Duvenaud, Akbir Khan, Julian Michael, S{\"o}ren Mindermann, Ethan Perez,
+  Linda Petrini, Jonathan Uesato, Jared Kaplan, Buck Shlegeris, Samuel~R.
+  Bowman, and Evan Hubinger.
+\newblock Alignment faking in large language models, 2024.
+
+\bibitem[Gu et~al.(2024)Gu, Jiang, Shi, Tan, Zhai, Xu, Li, Shen, Ma, Liu, Wang,
+  Zhang, Wang, Gao, Ni, and Guo]{gu2024surveyllmjudge}
+Jiawei Gu, Xuhui Jiang, Zhichao Shi, Hexiang Tan, Xuehao Zhai, Chengjin Xu, Wei
+  Li, Yinghan Shen, Shengjie Ma, Honghao Liu, Saizhuo Wang, Kun Zhang, Yuanzhuo
+  Wang, Wen Gao, Lionel Ni, and Jian Guo.
+\newblock A survey on {LLM}-as-a-judge.
+\newblock \emph{arXiv preprint arXiv:2411.15594}, 2024.
+
+\bibitem[Gu et~al.(2025)Gu, Tafjord, Kuehl, Haddad, Dodge, and
+  Hajishirzi]{gu2024olmes}
+Yuling Gu, Oyvind Tafjord, Bailey Kuehl, Dany Haddad, Jesse Dodge, and Hannaneh
+  Hajishirzi.
+\newblock {OLMES}: A standard for language model evaluations.
+\newblock In \emph{Findings of the Association for Computational Linguistics:
+  NAACL 2025}, 2025.
+\newblock arXiv:2406.08446.
+
+\bibitem[Hofman et~al.(2023)Hofman, Chatzimparmpas, Sharma, Watts, and
+  Hullman]{hofman2023preregistration}
+Jake~M. Hofman, Angelos Chatzimparmpas, Amit Sharma, Duncan~J. Watts, and
+  Jessica Hullman.
+\newblock Pre-registration for predictive modeling.
+\newblock \emph{arXiv preprint arXiv:2311.18807}, 2023.
+
+\bibitem[Holm(1979)]{holm1979simple}
+Sture Holm.
+\newblock A simple sequentially rejective multiple test procedure.
+\newblock \emph{Scandinavian Journal of Statistics}, 6\penalty0 (2):\penalty0
+  65--70, 1979.
+
+\bibitem[Huang et~al.(2025)Huang, Hu, Ilhan, Tekin, Yahn, Xu, and
+  Liu]{huang2025safetytax}
+Tiansheng Huang, Sihao Hu, Fatih Ilhan, Selim~Furkan Tekin, Zachary Yahn,
+  Yichang Xu, and Ling Liu.
+\newblock Safety tax: Safety alignment makes your large reasoning models less
+  reasonable.
+\newblock \emph{arXiv preprint arXiv:2503.00555}, 2025.
+
+\bibitem[{International Conference on Harmonisation}(1998)]{iche9}
+{International Conference on Harmonisation}.
+\newblock Statistical principles for clinical trials.
+\newblock \emph{ICH Harmonised Tripartite Guideline E9}, 1998.
+
+\bibitem[Ioannidis(2005)]{ioannidis2005false}
+John P.~A. Ioannidis.
+\newblock Why most published research findings are false.
+\newblock \emph{PLoS Medicine}, 2\penalty0 (8):\penalty0 e124, 2005.
+
+\bibitem[Jafari~Meimandi et~al.(2025)Jafari~Meimandi, Ar\'{a}nguiz-Dias, Kim,
+  Saadeddin, Griffith, and Kochenderfer]{jafari2025imbalance}
+Kiana Jafari~Meimandi, Gabriela Ar\'{a}nguiz-Dias, Grace~Ra Kim, Lana
+  Saadeddin, Allie Griffith, and Mykel~J. Kochenderfer.
+\newblock The measurement imbalance in agentic {AI} evaluation undermines
+  industry productivity claims.
+\newblock \emph{arXiv preprint arXiv:2506.02064}, 2025.
+
+\bibitem[Jiang et~al.(2025)Jiang, Xu, Li, Niu, Xiang, Li, Lin, and
+  Poovendran]{jiang2025safechain}
+Fengqing Jiang, Zhangchen Xu, Yuetai Li, Luyao Niu, Zhen Xiang, Bo~Li,
+  Bill~Yuchen Lin, and Radha Poovendran.
+\newblock {SafeChain}: Safety of language models with long chain-of-thought
+  reasoning capabilities.
+\newblock In \emph{Findings of the Association for Computational Linguistics:
+  ACL 2025}, pages 23303--23320. Association for Computational Linguistics,
+  2025.
+\newblock arXiv:2502.12025.
+
+\bibitem[Lakens(2017)]{lakens2017equivalence}
+Dani\"{e}l Lakens.
+\newblock Equivalence tests: A practical primer for t tests, correlations, and
+  meta-analyses.
+\newblock \emph{Social Psychological and Personality Science}, 8\penalty0
+  (4):\penalty0 355--362, 2017.
+
+\bibitem[Lin et~al.(2022)Lin, Hilton, and Evans]{lin2022truthfulqa}
+Stephanie Lin, Jacob Hilton, and Owain Evans.
+\newblock {TruthfulQA}: Measuring how models mimic human falsehoods.
+\newblock In \emph{Proceedings of the 60th Annual Meeting of the Association
+  for Computational Linguistics}, pages 3214--3252. Association for
+  Computational Linguistics, 2022.
+
+\bibitem[Ma et~al.(2025)Ma, Gao, et~al.]{ma2025safetyatscale}
+Xingjun Ma, Yifeng Gao, et~al.
+\newblock Safety at scale: A comprehensive survey of large model and agent
+  safety, 2025.
+\newblock arXiv:2502.05206.
+
+\bibitem[MacDiarmid et~al.(2025)MacDiarmid, Wright, Uesato, Benton, Kutasov,
+  Price, Bouscal, Bowman, Bricken, Cloud, Denison, Gasteiger, Greenblatt,
+  Leike, Lindsey, Mikulik, Perez, Rodrigues, Thomas, Webson, Ziegler, and
+  Hubinger]{macdiarmid2025emergent}
+Monte MacDiarmid, Benjamin Wright, Jonathan Uesato, Joe Benton, Jon Kutasov,
+  Sara Price, Naia Bouscal, Sam Bowman, Trenton Bricken, Alex Cloud, Carson
+  Denison, Johannes Gasteiger, Ryan Greenblatt, Jan Leike, Jack Lindsey, Vlad
+  Mikulik, Ethan Perez, Alex Rodrigues, Drake Thomas, Albert Webson, Daniel
+  Ziegler, and Evan Hubinger.
+\newblock Natural emergent misalignment from reward hacking in production {RL},
+  2025.
+\newblock Anthropic.
+
+\bibitem[Meinke et~al.(2024)Meinke, Schoen, Scheurer, Balesni, Shah, and
+  Hobbhahn]{meinke2024frontier}
+Alexander Meinke, Bronson Schoen, J{\'e}r{\'e}my Scheurer, Mikita Balesni,
+  Rusheb Shah, and Marius Hobbhahn.
+\newblock Frontier models are capable of in-context scheming, 2024.
+\newblock Apollo Research.
+
+\bibitem[Mou et~al.(2024)Mou, Zhang, and Ye]{mou2024sgbench}
+Yutao Mou, Shikun Zhang, and Wei Ye.
+\newblock {SG-Bench}: Evaluating {LLM} safety generalization across diverse
+  tasks and prompt types.
+\newblock In \emph{Advances in Neural Information Processing Systems: Datasets
+  and Benchmarks Track}, 2024.
+\newblock arXiv:2410.21965.
+
+\bibitem[Myrzakhan et~al.(2024)Myrzakhan, Bsharat, and
+  Shen]{myrzakhan2024openllm}
+Aidar Myrzakhan, Sondos~Mahmoud Bsharat, and Zhiqiang Shen.
+\newblock Open-{LLM}-leaderboard: From multi-choice to open-style questions for
+  {LLMs} evaluation, benchmark, and arena.
+\newblock \emph{arXiv preprint arXiv:2406.07545}, 2024.
+
+\bibitem[{National Institute of Standards and Technology}(2026)]{nistai8002026}
+{National Institute of Standards and Technology}.
+\newblock {NIST AI} 800-2: Practices for automated benchmark evaluations of
+  language models.
+\newblock Initial Public Draft, January 2026.
+\newblock Public comment period through March 31, 2026.
+
+\bibitem[Nosek et~al.(2018)Nosek, Ebersole, DeHaven, and
+  Mellor]{nosek2018preregistration}
+Brian~A. Nosek, Charles~R. Ebersole, Alexander~C. DeHaven, and David~T. Mellor.
+\newblock The preregistration revolution.
+\newblock \emph{Proceedings of the National Academy of Sciences}, 115\penalty0
+  (11):\penalty0 2600--2606, 2018.
+
+\bibitem[{Open Science Collaboration}(2015)]{opensciencecollab2015replication}
+{Open Science Collaboration}.
+\newblock Estimating the reproducibility of psychological science.
+\newblock \emph{Science}, 349\penalty0 (6251):\penalty0 aac4716, 2015.
+
+\bibitem[Parrish et~al.(2022)Parrish, Chen, Nangia, Padmakumar, Phang,
+  Thompson, Htut, and Bowman]{parrish2022bbq}
+Alicia Parrish, Angelica Chen, Nikita Nangia, Vishakh Padmakumar, Jason Phang,
+  Jana Thompson, Phu~Mon Htut, and Samuel Bowman.
+\newblock {BBQ}: A hand-built bias benchmark for question answering.
+\newblock In \emph{Findings of the Association for Computational Linguistics:
+  ACL 2022}, pages 2086--2105. Association for Computational Linguistics, 2022.
+
+\bibitem[Perez et~al.(2023)Perez, Ringer, Luko\v{s}i\={u}t\.{e}, Nguyen,
+  et~al.]{perez2023discovering}
+Ethan Perez, Sam Ringer, Kamil\.{e} Luko\v{s}i\={u}t\.{e}, Karina Nguyen,
+  et~al.
+\newblock Discovering language model behaviors with model-written evaluations.
+\newblock In \emph{Findings of the Association for Computational Linguistics:
+  ACL 2023}, pages 13387--13434. Association for Computational Linguistics,
+  2023.
+
+\bibitem[Pezeshkpour and Hruschka(2024)]{pezeshkpour2024ordersensitivity}
+Pouya Pezeshkpour and Estevam Hruschka.
+\newblock Large language models sensitivity to the order of options in
+  multiple-choice questions.
+\newblock In \emph{Findings of the Association for Computational Linguistics:
+  NAACL 2024}, 2024.
+\newblock arXiv:2308.11483.
+
+\bibitem[Ren et~al.(2024)Ren, Basart, Khoja, Pan, Gatti, Phan, Yin, Mazeika,
+  Mukobi, Kim, Fitz, and Hendrycks]{ren2024safetywashing}
+Richard Ren, Steven Basart, Adam Khoja, Alexander Pan, Alice Gatti, Long Phan,
+  Xuwang Yin, Mantas Mazeika, Gabriel Mukobi, Ryan~Hwang Kim, Stephen Fitz, and
+  Dan Hendrycks.
+\newblock Safetywashing: Do {AI} safety benchmarks actually measure safety
+  progress?
+\newblock In \emph{Advances in Neural Information Processing Systems: Datasets
+  and Benchmarks Track}, 2024.
+
+\bibitem[Rosser and Foerster(2025)]{rosser2025agentbreeder}
+J~Rosser and Jakob~Nicolaus Foerster.
+\newblock {AgentBreeder}: Mitigating the {AI} safety risks of multi-agent
+  scaffolds via self-improvement.
+\newblock In \emph{Advances in Neural Information Processing Systems}, 2025.
+\newblock Spotlight. arXiv:2502.00757.
+
+\bibitem[R\"{o}ttger et~al.(2024)R\"{o}ttger, Kirk, Vidgen, Attanasio, Bianchi,
+  and Hovy]{rottger2024xstest}
+Paul R\"{o}ttger, Hannah~Rose Kirk, Bertie Vidgen, Giuseppe Attanasio, Federico
+  Bianchi, and Dirk Hovy.
+\newblock {XSTest}: A test suite for identifying exaggerated safety behaviours
+  in large language models.
+\newblock In \emph{Proceedings of the 2024 Conference of the North American
+  Chapter of the Association for Computational Linguistics: Human Language
+  Technologies}, pages 5377--5400. Association for Computational Linguistics,
+  2024.
+\newblock arXiv:2308.01263.
+
+\bibitem[Schuirmann(1987)]{schuirmann1987tost}
+Donald~J. Schuirmann.
+\newblock A comparison of the two one-sided tests procedure and the power
+  approach for assessing the equivalence of average bioavailability.
+\newblock \emph{Journal of Pharmacokinetics and Biopharmaceutics}, 15\penalty0
+  (6):\penalty0 657--680, 1987.
+
+\bibitem[Schulz et~al.(2010)Schulz, Altman, Moher, and {CONSORT
+  Group}]{schulz2010consort}
+Kenneth~F. Schulz, Douglas~G. Altman, David Moher, and {CONSORT Group}.
+\newblock {CONSORT} 2010 statement: Updated guidelines for reporting parallel
+  group randomised trials.
+\newblock \emph{BMJ}, 340:\penalty0 c332, 2010.
+
+\bibitem[Shankar et~al.(2024)Shankar, Zamfirescu-Pereira, Hartmann,
+  Parameswaran, and Arawjo]{shankar2024validates}
+Shreya Shankar, J.D. Zamfirescu-Pereira, Bj\"{o}rn Hartmann, Aditya~G.
+  Parameswaran, and Ian Arawjo.
+\newblock Who validates the validators? aligning {LLM}-assisted evaluation of
+  {LLM} outputs with human preferences.
+\newblock In \emph{ACM Symposium on User Interface Software and Technology
+  (UIST)}, 2024.
+\newblock arXiv:2404.12272.
+
+\bibitem[Sharma et~al.(2024)Sharma, Tong, Korbak, Duvenaud, Askell, Bowman,
+  Cheng, Durmus, Hatfield-Dodds, Johnston, Kravec, Maxwell, McCandlish,
+  Ndousse, Rausch, Schiefer, Yan, Zhang, and Perez]{sharma2024sycophancy}
+Mrinank Sharma, Meg Tong, Tomasz Korbak, David Duvenaud, Amanda Askell,
+  Samuel~R. Bowman, Newton Cheng, Esin Durmus, Zac Hatfield-Dodds, Scott~R.
+  Johnston, Shauna Kravec, Timothy Maxwell, Sam McCandlish, Kamal Ndousse,
+  Oliver Rausch, Nicholas Schiefer, Da~Yan, Miranda Zhang, and Ethan Perez.
+\newblock Towards understanding sycophancy in language models.
+\newblock In \emph{International Conference on Learning Representations}, 2024.
+
+\bibitem[Simonsohn et~al.(2020)Simonsohn, Simmons, and
+  Nelson]{simonsohn2020specification}
+Uri Simonsohn, Joseph~P. Simmons, and Leif~D. Nelson.
+\newblock Specification curve analysis.
+\newblock \emph{Nature Human Behaviour}, 4\penalty0 (11):\penalty0 1208--1214,
+  2020.
+
+\bibitem[Simson et~al.(2024)Simson, Pfisterer, and
+  Kern]{simson2024onemodemanyscores}
+Jan Simson, Florian Pfisterer, and Christoph Kern.
+\newblock One model many scores: Using multiverse analysis to prevent fairness
+  hacking and evaluate the influence of model design decisions.
+\newblock In \emph{Proceedings of the 2024 ACM Conference on Fairness,
+  Accountability, and Transparency}, pages 1305--1320. ACM, 2024.
+
+\bibitem[Strathern(1997)]{strathern1997improving}
+Marilyn Strathern.
+\newblock `improving ratings': audit in the {British} university system.
+\newblock \emph{European Review}, 5\penalty0 (3):\penalty0 305--321, 1997.
+
+\bibitem[Taylor et~al.(2025)Taylor, Chua, Betley, Treutlein, and
+  Evans]{taylor2025school}
+Mia Taylor, James Chua, Jan Betley, Johannes Treutlein, and Owain Evans.
+\newblock School of reward hacks: Hacking harmless tasks generalizes to
+  misaligned behavior in {LLMs}, 2025.
+
+\bibitem[{U.S. Department of Commerce and U.S. Department of
+  State}(2024)]{aisinetwork2024}
+{U.S. Department of Commerce and U.S. Department of State}.
+\newblock International network of {AI} safety institutes.
+\newblock
+  \url{https://www.nist.gov/news-events/news/2024/11/fact-sheet-us-department-commerce-us-department-state-launch-international},
+  November 2024.
+\newblock Launched at inaugural convening in San Francisco, November 2024.
+  Members: Australia, Canada, EU, France, Japan, Kenya, Republic of Korea,
+  Singapore, UK, US.
+
+\bibitem[Vijayvargiya et~al.(2026)Vijayvargiya, Soni, Zhou, Wang, Dziri,
+  Neubig, and Sap]{vijayvargiya2025openagentsafety}
+Sanidhya Vijayvargiya, Aditya~Bharat Soni, Xuhui Zhou, Zora~Zhiruo Wang, Nouha
+  Dziri, Graham Neubig, and Maarten Sap.
+\newblock {OpenAgentSafety}: A comprehensive framework for evaluating
+  real-world {AI} agent safety.
+\newblock In \emph{International Conference on Learning Representations}, 2026.
+\newblock arXiv:2507.06134.
+
+\bibitem[Wang et~al.(2025{\natexlab{a}})Wang, Liu, Bi, Zhang, Li, Ma, He, Yu,
+  Li, Fang, Zhang, and Hooi]{wang2025safetyreasoningsurvey}
+Cheng Wang, Yue Liu, Baolong Bi, Duzhen Zhang, Zhong-Zhi Li, Yingwei Ma, Yufei
+  He, Shengju Yu, Xinfeng Li, Junfeng Fang, Jiaheng Zhang, and Bryan Hooi.
+\newblock Safety in large reasoning models: A survey.
+\newblock In \emph{Findings of the Association for Computational Linguistics:
+  EMNLP 2025}, pages 3468--3482, 2025{\natexlab{a}}.
+\newblock arXiv:2504.17704.
+
+\bibitem[Wang et~al.(2025{\natexlab{b}})Wang, Zhao, Qiang, Xi, Qin, and
+  Liu]{wang2024leastincorrect}
+Haochun Wang, Sendong Zhao, Zewen Qiang, Nuwa Xi, Bing Qin, and Ting Liu.
+\newblock {LLMs} may perform {MCQA} by selecting the least incorrect option.
+\newblock In \emph{Proceedings of the 31st International Conference on
+  Computational Linguistics}, 2025{\natexlab{b}}.
+\newblock COLING 2025. arXiv:2402.01349.
+
+\bibitem[Wang et~al.(2024{\natexlab{a}})Wang, Hu, Ma, R\"{o}ttger, and
+  Plank]{wang2024mcrobust}
+Xinpeng Wang, Chengzhi Hu, Bolei Ma, Paul R\"{o}ttger, and Barbara Plank.
+\newblock Look at the text: Instruction-tuned language models are more robust
+  multiple choice selectors than you think.
+\newblock In \emph{Conference on Language Modeling}, 2024{\natexlab{a}}.
+\newblock COLM 2024. arXiv:2404.08382.
+
+\bibitem[Wang et~al.(2024{\natexlab{b}})Wang, Ma, Zhang, Ni, Chandra, Guo, Ren,
+  Arulraj, He, Jiang, Li, Ku, Wang, Zhuang, Fan, Yue, and
+  Chen]{wang2024mmlupro}
+Yubo Wang, Xueguang Ma, Ge~Zhang, Yuansheng Ni, Abhranil Chandra, Shiguang Guo,
+  Weiming Ren, Aaran Arulraj, Xuan He, Ziyan Jiang, Tianle Li, Max Ku, Kai
+  Wang, Alex Zhuang, Rongqi Fan, Xiang Yue, and Wenhu Chen.
+\newblock {MMLU-Pro}: A more robust and challenging multi-task language
+  understanding benchmark.
+\newblock In \emph{Advances in Neural Information Processing Systems: Datasets
+  and Benchmarks Track}, 2024{\natexlab{b}}.
+
+\bibitem[Wei et~al.(2024)Wei, Wu, Huang, and Chen]{wei2024unveilingbias}
+Sheng-Lun Wei, Cheng-Kuang Wu, Hen-Hsen Huang, and Hsin-Hsi Chen.
+\newblock Unveiling selection biases: Exploring order and token sensitivity in
+  large language models.
+\newblock In \emph{Findings of the Association for Computational Linguistics:
+  ACL 2024}, 2024.
+\newblock arXiv:2406.03009.
+
+\bibitem[Weidinger et~al.(2024)Weidinger, Barnhart, Brennan, Butterfield,
+  Young, Hawkins, Hendricks, Comanescu, Chang, Rodriguez,
+  et~al.]{weidinger2024holistic}
+Laura Weidinger, Joslyn Barnhart, Jenny Brennan, Christina Butterfield, Susie
+  Young, Will Hawkins, Lisa~Anne Hendricks, Ramona Comanescu, Oscar Chang,
+  Mikel Rodriguez, et~al.
+\newblock Holistic safety and responsibility evaluations of advanced {AI}
+  models.
+\newblock \emph{arXiv preprint arXiv:2404.14068}, 2024.
+\newblock Google DeepMind.
+
+\bibitem[Yao et~al.(2023)Yao, Zhao, Yu, Du, Shafran, Narasimhan, and
+  Cao]{yao2023react}
+Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan,
+  and Yuan Cao.
+\newblock {ReAct}: Synergizing reasoning and acting in language models.
+\newblock In \emph{International Conference on Learning Representations}, 2023.
+
+\bibitem[Ye et~al.(2025)Ye, Wang, Huang, Chen, Zhang, Moniz, Gao, Geyer, Huang,
+  Chen, Chawla, and Zhang]{ye2025biasllmjudge}
+Jiayi Ye, Yanbo Wang, Yue Huang, Dongping Chen, Qihui Zhang, Nuno Moniz, Tian
+  Gao, Werner Geyer, Chao Huang, Pin-Yu Chen, Nitesh~V. Chawla, and Xiangliang
+  Zhang.
+\newblock Justice or prejudice? quantifying biases in {LLM}-as-a-judge.
+\newblock In \emph{International Conference on Learning Representations}, 2025.
+\newblock arXiv:2410.02736.
+
+\bibitem[Yin et~al.(2024)Yin, Pang, Ding, Chen, Bi, Xiong, Huang, Xiang, Shao,
+  and Chen]{yin2024safeagentbench}
+Sheng Yin, Xianghe Pang, Yuanzhuo Ding, Menglan Chen, Yutong Bi, Yichen Xiong,
+  Wenhao Huang, Zhen Xiang, Jing Shao, and Siheng Chen.
+\newblock {SafeAgentBench}: A benchmark for safe task planning of embodied
+  {LLM} agents.
+\newblock \emph{arXiv preprint arXiv:2412.13178}, 2024.
+
+\bibitem[Zaharia et~al.(2024)Zaharia, Khattab, Chen, Davis, Miller, Potts, Zou,
+  Carbin, Frankle, Rao, and Ghodsi]{zaharia2024compound}
+Matei Zaharia, Omar Khattab, Lingjiao Chen, Jared~Quincy Davis, Heather Miller,
+  Chris Potts, James Zou, Michael Carbin, Jonathan Frankle, Naveen Rao, and Ali
+  Ghodsi.
+\newblock The shift from models to compound {AI} systems.
+\newblock \emph{Berkeley Artificial Intelligence Research Blog}, February 2024.
+\newblock \url{https://bair.berkeley.edu/blog/2024/02/18/compound-ai-systems/}.
+
+\bibitem[Zhang et~al.(2025)Zhang, Huang, Mei, Yao, Wang, Zhan, Wang, and
+  Zhang]{zhang2025asb}
+Hanrong Zhang, Jingyuan Huang, Kai Mei, Yifei Yao, Zhenting Wang, Chenlu Zhan,
+  Hongwei Wang, and Yongfeng Zhang.
+\newblock Agent security bench ({ASB}): Formalizing and benchmarking attacks
+  and defenses in {LLM}-based agents.
+\newblock In \emph{International Conference on Learning Representations}, 2025.
+\newblock arXiv:2410.02644.
+
+\bibitem[Zhang et~al.(2024)Zhang, Cui, Lu, Zhou, Yang, Wang, and
+  Huang]{zhang2024agentsafetybench}
+Zhexin Zhang, Shiyao Cui, Yida Lu, Jingzhuo Zhou, Junxiao Yang, Hongning Wang,
+  and Minlie Huang.
+\newblock {Agent-SafetyBench}: Evaluating the safety of {LLM} agents.
+\newblock \emph{arXiv preprint arXiv:2412.14470}, 2024.
+
+\bibitem[Zheng et~al.(2024)Zheng, Zhou, Meng, Zhou, and
+  Huang]{zheng2024selectionbias}
+Chujie Zheng, Hao Zhou, Fandong Meng, Jie Zhou, and Minlie Huang.
+\newblock Large language models are not robust multiple choice selectors.
+\newblock In \emph{International Conference on Learning Representations}, 2024.
+\newblock Spotlight. arXiv:2309.03882.
+
+\bibitem[Zheng et~al.(2023)Zheng, Chiang, Sheng, Zhuang, Wu, Zhuang, Lin, Li,
+  Li, Xing, Zhang, Gonzalez, and Stoica]{zheng2023judging}
+Lianmin Zheng, Wei-Lin Chiang, Ying Sheng, Siyuan Zhuang, Zhanghao Wu, Yonghao
+  Zhuang, Zi~Lin, Zhuohan Li, Dacheng Li, Eric~P. Xing, Hao Zhang, Joseph~E.
+  Gonzalez, and Ion Stoica.
+\newblock Judging {LLM}-as-a-judge with {MT-Bench} and chatbot arena.
+\newblock In \emph{Advances in Neural Information Processing Systems: Datasets
+  and Benchmarks Track}, 2023.
+
+\end{thebibliography}

@@ -1,0 +1,314 @@
+{
+  "meta": {
+    "analysis": "mc_vs_openended_comparison",
+    "analysis_date": "2026-02-13T07:35:02.994994",
+    "data_file": "results/experiment_results.jsonl",
+    "total_rows_scored": 42742,
+    "models_included": [
+      "deepseek",
+      "gpt52",
+      "llama4",
+      "opus"
+    ],
+    "mc_benchmarks": [
+      "bbq",
+      "truthfulqa",
+      "sycophancy"
+    ],
+    "openended_benchmarks": [
+      "xstest_orbench"
+    ],
+    "filters": {
+      "status": "success",
+      "context_condition": "short",
+      "model_id_in": [
+        "deepseek",
+        "gpt52",
+        "llama4",
+        "opus"
+      ]
+    },
+    "parse_failures": {
+      "bbq_parse_fail": 9,
+      "syc_parse_fail": 185,
+      "tqa_parse_fail": 236
+    }
+  },
+  "comparison_table": [
+    {
+      "benchmark": "bbq",
+      "type": "MC",
+      "direct_rate": 0.91131,
+      "react_rate": 0.912882,
+      "react_RD": 0.001572,
+      "react_RD_SE": 0.007039,
+      "multi_agent_rate": 0.842658,
+      "multi_agent_RD": -0.068652,
+      "multi_agent_RD_SE": 0.008122,
+      "map_reduce_rate": 0.808274,
+      "map_reduce_RD": -0.103036,
+      "map_reduce_RD_SE": 0.008533,
+      "direct_n": 3236,
+      "react_n": 3237,
+      "multi_agent_n": 3235,
+      "map_reduce_n": 3239
+    },
+    {
+      "benchmark": "truthfulqa",
+      "type": "MC",
+      "direct_rate": 0.815439,
+      "react_rate": 0.833531,
+      "react_RD": 0.018092,
+      "react_RD_SE": 0.009257,
+      "multi_agent_rate": 0.865601,
+      "multi_agent_RD": 0.050162,
+      "multi_agent_RD_SE": 0.008886,
+      "map_reduce_rate": 0.589782,
+      "map_reduce_RD": -0.225657,
+      "map_reduce_RD_SE": 0.010807,
+      "direct_n": 3381,
+      "react_n": 3370,
+      "multi_agent_n": 3378,
+      "map_reduce_n": 3347
+    },
+    {
+      "benchmark": "sycophancy",
+      "type": "MC",
+      "direct_rate": 0.637444,
+      "react_rate": 0.624257,
+      "react_RD": -0.013187,
+      "react_RD_SE": 0.015185,
+      "multi_agent_rate": 0.645526,
+      "multi_agent_RD": 0.008082,
+      "multi_agent_RD_SE": 0.015065,
+      "map_reduce_rate": 0.614434,
+      "map_reduce_RD": -0.02301,
+      "map_reduce_RD_SE": 0.015218,
+      "direct_n": 2019,
+      "react_n": 2020,
+      "multi_agent_n": 2034,
+      "map_reduce_n": 2023
+    },
+    {
+      "benchmark": "xstest_orbench",
+      "type": "Open-ended",
+      "direct_rate": 0.772794,
+      "react_rate": 0.762555,
+      "react_RD": -0.010239,
+      "react_RD_SE": 0.013187,
+      "multi_agent_rate": 0.79037,
+      "multi_agent_RD": 0.017576,
+      "multi_agent_RD_SE": 0.012892,
+      "map_reduce_rate": 0.742857,
+      "map_reduce_RD": -0.029937,
+      "map_reduce_RD_SE": 0.013346,
+      "direct_n": 2051,
+      "react_n": 2051,
+      "multi_agent_n": 2056,
+      "map_reduce_n": 2065
+    }
+  ],
+  "mc_vs_openended": {
+    "react": {
+      "mc_mean_RD": 0.002159041115068261,
+      "mc_mean_SE": 0.0063754563278224695,
+      "mc_individual_RDs": {
+        "bbq": 0.0015720388447389988,
+        "truthfulqa": 0.01809193810410248,
+        "sycophancy": -0.013186853603636695
+      },
+      "openended_RD": -0.010238907849829282,
+      "openended_SE": 0.013186738071394073,
+      "difference_OE_minus_MC": -0.012397948964897543,
+      "difference_SE": 0.014647064700871824,
+      "difference_z": -0.8464459752239363,
+      "difference_p": 0.39730399999407096
+    },
+    "multi_agent": {
+      "mc_mean_RD": -0.0034694434207471017,
+      "mc_mean_SE": 0.006428054648518659,
+      "mc_individual_RDs": {
+        "bbq": -0.06865183608668324,
+        "truthfulqa": 0.05016172814017106,
+        "sycophancy": 0.008081777684270874
+      },
+      "openended_RD": 0.017575890663565463,
+      "openended_SE": 0.012891666901770299,
+      "difference_OE_minus_MC": 0.021045334084312566,
+      "difference_SE": 0.014405379622576497,
+      "difference_z": 1.4609357500950377,
+      "difference_p": 0.14403307448559097
+    },
+    "map_reduce": {
+      "mc_mean_RD": -0.11723456542319784,
+      "mc_mean_SE": 0.006840984939476519,
+      "mc_individual_RDs": {
+        "bbq": -0.10303610088877413,
+        "truthfulqa": -0.22565732493228519,
+        "sycophancy": -0.02301027044853421
+      },
+      "openended_RD": -0.029936616284739093,
+      "openended_SE": 0.013345882838832724,
+      "difference_OE_minus_MC": 0.08729794913845874,
+      "difference_SE": 0.01499705516726515,
+      "difference_z": 5.821006068511937,
+      "difference_p": 5.8494445475319696e-09
+    }
+  },
+  "summary_statistics": {
+    "direction_consistency": "1/3",
+    "oe_degradation_gte_mc": "2/3",
+    "grand_mean_RD_mc": -0.039514989242958896,
+    "grand_mean_RD_openended": -0.00753321115700097,
+    "interpretation": "PARTIAL EVIDENCE AGAINST MC-FORMAT CONFOUND: The open-ended benchmark degrades in the same direction as MC benchmarks, though with smaller magnitude. This suggests scaffolds have a real safety effect, though MC formatting disruption may amplify the measured effect."
+  },
+  "parse_failure_by_config": {
+    "direct": {
+      "total": 8636,
+      "parse_failures": 80,
+      "failure_rate": 0.009264
+    },
+    "react": {
+      "total": 8627,
+      "parse_failures": 79,
+      "failure_rate": 0.009157
+    },
+    "multi_agent": {
+      "total": 8647,
+      "parse_failures": 106,
+      "failure_rate": 0.012259
+    },
+    "map_reduce": {
+      "total": 8609,
+      "parse_failures": 165,
+      "failure_rate": 0.019166
+    }
+  },
+  "parse_failure_note": "Parse failure rates are similar across configs, suggesting MC formatting disruption is minimal.",
+  "benchmark_details": {
+    "bbq": {
+      "type": "MC",
+      "direct_rate": 0.9113102595797281,
+      "direct_n": 3236,
+      "scaffold_RDs": {
+        "react": {
+          "rate": 0.9128822984244671,
+          "n": 3237,
+          "RD": 0.0015720388447389988,
+          "SE": 0.007038818498813139,
+          "RD_CI_lo": -0.012224045412934753,
+          "RD_CI_hi": 0.015368123102412751
+        },
+        "multi_agent": {
+          "rate": 0.8426584234930449,
+          "n": 3235,
+          "RD": -0.06865183608668324,
+          "SE": 0.008121642784224637,
+          "RD_CI_lo": -0.08457025594376352,
+          "RD_CI_hi": -0.05273341622960295
+        },
+        "map_reduce": {
+          "rate": 0.808274158690954,
+          "n": 3239,
+          "RD": -0.10303610088877413,
+          "SE": 0.008533497239554384,
+          "RD_CI_lo": -0.11976175547830073,
+          "RD_CI_hi": -0.08631044629924753
+        }
+      }
+    },
+    "truthfulqa": {
+      "type": "MC",
+      "direct_rate": 0.8154392191659272,
+      "direct_n": 3381,
+      "scaffold_RDs": {
+        "react": {
+          "rate": 0.8335311572700297,
+          "n": 3370,
+          "RD": 0.01809193810410248,
+          "SE": 0.009256731038729689,
+          "RD_CI_lo": -5.125473180771223e-05,
+          "RD_CI_hi": 0.03623513094001267
+        },
+        "multi_agent": {
+          "rate": 0.8656009473060983,
+          "n": 3378,
+          "RD": 0.05016172814017106,
+          "SE": 0.008885504651480275,
+          "RD_CI_lo": 0.03274613902326972,
+          "RD_CI_hi": 0.06757731725707239
+        },
+        "map_reduce": {
+          "rate": 0.589781894233642,
+          "n": 3347,
+          "RD": -0.22565732493228519,
+          "SE": 0.010807325692718705,
+          "RD_CI_lo": -0.24683968329001385,
+          "RD_CI_hi": -0.20447496657455652
+        }
+      }
+    },
+    "sycophancy": {
+      "type": "MC",
+      "direct_rate": 0.637444279346211,
+      "direct_n": 2019,
+      "scaffold_RDs": {
+        "react": {
+          "rate": 0.6242574257425743,
+          "n": 2020,
+          "RD": -0.013186853603636695,
+          "SE": 0.01518505696759576,
+          "RD_CI_lo": -0.04294956526012438,
+          "RD_CI_hi": 0.016575858052850993
+        },
+        "multi_agent": {
+          "rate": 0.6455260570304818,
+          "n": 2034,
+          "RD": 0.008081777684270874,
+          "SE": 0.015065380999266345,
+          "RD_CI_lo": -0.02144636907429116,
+          "RD_CI_hi": 0.03760992444283291
+        },
+        "map_reduce": {
+          "rate": 0.6144340088976767,
+          "n": 2023,
+          "RD": -0.02301027044853421,
+          "SE": 0.015217516575095976,
+          "RD_CI_lo": -0.05283660293572232,
+          "RD_CI_hi": 0.006816062038653904
+        }
+      }
+    },
+    "xstest_orbench": {
+      "type": "Open-ended",
+      "direct_rate": 0.772793759141882,
+      "direct_n": 2051,
+      "scaffold_RDs": {
+        "react": {
+          "rate": 0.7625548512920527,
+          "n": 2051,
+          "RD": -0.010238907849829282,
+          "SE": 0.013186738071394073,
+          "RD_CI_lo": -0.03608491446976166,
+          "RD_CI_hi": 0.0156070987701031
+        },
+        "multi_agent": {
+          "rate": 0.7903696498054474,
+          "n": 2056,
+          "RD": 0.017575890663565463,
+          "SE": 0.012891666901770299,
+          "RD_CI_lo": -0.007691776463904322,
+          "RD_CI_hi": 0.04284355779103525
+        },
+        "map_reduce": {
+          "rate": 0.7428571428571429,
+          "n": 2065,
+          "RD": -0.029936616284739093,
+          "SE": 0.013345882838832724,
+          "RD_CI_lo": -0.05609454664885123,
+          "RD_CI_hi": -0.0037786859206269535
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,38 @@
+% residual_nnh_table.tex
+% Residual NNH after structure preservation (option-preserving experiment)
+% Generated: 2026-02-14
+% Source: analysis/residual_nnh.py
+% Place in Section 4.10 (NNH) or Discussion, after the headline NNH paragraph.
+
+% ── Table ─────────────────────────────────────────────────────────────────
+
+\begin{table}[h]
+\centering
+\caption{Residual Number Needed to Harm after structure preservation.
+  Headline NNH is derived from the four-benchmark sample (Table~\ref{tab:model-config}, $N = 62{,}808$).  Residual NNH derives from the option-preserving experiment ($n = 200$--$700$ per model, Table~\ref{tab:option_preserving}): $\text{NNH}_{\text{residual}} = \lceil 1 / |\text{RD}_{\text{residual}}| \rceil$ where $\text{RD}_{\text{residual}} = p_{\text{direct}} - p_{\text{opt-pres~MR}}$.  Recovery = fraction of standard MR degradation eliminated by restoring MC options.  These are exploratory estimates from the option-preserving experiment; values should be interpreted alongside the per-model RDs in Table~\ref{tab:model-config}.}
+\label{tab:residual_nnh}
+\small
+\begin{tabular}{@{}lcccl@{}}
+\toprule
+\textbf{Model} & \textbf{Headline NNH\textsuperscript{a}} & \textbf{Residual NNH\textsuperscript{b}} & \textbf{Recovery} & \textbf{Dominant mechanism} \\
+\midrule
+Opus 4.6        & 7   & 67  & 89\% & Format disruption \\
+DeepSeek V3.2   & 7   & 10  & 64\% & Mixed \\
+Mistral Large~2 & 17  & 20  & 73\% & Mixed \\
+GPT-5.2         & 12  & 12  & 40\% & Reasoning disruption \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Pooled (H1c)}} \\
+All 6 models    & 14  & --- & ---  & --- \\
+\bottomrule
+\multicolumn{5}{@{}p{11.5cm}@{}}{\footnotesize
+  \textsuperscript{a}From full-sample H2 interaction model (Table~\ref{tab:model-config}, $N = 62{,}808$).
+  \textsuperscript{b}From option-preserving experiment (Table~\ref{tab:option_preserving}; $n = 200$--$700$ per model); exploratory.
+  Llama~4 excluded (insufficient standard MR degradation, 5.0~pp).
+  Gemini~3~Pro excluded from option-preserving experiment (low MC parse rate).} \\
+\end{tabular}
+\end{table}
+
+% ── Paragraph for NNH section or Discussion ───────────────────────────────
+
+\paragraph{Residual NNH after structure preservation (exploratory).}
+The pooled headline $\text{NNH} = 14$ collapses two distinct map-reduce degradation sources: format disruption (MC option loss) and reasoning disruption from task decomposition.  The option-preserving experiment (Section~\ref{sec:option_preserving}, $n = 200$--$700$ per model) lets us separate them.  Subtracting the format-recoverable component yields a \emph{residual} NNH that indexes the safety cost of decomposition itself (Table~\ref{tab:residual_nnh}).  For Opus (89\% format-driven), residual NNH rises from 7 to 67, which means the headline substantially overstates the reasoning-level risk.  For GPT-5.2 (only 40\% recoverable), residual NNH stays at 12, close to the pooled headline; for DeepSeek (64\% recovery), residual NNH $= 10$ stays inside the high-risk zone ($< 20$).  Exploratory caveats apply: the option-preserving subset covers only TruthfulQA and BBQ (the two most format-vulnerable benchmarks), and the headline NNH derives from the full four-benchmark sample.  The headline figure is not a uniform risk in any case; it is a weighted average over models whose decomposition costs span from negligible (Opus, residual NNH~$= 67$) to severe (DeepSeek, residual NNH~$= 10$).  Residual NNH therefore gives practitioners a model-specific risk read once structure-preserving mitigations are in place.

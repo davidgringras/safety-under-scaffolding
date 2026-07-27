@@ -1,0 +1,76 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scaffold-safety"
+version = "0.1.0"
+description = "Open evaluation framework for deployment-configuration-aware AI safety testing"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "David Gringras"},
+]
+keywords = [
+    "ai-safety",
+    "llm-evaluation",
+    "scaffolding",
+    "agentic-ai",
+    "benchmark",
+    "clinical-trial-methodology",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    "litellm>=1.0.0",
+    "python-dotenv>=1.0.0",
+    "tqdm>=4.60.0",
+]
+
+[project.optional-dependencies]
+analysis = [
+    "numpy>=1.24.0",
+    "pandas>=2.0.0",
+    "scipy>=1.10.0",
+    "statsmodels>=0.14.0",
+    "matplotlib>=3.7.0",
+    "seaborn>=0.12.0",
+]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "ruff>=0.1.0",
+]
+all = [
+    "scaffold-safety[analysis,dev]",
+]
+
+[project.urls]
+Homepage = "https://github.com/davidgringras/safety-under-scaffolding"
+Documentation = "https://github.com/davidgringras/safety-under-scaffolding"
+Repository = "https://github.com/davidgringras/safety-under-scaffolding"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["scaffold_safety*"]
+
+[tool.pytest.ini_options]
+testpaths = ["scaffold_safety/tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"

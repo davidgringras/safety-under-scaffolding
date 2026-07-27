@@ -1,0 +1,88 @@
+{
+  "H3_config_benchmark": {
+    "wald_chi2": 911.4128249798976,
+    "wald_df": 9,
+    "wald_pvalue": 2.149386155892858e-190,
+    "lr_chi2": 942.9519530431571,
+    "lr_df": 9,
+    "lr_pvalue": 3.4298757125168506e-197,
+    "n_interaction_terms": 9,
+    "interaction_terms": [
+      "C(config_cat, Treatment(reference='direct'))[T.react]:C(benchmark_cat)[T.sycophancy]",
+      "C(config_cat, Treatment(reference='direct'))[T.multi_agent]:C(benchmark_cat)[T.sycophancy]",
+      "C(config_cat, Treatment(reference='direct'))[T.map_reduce]:C(benchmark_cat)[T.sycophancy]",
+      "C(config_cat, Treatment(reference='direct'))[T.react]:C(benchmark_cat)[T.truthfulqa]",
+      "C(config_cat, Treatment(reference='direct'))[T.multi_agent]:C(benchmark_cat)[T.truthfulqa]",
+      "C(config_cat, Treatment(reference='direct'))[T.map_reduce]:C(benchmark_cat)[T.truthfulqa]",
+      "C(config_cat, Treatment(reference='direct'))[T.react]:C(benchmark_cat)[T.xstest_orbench]",
+      "C(config_cat, Treatment(reference='direct'))[T.multi_agent]:C(benchmark_cat)[T.xstest_orbench]",
+      "C(config_cat, Treatment(reference='direct'))[T.map_reduce]:C(benchmark_cat)[T.xstest_orbench]"
+    ]
+  },
+  "safety_rates_by_config_benchmark": {
+    "bbq|direct": {
+      "safe_rate": 0.906875,
+      "n": 4800
+    },
+    "bbq|map_reduce": {
+      "safe_rate": 0.8222916666666666,
+      "n": 4800
+    },
+    "bbq|multi_agent": {
+      "safe_rate": 0.8295833333333333,
+      "n": 4800
+    },
+    "bbq|react": {
+      "safe_rate": 0.900625,
+      "n": 4800
+    },
+    "sycophancy|direct": {
+      "safe_rate": 0.29233333333333333,
+      "n": 3000
+    },
+    "sycophancy|map_reduce": {
+      "safe_rate": 0.31766666666666665,
+      "n": 3000
+    },
+    "sycophancy|multi_agent": {
+      "safe_rate": 0.313,
+      "n": 3000
+    },
+    "sycophancy|react": {
+      "safe_rate": 0.31533333333333335,
+      "n": 3000
+    },
+    "truthfulqa|direct": {
+      "safe_rate": 0.8314973480212158,
+      "n": 4902
+    },
+    "truthfulqa|map_reduce": {
+      "safe_rate": 0.6360669114647083,
+      "n": 4902
+    },
+    "truthfulqa|multi_agent": {
+      "safe_rate": 0.8735210118319053,
+      "n": 4902
+    },
+    "truthfulqa|react": {
+      "safe_rate": 0.8276213790289678,
+      "n": 4902
+    },
+    "xstest_orbench|direct": {
+      "safe_rate": 0.7093333333333334,
+      "n": 3000
+    },
+    "xstest_orbench|map_reduce": {
+      "safe_rate": 0.7563333333333333,
+      "n": 3000
+    },
+    "xstest_orbench|multi_agent": {
+      "safe_rate": 0.712,
+      "n": 3000
+    },
+    "xstest_orbench|react": {
+      "safe_rate": 0.664,
+      "n": 3000
+    }
+  }
+}

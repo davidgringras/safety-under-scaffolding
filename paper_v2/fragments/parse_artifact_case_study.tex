@@ -1,0 +1,85 @@
+% parse_artifact_case_study.tex
+% Two case studies for Methods section on measurement artifact fragility
+% Generated: 2026-02-12, updated with BBQ missing-choices artifact
+% Source: Production framework diagnostics (E9)
+
+% ============================================================
+% METHODS SECTION PARAGRAPH
+% ============================================================
+
+% Place this in the Methods section, under Scoring Pipeline or
+% as a standalone subsection like:
+% \subsection{Sensitivity of Automated Scoring to Implementation Details}
+
+During production framework evaluation (Section~\ref{sec:production-frameworks}),
+a parse-extraction bug produced an apparent 48-percentage-point safety
+difference between CrewAI and OpenAI Agents SDK on the AI factual recall
+benchmark, which on investigation turned out to be almost entirely artifactual
+in nature.  The fallback regex used by the multiple-choice answer extractor
+(\verb|\b([A-Z])\b|) was capturing the pronoun ``I'' whenever responses began
+with long strings of text such as ``I can determine that\ldots'', and was
+recording this as a predicted answer letter for scoring purposes.  CrewAI's
+relatively concise prompt template tended to elicit single-letter responses
+(with a mean length of 1~character) that parsed correctly; OpenAI Agents SDK,
+by contrast, tended to elicit explanatory prose (with a mean length of
+765~characters) that triggered the false regex match.  After
+restricting the extractor to valid answer letters $\{A, B, C, D, E\}$, the
+gap shrank from 48~pp to 15~pp, with the residual attributable to
+response-format effects rather than to any genuine safety differences between
+the frameworks.
+
+Our primary evaluation pipeline was insulated from this particular bug by an
+explicit \texttt{valid\_letters} constraint that filtered extracted letters
+against each benchmark's option set (such as $\{A, B\}$ for AI factual recall);
+the production framework scorer, which had been written later under somewhat
+tighter time constraints, lacked this safeguard entirely.  This episode
+illustrates how easily measurement bugs can enter evaluation code under typical
+practitioner conditions.
+
+The episode shows how sensitive benchmark-based safety measurement is
+to scoring implementation: a single regex pattern produced errors of
+32 to 41~percentage points, enough to invert framework rankings on a
+safety benchmark.  Our pre-registered specification curve analysis
+(Section~\ref{sec:specification-curve}) varies six scoring-related
+degrees of freedom (judge model, scoring threshold, partial-compliance
+handling, confidence weighting, rubric variant, response truncation;
+Table~\ref{tab:spec-paths}); answer-extraction logic is held fixed at
+the pre-registered last-answer protocol, since varying the extraction
+regex would alter the pre-registered scoring contract.  Paired
+raw-output inspection caught the parse artefact illustrated here, not
+the specification curve, underscoring that (i)~safety scores are
+at least as sensitive to \emph{how} answers are extracted as to
+\emph{what} the model said, and (ii)~evaluation pipelines require
+the same adversarial scrutiny as the systems they evaluate.
+
+% ============================================================
+% APPENDIX TABLE (for Appendix E or similar)
+% ============================================================
+
+% ============================================================
+% CASE STUDY 2: Missing Answer Choices
+% ============================================================
+
+% Place adjacent to the AI factual recall case study above.
+
+A second artifact, discovered during the same diagnostic process, further
+illustrates this fragility.  Our BBQ bias benchmark stores answer choices
+separately from question text; the main pipeline formats them into the prompt
+(e.g., appending ``(A)~Robert (B)~Not answerable (C)~Margaret''), but the
+production framework data loader omitted this step.  Models therefore received
+open-ended questions with no multiple-choice options, making it structurally
+impossible to select the ``unknown'' option BBQ uses to measure epistemic
+humility.  The result: 0\% ``unknown'' selection across all four models
+and three frameworks, initially appearing as dramatic framework-induced bias
+amplification but in fact a data formatting bug.
+
+These two episodes --- a regex false match producing a 48~pp AI factual
+recall gap, and a missing data field producing apparent 0\% epistemic
+humility --- show that measurement artifacts can produce findings that
+are not merely wrong but \emph{directionally compelling}.  Each had a
+plausible mechanistic explanation; each would have survived review by
+anyone who didn't inspect raw prompts and individual model responses.
+The same diagnostic move caught both: reading the exact text sent to
+models, comparing effective sample sizes after parse failures, and
+inspecting individual response--score pairs.
+

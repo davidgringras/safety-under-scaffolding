@@ -1,0 +1,93 @@
+% neurips_2025.sty - Style file for NeurIPS 2025
+% Adapted for use with Safety Under Scaffolding paper
+% Based on the official NeurIPS 2025 style
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{neurips_2025}[2025/04/01 NeurIPS 2025 submission style]
+
+\newif\if@neuripsfinal\@neuripsfinalfalse
+\newif\if@neuripspreprint\@neuripspreprintfalse
+\newif\if@neuripsnonatbib\@neuripsnonatbibfalse
+
+\DeclareOption{final}{\@neuripsfinaltrue}
+\DeclareOption{preprint}{\@neuripspreprinttrue}
+\DeclareOption{nonatbib}{\@neuripsnonatbibtrue}
+\ProcessOptions\relax
+
+% Fonts
+\RequirePackage{times}
+\RequirePackage[T1]{fontenc}
+
+% Page layout
+\RequirePackage[verbose=true,letterpaper]{geometry}
+\AtBeginDocument{
+  \newgeometry{
+    textheight=9in,
+    textwidth=5.5in,
+    top=1in,
+    headheight=12pt,
+    headsep=25pt,
+    footskip=30pt
+  }
+}
+
+% Line numbers for submission
+\if@neuripsfinal\else
+  \if@neuripspreprint\else
+    \RequirePackage{lineno}
+    \linenumbers
+  \fi
+\fi
+
+% natbib
+\if@neuripsnonatbib\else
+  \RequirePackage[numbers,compress,sort]{natbib}
+\fi
+
+% Paragraph formatting
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5.5pt}
+
+% Section formatting
+\RequirePackage{titlesec}
+\titlespacing*{\section}{0pt}{*1.5}{*0.5}
+\titlespacing*{\subsection}{0pt}{*1}{*0.5}
+\titlespacing*{\subsubsection}{0pt}{*0.75}{*0.25}
+
+% Hyperref
+\RequirePackage[colorlinks=true,citecolor=blue,urlcolor=blue,linkcolor=blue]{hyperref}
+
+% Title and author formatting
+\def\@neuripsconference{39th Conference on Neural Information Processing Systems (NeurIPS 2025)}
+
+\if@neuripsfinal
+  \def\@noticestring{\@neuripsconference}
+\else
+  \if@neuripspreprint
+    \def\@noticestring{Preprint.}
+  \else
+    \def\@noticestring{Submitted to \@neuripsconference. Do not distribute.}
+  \fi
+\fi
+
+% Footer
+\RequirePackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\fancypagestyle{firstpage}{
+  \fancyhf{}
+  \fancyfoot[C]{\footnotesize \@noticestring}
+}
+
+% Abstract
+\renewenvironment{abstract}{%
+  \centerline{\large\bfseries Abstract}%
+  \vspace{0.5ex}%
+  \begin{quote}%
+}{%
+  \end{quote}%
+}
+
+\endinput

@@ -1,0 +1,976 @@
+{
+  "generated": "2026-02-14T16:39:18.557708",
+  "description": "ITT vs PP scorecard for scaffold-induced parse failures",
+  "filter": "status=success, context_condition=short, MC benchmarks only",
+  "n_observations": 50808,
+  "aggregate": {
+    "opus": {
+      "direct": {
+        "itt_rate": 0.857345,
+        "pp_rate": 0.86511,
+        "n_total": 2117,
+        "n_parsed": 2098,
+        "parse_fail_rate": 0.008975,
+        "itt_rd": 0.0,
+        "pp_rd": 0.0,
+        "divergence_pp": 0.0
+      },
+      "react": {
+        "itt_rate": 0.846009,
+        "pp_rate": 0.855301,
+        "n_total": 2117,
+        "n_parsed": 2094,
+        "parse_fail_rate": 0.010864,
+        "itt_rd": -0.011337,
+        "pp_rd": -0.009809,
+        "divergence_pp": -0.001528
+      },
+      "multi_agent": {
+        "itt_rate": 0.84837,
+        "pp_rate": 0.85687,
+        "n_total": 2117,
+        "n_parsed": 2096,
+        "parse_fail_rate": 0.00992,
+        "itt_rd": -0.008975,
+        "pp_rd": -0.008239,
+        "divergence_pp": -0.000736
+      },
+      "map_reduce": {
+        "itt_rate": 0.765234,
+        "pp_rate": 0.81203,
+        "n_total": 2117,
+        "n_parsed": 1995,
+        "parse_fail_rate": 0.057629,
+        "itt_rd": -0.092111,
+        "pp_rd": -0.05308,
+        "divergence_pp": -0.039032
+      }
+    },
+    "gpt52": {
+      "direct": {
+        "itt_rate": 0.825697,
+        "pp_rate": 0.828436,
+        "n_total": 2117,
+        "n_parsed": 2110,
+        "parse_fail_rate": 0.003307,
+        "itt_rd": 0.0,
+        "pp_rd": 0.0,
+        "divergence_pp": 0.0
+      },
+      "react": {
+        "itt_rate": 0.82239,
+        "pp_rate": 0.824728,
+        "n_total": 2117,
+        "n_parsed": 2111,
+        "parse_fail_rate": 0.002834,
+        "itt_rd": -0.003307,
+        "pp_rd": -0.003708,
+        "divergence_pp": 0.000402
+      },
+      "multi_agent": {
+        "itt_rate": 0.77846,
+        "pp_rate": 0.787763,
+        "n_total": 2117,
+        "n_parsed": 2092,
+        "parse_fail_rate": 0.011809,
+        "itt_rd": -0.047237,
+        "pp_rd": -0.040673,
+        "divergence_pp": -0.006564
+      },
+      "map_reduce": {
+        "itt_rate": 0.686821,
+        "pp_rate": 0.691393,
+        "n_total": 2117,
+        "n_parsed": 2103,
+        "parse_fail_rate": 0.006613,
+        "itt_rd": -0.138876,
+        "pp_rd": -0.137043,
+        "divergence_pp": -0.001833
+      }
+    },
+    "gemini3pro": {
+      "direct": {
+        "itt_rate": 0.835616,
+        "pp_rate": 0.867582,
+        "n_total": 2117,
+        "n_parsed": 2039,
+        "parse_fail_rate": 0.036845,
+        "itt_rd": 0.0,
+        "pp_rd": 0.0,
+        "divergence_pp": 0.0
+      },
+      "react": {
+        "itt_rate": 0.765234,
+        "pp_rate": 0.868633,
+        "n_total": 2117,
+        "n_parsed": 1865,
+        "parse_fail_rate": 0.119036,
+        "itt_rd": -0.070383,
+        "pp_rd": 0.001051,
+        "divergence_pp": -0.071433
+      },
+      "multi_agent": {
+        "itt_rate": 0.834672,
+        "pp_rate": 0.87432,
+        "n_total": 2117,
+        "n_parsed": 2021,
+        "parse_fail_rate": 0.045347,
+        "itt_rd": -0.000945,
+        "pp_rd": 0.006737,
+        "divergence_pp": -0.007682
+      },
+      "map_reduce": {
+        "itt_rate": 0.805857,
+        "pp_rate": 0.861181,
+        "n_total": 2117,
+        "n_parsed": 1981,
+        "parse_fail_rate": 0.064242,
+        "itt_rd": -0.029759,
+        "pp_rd": -0.006401,
+        "divergence_pp": -0.023358
+      }
+    },
+    "deepseek": {
+      "direct": {
+        "itt_rate": 0.774681,
+        "pp_rate": 0.786948,
+        "n_total": 2117,
+        "n_parsed": 2084,
+        "parse_fail_rate": 0.015588,
+        "itt_rd": 0.0,
+        "pp_rd": 0.0,
+        "divergence_pp": 0.0
+      },
+      "react": {
+        "itt_rate": 0.78649,
+        "pp_rate": 0.801251,
+        "n_total": 2117,
+        "n_parsed": 2078,
+        "parse_fail_rate": 0.018422,
+        "itt_rd": 0.011809,
+        "pp_rd": 0.014303,
+        "divergence_pp": -0.002494
+      },
+      "multi_agent": {
+        "itt_rate": 0.770902,
+        "pp_rate": 0.786506,
+        "n_total": 2117,
+        "n_parsed": 2075,
+        "parse_fail_rate": 0.019839,
+        "itt_rd": -0.003779,
+        "pp_rd": -0.000442,
+        "divergence_pp": -0.003337
+      },
+      "map_reduce": {
+        "itt_rate": 0.540387,
+        "pp_rate": 0.54321,
+        "n_total": 2117,
+        "n_parsed": 2106,
+        "parse_fail_rate": 0.005196,
+        "itt_rd": -0.234294,
+        "pp_rd": -0.243738,
+        "divergence_pp": 0.009444
+      }
+    },
+    "llama4": {
+      "direct": {
+        "itt_rate": 0.785546,
+        "pp_rate": 0.793416,
+        "n_total": 2117,
+        "n_parsed": 2096,
+        "parse_fail_rate": 0.00992,
+        "itt_rd": 0.0,
+        "pp_rd": 0.0,
+        "divergence_pp": 0.0
+      },
+      "react": {
+        "itt_rate": 0.808692,
+        "pp_rate": 0.811374,
+        "n_total": 2117,
+        "n_parsed": 2110,
+        "parse_fail_rate": 0.003307,
+        "itt_rd": 0.023146,
+        "pp_rd": 0.017958,
+        "divergence_pp": 0.005188
+      },
+      "multi_agent": {
+        "itt_rate": 0.825697,
+        "pp_rate": 0.830404,
+        "n_total": 2117,
+        "n_parsed": 2105,
+        "parse_fail_rate": 0.005668,
+        "itt_rd": 0.040151,
+        "pp_rd": 0.036988,
+        "divergence_pp": 0.003163
+      },
+      "map_reduce": {
+        "itt_rate": 0.722721,
+        "pp_rate": 0.728919,
+        "n_total": 2117,
+        "n_parsed": 2099,
+        "parse_fail_rate": 0.008503,
+        "itt_rd": -0.062825,
+        "pp_rd": -0.064497,
+        "divergence_pp": 0.001673
+      }
+    },
+    "mistral": {
+      "direct": {
+        "itt_rate": 0.753897,
+        "pp_rate": 0.760362,
+        "n_total": 2117,
+        "n_parsed": 2099,
+        "parse_fail_rate": 0.008503,
+        "itt_rd": 0.0,
+        "pp_rd": 0.0,
+        "divergence_pp": 0.0
+      },
+      "react": {
+        "itt_rate": 0.758621,
+        "pp_rate": 0.773231,
+        "n_total": 2117,
+        "n_parsed": 2077,
+        "parse_fail_rate": 0.018895,
+        "itt_rd": 0.004724,
+        "pp_rd": 0.012869,
+        "divergence_pp": -0.008145
+      },
+      "multi_agent": {
+        "itt_rate": 0.712329,
+        "pp_rate": 0.726047,
+        "n_total": 2117,
+        "n_parsed": 2077,
+        "parse_fail_rate": 0.018895,
+        "itt_rd": -0.041568,
+        "pp_rd": -0.034315,
+        "divergence_pp": -0.007253
+      },
+      "map_reduce": {
+        "itt_rate": 0.678791,
+        "pp_rate": 0.695884,
+        "n_total": 2117,
+        "n_parsed": 2065,
+        "parse_fail_rate": 0.024563,
+        "itt_rd": -0.075106,
+        "pp_rd": -0.064478,
+        "divergence_pp": -0.010628
+      }
+    }
+  },
+  "per_benchmark": {
+    "opus": {
+      "truthfulqa": {
+        "direct": {
+          "itt_rate": 0.982864,
+          "pp_rate": 0.982864,
+          "n_total": 817,
+          "n_parsed": 817,
+          "parse_fail_rate": 0.0
+        },
+        "react": {
+          "itt_rate": 0.968176,
+          "pp_rate": 0.970552,
+          "n_total": 817,
+          "n_parsed": 815,
+          "parse_fail_rate": 0.002448,
+          "itt_rd": -0.014688,
+          "pp_rd": -0.012312,
+          "divergence_pp": -0.002376
+        },
+        "multi_agent": {
+          "itt_rate": 0.977968,
+          "pp_rate": 0.979167,
+          "n_total": 817,
+          "n_parsed": 816,
+          "parse_fail_rate": 0.001224,
+          "itt_rd": -0.004896,
+          "pp_rd": -0.003697,
+          "divergence_pp": -0.001198
+        },
+        "map_reduce": {
+          "itt_rate": 0.735618,
+          "pp_rate": 0.858571,
+          "n_total": 817,
+          "n_parsed": 700,
+          "parse_fail_rate": 0.143207,
+          "itt_rd": -0.247246,
+          "pp_rd": -0.124293,
+          "divergence_pp": -0.122953
+        }
+      },
+      "bbq": {
+        "direct": {
+          "itt_rate": 0.925,
+          "pp_rate": 0.925,
+          "n_total": 800,
+          "n_parsed": 800,
+          "parse_fail_rate": 0.0
+        },
+        "react": {
+          "itt_rate": 0.91875,
+          "pp_rate": 0.9199,
+          "n_total": 800,
+          "n_parsed": 799,
+          "parse_fail_rate": 0.00125,
+          "itt_rd": -0.00625,
+          "pp_rd": -0.0051,
+          "divergence_pp": -0.00115
+        },
+        "multi_agent": {
+          "itt_rate": 0.89625,
+          "pp_rate": 0.89625,
+          "n_total": 800,
+          "n_parsed": 800,
+          "parse_fail_rate": 0.0,
+          "itt_rd": -0.02875,
+          "pp_rd": -0.02875,
+          "divergence_pp": 0.0
+        },
+        "map_reduce": {
+          "itt_rate": 0.89375,
+          "pp_rate": 0.89375,
+          "n_total": 800,
+          "n_parsed": 800,
+          "parse_fail_rate": 0.0,
+          "itt_rd": -0.03125,
+          "pp_rd": -0.03125,
+          "divergence_pp": 0.0
+        }
+      },
+      "sycophancy": {
+        "direct": {
+          "itt_rate": 0.544,
+          "pp_rate": 0.565489,
+          "n_total": 500,
+          "n_parsed": 481,
+          "parse_fail_rate": 0.038
+        },
+        "react": {
+          "itt_rate": 0.53,
+          "pp_rate": 0.552083,
+          "n_total": 500,
+          "n_parsed": 480,
+          "parse_fail_rate": 0.04,
+          "itt_rd": -0.014,
+          "pp_rd": -0.013405,
+          "divergence_pp": -0.000595
+        },
+        "multi_agent": {
+          "itt_rate": 0.56,
+          "pp_rate": 0.583333,
+          "n_total": 500,
+          "n_parsed": 480,
+          "parse_fail_rate": 0.04,
+          "itt_rd": 0.016,
+          "pp_rd": 0.017845,
+          "divergence_pp": -0.001845
+        },
+        "map_reduce": {
+          "itt_rate": 0.608,
+          "pp_rate": 0.614141,
+          "n_total": 500,
+          "n_parsed": 495,
+          "parse_fail_rate": 0.01,
+          "itt_rd": 0.064,
+          "pp_rd": 0.048653,
+          "divergence_pp": 0.015347
+        }
+      }
+    },
+    "gpt52": {
+      "truthfulqa": {
+        "direct": {
+          "itt_rate": 0.859241,
+          "pp_rate": 0.866667,
+          "n_total": 817,
+          "n_parsed": 810,
+          "parse_fail_rate": 0.008568
+        },
+        "react": {
+          "itt_rate": 0.843329,
+          "pp_rate": 0.848522,
+          "n_total": 817,
+          "n_parsed": 812,
+          "parse_fail_rate": 0.00612,
+          "itt_rd": -0.015912,
+          "pp_rd": -0.018144,
+          "divergence_pp": 0.002233
+        },
+        "multi_agent": {
+          "itt_rate": 0.845777,
+          "pp_rate": 0.856258,
+          "n_total": 817,
+          "n_parsed": 807,
+          "parse_fail_rate": 0.01224,
+          "itt_rd": -0.013464,
+          "pp_rd": -0.010409,
+          "divergence_pp": -0.003055
+        },
+        "map_reduce": {
+          "itt_rate": 0.620563,
+          "pp_rate": 0.628253,
+          "n_total": 817,
+          "n_parsed": 807,
+          "parse_fail_rate": 0.01224,
+          "itt_rd": -0.238678,
+          "pp_rd": -0.238414,
+          "divergence_pp": -0.000264
+        }
+      },
+      "bbq": {
+        "direct": {
+          "itt_rate": 0.9,
+          "pp_rate": 0.9,
+          "n_total": 800,
+          "n_parsed": 800,
+          "parse_fail_rate": 0.0
+        },
+        "react": {
+          "itt_rate": 0.9,
+          "pp_rate": 0.9,
+          "n_total": 800,
+          "n_parsed": 800,
+          "parse_fail_rate": 0.0,
+          "itt_rd": 0.0,
+          "pp_rd": 0.0,
+          "divergence_pp": 0.0
+        },
+        "multi_agent": {
+          "itt_rate": 0.78125,
+          "pp_rate": 0.78125,
+          "n_total": 800,
+          "n_parsed": 800,
+          "parse_fail_rate": 0.0,
+          "itt_rd": -0.11875,
+          "pp_rd": -0.11875,
+          "divergence_pp": 0.0
+        },
+        "map_reduce": {
+          "itt_rate": 0.82125,
+          "pp_rate": 0.822278,
+          "n_total": 800,
+          "n_parsed": 799,
+          "parse_fail_rate": 0.00125,
+          "itt_rd": -0.07875,
+          "pp_rd": -0.077722,
+          "divergence_pp": -0.001028
+        }
+      },
+      "sycophancy": {
+        "direct": {
+          "itt_rate": 0.652,
+          "pp_rate": 0.652,
+          "n_total": 500,
+          "n_parsed": 500,
+          "parse_fail_rate": 0.0
+        },
+        "react": {
+          "itt_rate": 0.664,
+          "pp_rate": 0.665331,
+          "n_total": 500,
+          "n_parsed": 499,
+          "parse_fail_rate": 0.002,
+          "itt_rd": 0.012,
+          "pp_rd": 0.013331,
+          "divergence_pp": -0.001331
+        },
+        "multi_agent": {
+          "itt_rate": 0.664,
+          "pp_rate": 0.684536,
+          "n_total": 500,
+          "n_parsed": 485,
+          "parse_fail_rate": 0.03,
+          "itt_rd": 0.012,
+          "pp_rd": 0.032536,
+          "divergence_pp": -0.020536
+        },
+        "map_reduce": {
+          "itt_rate": 0.58,
+          "pp_rate": 0.583501,
+          "n_total": 500,
+          "n_parsed": 497,
+          "parse_fail_rate": 0.006,
+          "itt_rd": -0.072,
+          "pp_rd": -0.068499,
+          "divergence_pp": -0.003501
+        }
+      }
+    },
+    "gemini3pro": {
+      "truthfulqa": {
+        "direct": {
+          "itt_rate": 0.911873,
+          "pp_rate": 0.938287,
+          "n_total": 817,
+          "n_parsed": 794,
+          "parse_fail_rate": 0.028152
+        },
+        "react": {
+          "itt_rate": 0.849449,
+          "pp_rate": 0.932796,
+          "n_total": 817,
+          "n_parsed": 744,
+          "parse_fail_rate": 0.089351,
+          "itt_rd": -0.062424,
+          "pp_rd": -0.005491,
+          "divergence_pp": -0.056932
+        },
+        "multi_agent": {
+          "itt_rate": 0.940024,
+          "pp_rate": 0.958801,
+          "n_total": 817,
+          "n_parsed": 801,
+          "parse_fail_rate": 0.019584,
+          "itt_rd": 0.028152,
+          "pp_rd": 0.020514,
+          "divergence_pp": 0.007637
+        },
+        "map_reduce": {
+          "itt_rate": 0.877601,
+          "pp_rate": 0.927555,
+          "n_total": 817,
+          "n_parsed": 773,
+          "parse_fail_rate": 0.053856,
+          "itt_rd": -0.034272,
+          "pp_rd": -0.010732,
+          "divergence_pp": -0.02354
+        }
+      },
+      "bbq": {
+        "direct": {
+          "itt_rate": 0.92625,
+          "pp_rate": 0.943949,
+          "n_total": 800,
+          "n_parsed": 785,
+          "parse_fail_rate": 0.01875
+        },
+        "react": {
+          "itt_rate": 0.87125,
+          "pp_rate": 0.957418,
+          "n_total": 800,
+          "n_parsed": 728,
+          "parse_fail_rate": 0.09,
+          "itt_rd": -0.055,
+          "pp_rd": 0.013469,
+          "divergence_pp": -0.068469
+        },
+        "multi_agent": {
+          "itt_rate": 0.8875,
+          "pp_rate": 0.929319,
+          "n_total": 800,
+          "n_parsed": 764,
+          "parse_fail_rate": 0.045,
+          "itt_rd": -0.03875,
+          "pp_rd": -0.01463,
+          "divergence_pp": -0.02412
+        },
+        "map_reduce": {
+          "itt_rate": 0.89375,
+          "pp_rate": 0.93342,
+          "n_total": 800,
+          "n_parsed": 766,
+          "parse_fail_rate": 0.0425,
+          "itt_rd": -0.0325,
+          "pp_rd": -0.010529,
+          "divergence_pp": -0.021971
+        }
+      },
+      "sycophancy": {
+        "direct": {
+          "itt_rate": 0.566,
+          "pp_rate": 0.615217,
+          "n_total": 500,
+          "n_parsed": 460,
+          "parse_fail_rate": 0.08
+        },
+        "react": {
+          "itt_rate": 0.458,
+          "pp_rate": 0.582697,
+          "n_total": 500,
+          "n_parsed": 393,
+          "parse_fail_rate": 0.214,
+          "itt_rd": -0.108,
+          "pp_rd": -0.03252,
+          "divergence_pp": -0.07548
+        },
+        "multi_agent": {
+          "itt_rate": 0.578,
+          "pp_rate": 0.633772,
+          "n_total": 500,
+          "n_parsed": 456,
+          "parse_fail_rate": 0.088,
+          "itt_rd": 0.012,
+          "pp_rd": 0.018555,
+          "divergence_pp": -0.006555
+        },
+        "map_reduce": {
+          "itt_rate": 0.548,
+          "pp_rate": 0.61991,
+          "n_total": 500,
+          "n_parsed": 442,
+          "parse_fail_rate": 0.116,
+          "itt_rd": -0.018,
+          "pp_rd": 0.004692,
+          "divergence_pp": -0.022692
+        }
+      }
+    },
+    "deepseek": {
+      "truthfulqa": {
+        "direct": {
+          "itt_rate": 0.756426,
+          "pp_rate": 0.765799,
+          "n_total": 817,
+          "n_parsed": 807,
+          "parse_fail_rate": 0.01224
+        },
+        "react": {
+          "itt_rate": 0.778458,
+          "pp_rate": 0.796992,
+          "n_total": 817,
+          "n_parsed": 798,
+          "parse_fail_rate": 0.023256,
+          "itt_rd": 0.022032,
+          "pp_rd": 0.031193,
+          "divergence_pp": -0.009161
+        },
+        "multi_agent": {
+          "itt_rate": 0.853121,
+          "pp_rate": 0.864764,
+          "n_total": 817,
+          "n_parsed": 806,
+          "parse_fail_rate": 0.013464,
+          "itt_rd": 0.096695,
+          "pp_rd": 0.098965,
+          "divergence_pp": -0.00227
+        },
+        "map_reduce": {
+          "itt_rate": 0.378213,
+          "pp_rate": 0.378676,
+          "n_total": 817,
+          "n_parsed": 816,
+          "parse_fail_rate": 0.001224,
+          "itt_rd": -0.378213,
+          "pp_rd": -0.387123,
+          "divergence_pp": 0.00891
+        }
+      },
+      "bbq": {
+        "direct": {
+          "itt_rate": 0.8975,
+          "pp_rate": 0.8975,
+          "n_total": 800,
+          "n_parsed": 800,
+          "parse_fail_rate": 0.0
+        },
+        "react": {
+          "itt_rate": 0.92,
+          "pp_rate": 0.92,
+          "n_total": 800,
+          "n_parsed": 800,
+          "parse_fail_rate": 0.0,
+          "itt_rd": 0.0225,
+          "pp_rd": 0.0225,
+          "divergence_pp": 0.0
+        },
+        "multi_agent": {
+          "itt_rate": 0.80125,
+          "pp_rate": 0.806289,
+          "n_total": 800,
+          "n_parsed": 795,
+          "parse_fail_rate": 0.00625,
+          "itt_rd": -0.09625,
+          "pp_rd": -0.091211,
+          "divergence_pp": -0.005039
+        },
+        "map_reduce": {
+          "itt_rate": 0.6975,
+          "pp_rate": 0.699248,
+          "n_total": 800,
+          "n_parsed": 798,
+          "parse_fail_rate": 0.0025,
+          "itt_rd": -0.2,
+          "pp_rd": -0.198252,
+          "divergence_pp": -0.001748
+        }
+      },
+      "sycophancy": {
+        "direct": {
+          "itt_rate": 0.608,
+          "pp_rate": 0.637317,
+          "n_total": 500,
+          "n_parsed": 477,
+          "parse_fail_rate": 0.046
+        },
+        "react": {
+          "itt_rate": 0.586,
+          "pp_rate": 0.610417,
+          "n_total": 500,
+          "n_parsed": 480,
+          "parse_fail_rate": 0.04,
+          "itt_rd": -0.022,
+          "pp_rd": -0.0269,
+          "divergence_pp": 0.0049
+        },
+        "multi_agent": {
+          "itt_rate": 0.588,
+          "pp_rate": 0.620253,
+          "n_total": 500,
+          "n_parsed": 474,
+          "parse_fail_rate": 0.052,
+          "itt_rd": -0.02,
+          "pp_rd": -0.017063,
+          "divergence_pp": -0.002937
+        },
+        "map_reduce": {
+          "itt_rate": 0.554,
+          "pp_rate": 0.563008,
+          "n_total": 500,
+          "n_parsed": 492,
+          "parse_fail_rate": 0.016,
+          "itt_rd": -0.054,
+          "pp_rd": -0.074308,
+          "divergence_pp": 0.020308
+        }
+      }
+    },
+    "llama4": {
+      "truthfulqa": {
+        "direct": {
+          "itt_rate": 0.669523,
+          "pp_rate": 0.684606,
+          "n_total": 817,
+          "n_parsed": 799,
+          "parse_fail_rate": 0.022032
+        },
+        "react": {
+          "itt_rate": 0.75153,
+          "pp_rate": 0.753374,
+          "n_total": 817,
+          "n_parsed": 815,
+          "parse_fail_rate": 0.002448,
+          "itt_rd": 0.082007,
+          "pp_rd": 0.068768,
+          "divergence_pp": 0.013239
+        },
+        "multi_agent": {
+          "itt_rate": 0.787026,
+          "pp_rate": 0.795792,
+          "n_total": 817,
+          "n_parsed": 808,
+          "parse_fail_rate": 0.011016,
+          "itt_rd": 0.117503,
+          "pp_rd": 0.111186,
+          "divergence_pp": 0.006317
+        },
+        "map_reduce": {
+          "itt_rate": 0.623011,
+          "pp_rate": 0.629172,
+          "n_total": 817,
+          "n_parsed": 809,
+          "parse_fail_rate": 0.009792,
+          "itt_rd": -0.046512,
+          "pp_rd": -0.055434,
+          "divergence_pp": 0.008922
+        }
+      },
+      "bbq": {
+        "direct": {
+          "itt_rate": 0.9225,
+          "pp_rate": 0.9225,
+          "n_total": 800,
+          "n_parsed": 800,
+          "parse_fail_rate": 0.0
+        },
+        "react": {
+          "itt_rate": 0.9175,
+          "pp_rate": 0.9175,
+          "n_total": 800,
+          "n_parsed": 800,
+          "parse_fail_rate": 0.0,
+          "itt_rd": -0.005,
+          "pp_rd": -0.005,
+          "divergence_pp": 0.0
+        },
+        "multi_agent": {
+          "itt_rate": 0.895,
+          "pp_rate": 0.895,
+          "n_total": 800,
+          "n_parsed": 800,
+          "parse_fail_rate": 0.0,
+          "itt_rd": -0.0275,
+          "pp_rd": -0.0275,
+          "divergence_pp": 0.0
+        },
+        "map_reduce": {
+          "itt_rate": 0.82625,
+          "pp_rate": 0.82625,
+          "n_total": 800,
+          "n_parsed": 800,
+          "parse_fail_rate": 0.0,
+          "itt_rd": -0.09625,
+          "pp_rd": -0.09625,
+          "divergence_pp": 0.0
+        }
+      },
+      "sycophancy": {
+        "direct": {
+          "itt_rate": 0.756,
+          "pp_rate": 0.760563,
+          "n_total": 500,
+          "n_parsed": 497,
+          "parse_fail_rate": 0.006
+        },
+        "react": {
+          "itt_rate": 0.728,
+          "pp_rate": 0.735354,
+          "n_total": 500,
+          "n_parsed": 495,
+          "parse_fail_rate": 0.01,
+          "itt_rd": -0.028,
+          "pp_rd": -0.02521,
+          "divergence_pp": -0.00279
+        },
+        "multi_agent": {
+          "itt_rate": 0.778,
+          "pp_rate": 0.782696,
+          "n_total": 500,
+          "n_parsed": 497,
+          "parse_fail_rate": 0.006,
+          "itt_rd": 0.022,
+          "pp_rd": 0.022133,
+          "divergence_pp": -0.000133
+        },
+        "map_reduce": {
+          "itt_rate": 0.72,
+          "pp_rate": 0.734694,
+          "n_total": 500,
+          "n_parsed": 490,
+          "parse_fail_rate": 0.02,
+          "itt_rd": -0.036,
+          "pp_rd": -0.02587,
+          "divergence_pp": -0.01013
+        }
+      }
+    },
+    "mistral": {
+      "truthfulqa": {
+        "direct": {
+          "itt_rate": 0.805386,
+          "pp_rate": 0.816377,
+          "n_total": 817,
+          "n_parsed": 806,
+          "parse_fail_rate": 0.013464
+        },
+        "react": {
+          "itt_rate": 0.779682,
+          "pp_rate": 0.793275,
+          "n_total": 817,
+          "n_parsed": 803,
+          "parse_fail_rate": 0.017136,
+          "itt_rd": -0.025704,
+          "pp_rd": -0.023102,
+          "divergence_pp": -0.002602
+        },
+        "multi_agent": {
+          "itt_rate": 0.834761,
+          "pp_rate": 0.861111,
+          "n_total": 817,
+          "n_parsed": 792,
+          "parse_fail_rate": 0.0306,
+          "itt_rd": 0.029376,
+          "pp_rd": 0.044734,
+          "divergence_pp": -0.015358
+        },
+        "map_reduce": {
+          "itt_rate": 0.578947,
+          "pp_rate": 0.617493,
+          "n_total": 817,
+          "n_parsed": 766,
+          "parse_fail_rate": 0.062424,
+          "itt_rd": -0.226438,
+          "pp_rd": -0.198884,
+          "divergence_pp": -0.027554
+        }
+      },
+      "bbq": {
+        "direct": {
+          "itt_rate": 0.87,
+          "pp_rate": 0.87,
+          "n_total": 800,
+          "n_parsed": 800,
+          "parse_fail_rate": 0.0
+        },
+        "react": {
+          "itt_rate": 0.87625,
+          "pp_rate": 0.87625,
+          "n_total": 800,
+          "n_parsed": 800,
+          "parse_fail_rate": 0.0,
+          "itt_rd": 0.00625,
+          "pp_rd": 0.00625,
+          "divergence_pp": 0.0
+        },
+        "multi_agent": {
+          "itt_rate": 0.71625,
+          "pp_rate": 0.724399,
+          "n_total": 800,
+          "n_parsed": 791,
+          "parse_fail_rate": 0.01125,
+          "itt_rd": -0.15375,
+          "pp_rd": -0.145601,
+          "divergence_pp": -0.008149
+        },
+        "map_reduce": {
+          "itt_rate": 0.80125,
+          "pp_rate": 0.80125,
+          "n_total": 800,
+          "n_parsed": 800,
+          "parse_fail_rate": 0.0,
+          "itt_rd": -0.06875,
+          "pp_rd": -0.06875,
+          "divergence_pp": 0.0
+        }
+      },
+      "sycophancy": {
+        "direct": {
+          "itt_rate": 0.484,
+          "pp_rate": 0.490872,
+          "n_total": 500,
+          "n_parsed": 493,
+          "parse_fail_rate": 0.014
+        },
+        "react": {
+          "itt_rate": 0.536,
+          "pp_rate": 0.565401,
+          "n_total": 500,
+          "n_parsed": 474,
+          "parse_fail_rate": 0.052,
+          "itt_rd": 0.052,
+          "pp_rd": 0.074529,
+          "divergence_pp": -0.022529
+        },
+        "multi_agent": {
+          "itt_rate": 0.506,
+          "pp_rate": 0.512146,
+          "n_total": 500,
+          "n_parsed": 494,
+          "parse_fail_rate": 0.012,
+          "itt_rd": 0.022,
+          "pp_rd": 0.021274,
+          "divergence_pp": 0.000726
+        },
+        "map_reduce": {
+          "itt_rate": 0.646,
+          "pp_rate": 0.647295,
+          "n_total": 500,
+          "n_parsed": 499,
+          "parse_fail_rate": 0.002,
+          "itt_rd": 0.162,
+          "pp_rd": 0.156422,
+          "divergence_pp": 0.005578
+        }
+      }
+    }
+  }
+}

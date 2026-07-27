@@ -1,0 +1,588 @@
+\documentclass[preprint]{article}
+\usepackage{neurips_2025}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{enumitem}
+% hyperref loaded by neurips_2025.sty with colorlinks options
+\usepackage{tcolorbox}
+\usepackage{microtype}
+\usepackage{xurl}           % allow URL line breaks at any character
+\usepackage{placeins}
+\usepackage{float}
+
+% For compact lists
+\setlist{nosep}
+
+% Prevent widow/orphan lines
+\widowpenalty=10000
+\clubpenalty=10000
+
+
+\title{Safety Under Scaffolding: How Evaluation Conditions Shape Measured Safety}
+
+\author{
+  Dr.\ David Gringras \\
+  Harvard University \\
+  \texttt{davidgringras@hsph.harvard.edu} \\
+  \texttt{davidgri@mit.edu} \\
+}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{firstpage}
+
+% ===========================================================================
+% ABSTRACT
+% ===========================================================================
+\input{sections/abstract_v3}
+
+% ===========================================================================
+% TABLE OF CONTENTS
+% ===========================================================================
+{
+\hypersetup{linkcolor=black}
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+
+\clearpage
+
+% ===========================================================================
+% 1. INTRODUCTION
+% ===========================================================================
+\input{sections/introduction_v3}
+
+% ===========================================================================
+% 2. RELATED WORK
+% ===========================================================================
+\input{sections/related_work_v3}
+
+% ===========================================================================
+% 3. METHODS
+% ===========================================================================
+\section{Methods}
+\label{sec:methods}
+
+We pre-registered hypotheses H1--H4 before data collection. Implementation adaptations are documented in Table~\ref{tab:deviations}.
+
+\subsection{Study Design}
+
+\paragraph{Controlled scaffold comparison vs.\ production scaffold evaluation.}
+This study is a \emph{controlled scaffold comparison}: we vary only the scaffolding structure while holding all other factors constant (model, prompt content, temperature, tools), isolating the causal effect of scaffold architecture on safety.  Production systems confound scaffold architecture with tool availability, prompt engineering, retrieval augmentation, and system complexity.  We complement the controlled evaluation with an exploratory production framework analysis (Section~\ref{sec:production-frameworks}) testing CrewAI, LangChain ReAct, and OpenAI Agents SDK.
+
+\paragraph{Study design rationale.}
+We adapt pre-registration, blinding, and specification curve analysis rather than develop evaluation-specific alternatives; key differences from parallel-group trials are detailed in the pre-registration.
+
+The study uses a full factorial design crossing \textbf{deployment configuration} (4 levels), \textbf{model} (6 levels), and \textbf{safety benchmark} (4 levels), with every case administered under every condition (Table~\ref{tab:design}).
+
+\begin{table}[h]
+\caption{Experimental design: factors and levels.}
+\label{tab:design}
+\centering
+\small
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Factor} & \textbf{Levels} & \textbf{Type} & \textbf{$n$} \\
+\midrule
+Configuration & Direct API, ReAct, Multi-Agent, Map-Reduce & Fixed (within-case) & 4 \\
+Model & Claude Opus 4.6, GPT-5.2, Gemini 3 Pro, & Fixed & 6 \\
+      & Llama 4 Maverick, DeepSeek V3.2, Mistral Large 2 & & \\
+Benchmark & Sycophancy, BBQ, XSTest/OR-Bench, TruthfulQA & Fixed (safety) & 4 \\
+Control & AI Factual Recall Accuracy & Fixed (non-safety) & 1 \\
+Case & Unique prompts per benchmark & Random (intercept) & 2,617 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The total primary inference count is $6 \times 4 \times 2{,}617 = 62{,}808$ calls. Under a two-proportion $z$-test with $\alpha = 0.05$ and baseline $p = 0.90$, 500 cases per group provides $80\%$ power to detect approximately a $5.8$~pp drop within a single model-config-benchmark cell; case-cluster bootstrap with the within-case repeated-measures design recovers additional power and is the primary CI procedure (Appendix~\ref{app:wald-cis}); the conservative independence-based MDE is the more pessimistic figure quoted here.  Pooled across benchmarks ($n \approx 10{,}468$ per model-config cell after pooling), the design detects approximately a $2.5$~pp drop at $80\%$ power.
+
+\subsection{Models}
+
+We select six frontier models maximizing provider diversity and the mix of proprietary and open-weight architectures:
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Claude Opus 4.6} (Anthropic; \texttt{claude-opus-4-6}, batch API). Constitutional AI alignment.
+    \item \textbf{GPT-5.2} (OpenAI; \texttt{gpt-5.2}, batch API). We use 5.2 rather than 5.3, a coding-focused model available only through the Codex application and not via API.
+    \item \textbf{Gemini 3 Pro} (Google; Vertex AI).
+    \item \textbf{Llama 4 Maverick} (Meta; {\small\texttt{meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8}}, via Together~AI). Open-weight frontier.
+    \item \textbf{DeepSeek V3.2} (DeepSeek; \texttt{deepseek-chat}, non-thinking mode). Chinese-origin, providing geographic diversity.
+    \item \textbf{Mistral Large 2} (Mistral AI; \texttt{mistral-large-latest}). European-origin frontier model.
+\end{enumerate}
+
+All models are accessed at fixed model versions via provider or authorized third-party endpoints (Appendix~\ref{app:api-constraints}). The five pre-registered models were locked before data collection; Mistral Large~2 was added as described in Section~\ref{sec:overview}. Temperature is~0 for all models that accept this parameter; GPT-5.2 is a reasoning model that does not support user-specified temperature control, so this parameter is omitted from its API calls (the pipeline conditionally drops it). Pre-registered maximum output tokens are 1,024 (direct) and 2,048 (scaffolded); a deviation is documented below. Random seeds are fixed where supported.
+
+All six models hit 100\% completion (13,085 unique 4-tuples each, where the 4-tuple is config $\times$ benchmark $\times$ case $\times$ context\_condition; both short and long context conditions were collected during the data-gathering phase).  The primary analysis takes short context only (10,468 per model; $6 \times 10{,}468 = 62{,}808$).  Data collection details and registered deviations are documented in Table~\ref{tab:deviations} and the supplementary materials.
+
+\subsection{Inference Configurations}
+
+\begin{sloppypar}
+Four deployment configurations span the range from minimal to complex scaffolding.  Each is implemented as a ``reasonable default'' following canonical patterns, with no production-specific optimization---the goal is to isolate scaffold \emph{architecture} from scaffold \emph{quality}.  Tools are deliberately minimal, to avoid conflating structure with information access.
+\end{sloppypar}
+
+\paragraph{1. Direct API (baseline).} A single standard API call with a standardized system prompt that includes the benchmark item in the user message.  There is no reasoning trace, no tool use, and no iteration.
+
+\paragraph{2. ReAct agent.} A single-agent loop that implements the Thought--Action--Observation reasoning structure from ReAct~\cite{yao2023react} for up to 5 iterations without external tool access (the original ReAct framework combines the loop with tool use such as search and calculator; our implementation isolates the effect of structured deliberation from tool augmentation; Section~\ref{sec:limitations} discusses this design choice).  The scaffold adds structured reasoning support and does not utilize external information.
+
+\paragraph{3. Multi-agent with critic.} A two-agent pipeline: a \emph{primary agent} produces the initial response, followed by a \emph{critic agent} (same model, different system prompt) which assesses the response for both safety and factual accuracy.  This process may occur for up to 2 revision rounds.  The primary focus of the critic's prompt is on identifying responses that are unsafe, biased, sycophantic, or factually inaccurate.
+
+\paragraph{4. Map-reduce delegation.} A two-phase pipeline consisting of a \emph{map phase} and a \emph{reduce phase}: in the map phase, the task is decomposed into sub-problems based on a single benchmark-agnostic decomposition prompt (the model determines its own sub-task structure; typical model-generated decompositions include, e.g., separating context analysis from question answering for BBQ, or separately generating factual and user-aligned answers for AI factual recall); in the reduce phase, these sub-outputs are aggregated.  Map-reduce delegation occurs frequently within enterprise systems when sensitive queries arrive at RAG-based or multi-step pipelines that include a decomposition stage.
+
+Introducing production-grade complexity (retrieval-augmented generation, dynamic tool selection, custom metaprompts) would make it impossible to distinguish whether safety degradation stems from the model's fundamental reasoning breakdown or from confounding variables like maliciously retrieved text payloads.
+
+\paragraph{System prompt embedding.} Scaffolding frameworks control the system prompt layer, so benchmark instructions are embedded in the user message. Feasibility testing confirmed this is necessary: a restrictive benchmark system prompt suppressed scaffold functionality entirely (10/10 cases, GPT-5.2; Appendix~\ref{app:sysprompt}), illustrating that benchmarks and scaffolds make competing claims on the system prompt layer.
+
+\noindent All configurations share: (i)~temperature~0 (where supported; GPT-5.2 does not accept this parameter), (ii)~identical \emph{benchmark-item} content (scaffold-internal critic and decomposition prompts necessarily differ across configurations; these are the operational definition of each scaffold architecture, documented in detail in Section~\ref{sec:methods} and the released code), (iii)~no external tools or retrieval, (iv)~identical model version.  The only variable in the causal sense is scaffolding architecture; the scaffold-specific prompts are part of what defines that architecture rather than confounding it.
+
+\subsection{Safety Benchmarks}
+
+We select four safety benchmarks covering distinct safety properties, plus one non-safety control.
+
+\paragraph{AI Factual Recall Accuracy (500 cases; non-safety control).} From the persona/self-awareness category of Anthropic's model-written evaluations~\cite{perez2023discovering}. Each item presents a binary multiple-choice question about model capabilities, architecture, or factual knowledge (e.g., ``Does your model incorporate self-attention mechanism?'').  These items test AI factual recall rather than a safety-relevant disposition, making them a useful negative control: scaffold-induced degradation on safety benchmarks but not on this control would indicate property-specific vulnerability rather than generic format disruption. \emph{Scoring:} Automated; accuracy = proportion selecting the factually correct option. \emph{Hypothesis:} Robustness expected, as items test baked-in model knowledge that is largely format-independent.
+
+\paragraph{Sycophancy Resistance (500 cases).} From the sycophancy subdirectory of Anthropic's model-written evaluations~\cite{perez2023discovering}, drawn via a non-overlapping seed (seed~43) from the opinion-agreement subcategory.  Each item presents an opinion question with social pressure toward a particular answer (e.g., a human interlocutor expressing a strong view before asking the model's opinion).  These opinion-agreement items are distinct from the AI Factual Recall control above: sycophancy items test resistance to social pressure on subjective opinions, not factual knowledge about model capabilities.  Early data collection used a preliminary item set from the self-awareness category that was subsequently replaced with the corrected opinion-agreement instrument reported here.  \emph{Scoring:} Automated MC extraction; non-sycophantic = selecting the answer that resists social pressure.  \emph{Hypothesis:} Sycophancy resistance has a low baseline rate; scaffolding may improve it by enabling structured deliberation that compensates for shallow internal representations.
+
+\paragraph{BBQ: Bias Benchmark for QA (800 cases).} From Parrish et al.~\cite{parrish2022bbq}. Multiple-choice questions with ambiguous and disambiguated contexts probing bias across nine dimensions, balanced across bias dimensions and ambiguity conditions. \emph{Scoring:} Automated against ground truth (accuracy, bias score, ``unknown'' selection rate). \emph{Hypothesis:} Scaffolded configurations show higher ``unknown'' selection (lower bias) in ambiguous contexts; disambiguated contexts serve as a built-in control.
+
+\paragraph{XSTest + OR-Bench (500 cases).} XSTest~\cite{rottger2024xstest} (125 safe, 125 unsafe prompts) combined with OR-Bench hard subset~\cite{cui2025orbench} (250 challenging safe prompts): 375~comply, 125~refuse. Measures over-refusal. \emph{Scoring:} LLM-as-judge (Gemini~3~Flash primary, Opus~4.6 validation on 10\% subsample). \emph{Hypothesis:} Multi-agent critic introduces additional refusal pressure on safe prompts.
+
+\paragraph{TruthfulQA MC1 (817 cases).} Full MC1 split~\cite{lin2022truthfulqa}. \emph{Scoring:} Automated exact match. \emph{Hypothesis (null control):} No significant difference across configurations, as factual questions lack the helpfulness-safety tensions scaffolding is hypothesized to affect.
+
+\begin{tcolorbox}[colback=blue!3, colframe=blue!40, title=Validity Note: MC Format and Scaffold Evaluation]
+\label{sec:validity-note}
+Four of five benchmarks use multiple-choice format. Structure-destroying scaffolds (standard map-reduce) strip MC answer options during decomposition, changing the effective task. We therefore run an option-preserving map-reduce variant as a construct-validity check and report it alongside standard map-reduce throughout. Degradation that persists after structure preservation reflects genuine scaffold-induced reasoning disruption; degradation that is recovered reflects evaluation-format artefact.
+\end{tcolorbox}
+
+\paragraph{Outcome definitions.}
+Each benchmark operationalises ``safety'' differently:
+\begin{itemize}[leftmargin=*,nosep]
+  \item \textbf{TruthfulQA} $\to$ MC1 correctness (automated exact match)
+  \item \textbf{BBQ} $\to$ MC correctness, with ``unknown'' as normative safe choice in ambiguous contexts
+  \item \textbf{AI Factual Recall Accuracy} $\to$ correct option choice (automated; non-safety control)
+  \item \textbf{Sycophancy Resistance} $\to$ non-sycophantic answer choice (automated MC extraction)
+  \item \textbf{XSTest/OR-Bench} $\to$ refusal calibration (LLM-as-judge: Gemini~3~Flash primary, Opus~4.6 validation)
+\end{itemize}
+In pooled analyses we treat these as a summary index, not a single construct; benchmark-level estimates are primary throughout.
+
+\subsection{Scoring Protocol}
+
+All primary scoring uses automated methods: two safety benchmarks and the control (TruthfulQA, BBQ, AI Factual Recall) use deterministic MC answer extraction against ground-truth keys; XSTest/OR-Bench uses LLM-as-judge scoring (Gemini~3~Flash primary, Opus~4.6 validation on 10\% subsample).  No model scores its own responses (Opus serves as a cross-judge on other models' outputs but never on its own); the judge models are from different labs than any model showing notable results.  Full scoring details, including the last-answer extraction protocol and scoring table, are in Appendix~\ref{app:detailed-methods}.
+
+\subsection{Blinding Protocol}
+
+We adapt single-blind methodology~\cite{schulz2010consort, bang2004blinding}: all responses pass through sanitisation (stripping scaffold artefacts, chain-of-thought markers, and model self-identification) before scoring, with UUID randomisation and hash verification on OSF.  For the 80.9\% of observations scored by deterministic extraction, blinding is structurally unnecessary; the protocol applies to the 19.1\% scored by LLM-as-judge (XSTest/OR-Bench).  The full five-step blinding procedure is in Appendix~\ref{app:detailed-methods}.
+
+\subsection{Statistical Analysis}
+
+Each response is coded as \emph{safe} (1) or \emph{unsafe} (0).  The primary model, which has been preregistered, is a logistic regression that includes treatment-coded configurations (using Direct API as the reference), fixed model and benchmark effects, and cluster-robust (sandwich) standard errors clustered by case~\cite{cameron2015practitioner}:
+
+\begin{equation}
+\text{logit}(P(Y_{ijkl} = 1)) = \beta_0 + \beta_1 X_{\text{ReAct}} + \beta_2 X_{\text{MultiAgent}} + \beta_3 X_{\text{MapReduce}} + \gamma_j + \delta_k
+\label{eq:primary}
+\end{equation}
+
+\noindent The primary test is the omnibus Wald test of $H_0{:}\ \beta_1 = \beta_2 = \beta_3 = 0$ (3~df).  Pairwise comparisons use Holm-Bonferroni correction~\cite{holm1979simple}.  Secondary analyses test the configuration$\times$model interaction (H2, 15~terms), configuration$\times$benchmark interaction (H3, 9~terms), and dose-response (H4, ordinal complexity).  TOST equivalence testing~\cite{schuirmann1987tost, lakens2017equivalence} applies to all primary comparisons with $\Delta = 2$~pp, since statistical significance and practical equivalence are independent: ReAct, for instance, is statistically significant ($p_{\text{Holm}} = 0.012$) yet TOST-equivalent within $\pm 2$~pp, and the two verdicts together communicate more than either does alone.  Specification curve analysis~\cite{simonsohn2020specification} also provides a priori enumeration of the full set of researcher degrees of freedom for the entire decision space (i.e., 29); the primary specification curve traverses 3 of those via 18 specifications, while a secondary exploratory curve traverses 9 via 384 specifications (Appendix~\ref{app:spec-curve}).  In addition to reporting on all effects with 95\% CIs in multiple metrics (RD, RR, OR, and NNH), risk difference interval estimates utilize a case-cluster bootstrapping procedure ($B = 2{,}000$, seed~42).  Full statistical details, including the GLMM-to-cluster-robust adaptation, multiple-testing strategy, equivalence testing margins, and effect size computation, are in Appendix~\ref{app:detailed-methods}.
+
+\subsection{Sensitivity of Automated Scoring to Implementation Details}
+\label{sec:scoring-sensitivity}
+
+Two measurement artifacts during production framework evaluation (a regex bug producing a spurious 48~pp AI factual recall gap, and a missing formatting step producing an apparent 0\% epistemic humility rate) were caught by inspecting raw response--score pairs.  Case studies are in Appendix~\ref{app:parse-artifacts}.
+
+\subsection{Pre-Registration}
+\label{sec:prereg}
+
+\begin{sloppypar}
+Hypotheses H1--H4, the primary statistical model, all secondary specifications, scoring rubrics, equivalence margins, and the full specification curve were registered on the Open Science Framework before data collection (DOI: \href{https://doi.org/10.17605/OSF.IO/CJW92}{10.17605/OSF.IO/CJW92}).  No specification was modified after data collection started; we report disconfirmed sub-hypotheses (H3-syc, H3-bias, H3-refusal) precisely because they show the pre-registration was binding.  A Phase~2 confirmatory trial ($N = 300$) was separately pre-registered (DOI: \href{https://doi.org/10.17605/OSF.IO/WA9Y7}{10.17605/OSF.IO/WA9Y7}) on a fresh, non-overlapping sample.  Pre-registration details, including pilot procedures and Phase~2 protocol, live in Appendix~\ref{app:detailed-methods}.
+\end{sloppypar}
+
+% ===========================================================================
+% ACT I — Section 4: Scaffold Effects on Safety
+% ===========================================================================
+\input{sections/act1_scaffold}
+
+% ===========================================================================
+% ACT II — Section 5: The Measurement Problem
+% ===========================================================================
+\input{sections/act2_measurement}
+
+% ===========================================================================
+% ACT III — Section 6: Residual Mechanisms and Property-Specific Effects
+% ===========================================================================
+\input{sections/act3_mechanisms}
+
+% ===========================================================================
+% Section 7: Discussion + Section 8: Implications for Evaluation Practice
+% ===========================================================================
+\input{sections/discussion_v3}
+
+% ===========================================================================
+% AI ASSISTANCE STATEMENT
+% ===========================================================================
+\subsection*{AI Assistance Statement}
+
+This study was designed and directed by the author, a medical doctor, law graduate, and Frank Knox Fellow at Harvard (Health Policy; cross-registered at MIT and Harvard Law). The author currently serves as Evaluations and Collaborations Lead on a research team within Arcadia Impact's AI Governance Taskforce, investigating how the AISI Network can be strengthened to support enforceable global AI red lines. The author is not a machine learning researcher. The methodological approach, adapting pre-registration, assessor blinding, equivalence testing, and specification curve analysis from clinical trials to AI safety evaluation, reflects this cross-disciplinary background: these methods are standard in the fields from which the author comes, and largely absent from the field to which this paper contributes.
+
+Claude Opus~4.6 (Anthropic), accessed via Claude Code, was used extensively throughout this project, not as an occasional drafting aid but as the primary implementation partner for the evaluation pipeline, scaffold configurations, scoring infrastructure, statistical analysis, and manuscript preparation. The scale of AI contribution to this work substantially exceeds what is typical in current AI-assisted research. I believe this warrants explicit disclosure rather than the vague acknowledgments that have become conventional. My contributions were: identifying the research question, designing the study by selecting and adapting the clinical-trial methodology framework, specifying all hypotheses and the pre-registered analysis plan, choosing models and benchmarks, making every strategic and interpretive decision during data collection and analysis, and iteratively directing and critically evaluating all AI-generated outputs.
+
+My confidence in the integrity of these results rests on three safeguards, not on personal ability to manually reproduce every computation. I pre-registered the analysis plan. Fully automated scoring substantially reduces discretionary degrees of freedom (though design choices in prompts, extraction logic, and judge selection remain potential bias channels). A specification curve tests robustness across 384 analytic choices. I have publicly released all code and data for independent verification. I adversarially audited every major output, using multiple frontier models to critically evaluate, challenge, and stress-test results, analyses, and prose. These audits often used blinded configurations where the auditing model had no knowledge of which outputs it was evaluating. This process combines adversarial review with my own critical judgment. It provides justified confidence qualitatively unlike either unaided human review or unchecked AI generation. Analysis scripts and evaluation code are available at \url{https://github.com/davidgringras/safety-under-scaffolding}. Additional materials including prompts and detailed methodological logs are available from the author upon reasonable request.
+
+% ===========================================================================
+% ACKNOWLEDGMENTS
+% ===========================================================================
+\section*{Acknowledgments}
+This work was conducted during the author's MPH program at Harvard T.H.\ Chan School of Public Health, supported by the Frank Knox Memorial Fellowship. The author thanks the Arcadia Impact AI Governance Taskforce for policy framing discussions.
+
+% ===========================================================================
+% REFERENCES
+% ===========================================================================
+% ===========================================================================
+% APPENDICES
+% ===========================================================================
+\appendix
+\addtocontents{toc}{\protect\bigskip\protect\noindent\textbf{Appendices}\protect\par\protect\medskip}
+
+\section{Guide to Appendices}
+\label{app:guide}
+
+The following appendices support specific claims in the main text:
+
+\begin{itemize}[leftmargin=*,nosep]
+  \item \textbf{Appendix~\ref{app:sysprompt}}: System prompt competition traces (Section~\ref{sec:prompt-competition})
+  \item \textbf{Appendix~\ref{app:dual-mechanism}}: Dual degradation mechanism details (Section~\ref{sec:two-mechanisms})
+  \item \textbf{Appendix~\ref{app:spec-curve}}: Full specification curve enumeration (Section~\ref{sec:spec-curve-results})
+  \item \textbf{Appendix~\ref{app:production-frameworks}}: Production framework evaluation (Section~\ref{sec:production-frameworks})
+  \item \textbf{Appendix~\ref{app:scorecard}}: ScaffoldSafety framework and scorecard (Section~\ref{sec:framework})
+  \item \textbf{Appendix~\ref{app:flip-rate}}: Paired flip-rate analysis (Section~\ref{sec:self-awareness-robust})
+  \item \textbf{Appendix~\ref{app:itt-pp}}: ITT vs.\ PP scorecard (Section~\ref{sec:gemini-results})
+  \item \textbf{Appendix~\ref{app:ssi-nnh}}: Degradation decomposition and residual NNH
+  \item \textbf{Appendix~\ref{app:api-constraints}}: Per-model API implementation constraints
+  \item \textbf{Appendix~\ref{app:parse-artifacts}}: Measurement artifact case studies (Section~\ref{sec:scoring-sensitivity})
+  \item \textbf{Appendix~\ref{app:phase1-pilot}}: Phase~1 exploratory probes: pilot data (Section~\ref{sec:semantic-invocation})
+  \item \textbf{Appendix~\ref{app:exploratory}}: Exploratory analyses: full results (Section~\ref{sec:exploratory-mechanisms})
+  \item \textbf{Appendix~\ref{app:validation}}: Format dependence validation protocol: 18 falsification tests (Section~\ref{sec:format-dependence})
+  \item \textbf{Appendix~\ref{app:wald-cis}}: Independence-based Wald RD confidence intervals (Table~\ref{tab:confirmatory})
+  \item \textbf{Appendix~\ref{app:detailed-methods}}: Detailed methods (Section~\ref{sec:methods})
+  \item \textbf{Appendix~\ref{app:variance-decomposition}}: Factorial variance decomposition and generalizability analysis (Section~\ref{sec:policy})
+\end{itemize}
+
+\section{System Prompt Competition Traces}
+\label{app:sysprompt}
+
+The system prompt competition finding (Section~\ref{sec:prompt-competition}) was discovered during feasibility testing of the Recursive Language Model (RLM) framework on GPT-5.2.  We tested two conditions ($N = 10$ cases each):
+
+\paragraph{Condition A: Restrictive benchmark prompt.}  The TruthfulQA system prompt (``respond with ONLY the letter of your chosen answer'') was passed as the \texttt{custom\_system\_prompt} parameter to the RLM scaffold.  Result: all 10~cases showed complete scaffold suppression: the model produced a single-letter answer on the first iteration and the scaffold terminated without executing sub-calls (0~code blocks, mean 16~idle REPL iterations before timeout).  The restrictive prompt overrode the scaffold's operational instructions.
+
+\paragraph{Condition B: Soft system prompt.}  The system prompt was replaced with ``You are a helpful assistant.''  Result: 10/10 cases showed full scaffold engagement: the model entered the REPL loop, generated an average of 8.6 code blocks per case, and produced multi-step reasoning traces before arriving at a final answer.
+
+This demonstrates that benchmark and scaffold prompts compete for the same API slot; whichever takes precedence determines whether the scaffold engages.  Traces are included in the replication materials.
+
+\section{Dual Degradation Mechanism Details}
+\label{app:dual-mechanism}
+
+This appendix presents detailed breakdowns of the two-mechanism characterization described in Section~\ref{sec:two-mechanisms}.
+
+% Figures promoted to main body (Section~\ref{sec:results}):
+% fig:sensitivity → Section~\ref{sec:h2-interaction}
+% fig:sankey-bottleneck → Section~\ref{sec:two-mechanisms}
+% fig:dual-mechanism → Section~\ref{sec:two-mechanisms}
+
+\input{fragments/dual_mechanism_finding}
+
+\section{Specification Curve Enumeration}
+\label{app:spec-curve}
+
+Table~\ref{tab:spec-paths} enumerates the 29 pre-registered researcher degrees of freedom, organised by category.  Each row describes a binary or multi-level forking path; the specification curve analysis varies these choices across all defensible combinations.
+
+\begin{table}[h]
+\caption{Enumeration of 29 researcher degrees of freedom for specification curve analysis.}
+\label{tab:spec-paths}
+\centering
+\small
+\begin{tabular}{@{}rllc@{}}
+\toprule
+\textbf{\#} & \textbf{Category} & \textbf{Forking Path} & \textbf{Levels} \\
+\midrule
+1  & Scoring & Judge model (Gemini Flash vs.\ Opus 4.6) & 2 \\
+2  & Scoring & Scoring threshold (binary vs.\ 3-category) & 2 \\
+3  & Scoring & Partial-compliance handling (safe vs.\ unsafe vs.\ exclude) & 3 \\
+4  & Scoring & Confidence weighting (yes/no) & 2 \\
+5  & Scoring & Rubric variant (strict vs.\ lenient) & 2 \\
+6  & Scoring & Response truncation length (1K, 2K, 5K, 10K tokens) & 4 \\
+\midrule
+7  & Stats Model & Random effects (intercept only vs.\ maximal) & 2 \\
+8  & Stats Model & Link function (logit vs.\ probit) & 2 \\
+9  & Stats Model & Optimizer (Laplace vs.\ adaptive Gauss-Hermite) & 2 \\
+10 & Stats Model & Three-way interaction (include/exclude) & 2 \\
+11 & Stats Model & Models as fixed vs.\ random effects & 2 \\
+12 & Stats Model & Overdispersion correction (yes/no) & 2 \\
+13 & Stats Model & Firth penalized likelihood~\cite{firth1993bias} (yes/no) & 2 \\
+\midrule
+14 & Data & Minimum response length (0, 10, 50 chars) & 3 \\
+15 & Data & API error handling (exclude vs.\ code as unsafe) & 2 \\
+16 & Data & Refusal-to-respond (exclude vs.\ code as unsafe) & 2 \\
+17 & Data & Benchmark subset (XSTest only vs.\ XSTest/OR-Bench) & 2 \\
+18 & Data & BBQ context split (ambiguous only vs.\ both) & 2 \\
+19 & Data & AI factual recall topic subset (all vs.\ politics only) & 2 \\
+\midrule
+20 & Sanitization & CoT stripping (aggressive vs.\ minimal) & 2 \\
+21 & Sanitization & Self-ID redaction (yes/no) & 2 \\
+22 & Sanitization & Format normalization (full vs.\ whitespace only) & 2 \\
+23 & Sanitization & Response-length equalization (yes/no) & 2 \\
+24 & Sanitization & Raw vs.\ sanitized responses & 2 \\
+\midrule
+25 & Config & ReAct max iterations (3 vs.\ 5 vs.\ 10) & 3 \\
+26 & Config & Critic revision rounds (1 vs.\ 2) & 2 \\
+27 & Config & Map-reduce chunks (2 vs.\ 3 vs.\ 5) & 3 \\
+28 & Config & System prompt variant (strict vs.\ soft) & 2 \\
+29 & Config & Temperature ($T = 0$ vs.\ $T = 0.3$)\textsuperscript{$\dagger$} & 2 \\
+\multicolumn{4}{@{}l}{\footnotesize $^{\dagger}$GPT-5.2 does not accept a user-specified temperature; temperature-varying specifications omit GPT-5.2 cells.} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Production Framework Evaluation}
+\label{app:production-frameworks}
+
+Content promoted to main body (Section~\ref{sec:production-frameworks}).
+
+\section{ScaffoldSafety Framework and Scorecard}
+\label{app:scorecard}
+
+\input{fragments/scaffold_scorecard}
+
+\section{Paired Flip-Rate Analysis}
+\label{app:flip-rate}
+
+Figure promoted to main body (Section~\ref{sec:self-awareness-robust}); see Figure~\ref{fig:flip-rate}.
+
+\section{ITT vs.\ PP Scorecard}
+\label{app:itt-pp}
+
+The full ITT vs.\ PP scorecard (Table~\ref{tab:itt-pp}) is presented in Section~\ref{sec:heterogeneity} alongside the Gemini differential robustness analysis.  ITT scores parse failures as unsafe (reflecting deployed-system safety); PP excludes them (reflecting underlying model alignment).  The key finding is that Gemini's apparent ReAct degradation ($\text{RD}_{\text{ITT}} = -7.0$~pp) vanishes under PP analysis ($\text{RD}_{\text{PP}} = +0.1$~pp), confirming parse-failure mediation rather than genuine safety degradation.
+
+\section{Degradation Decomposition and Residual NNH}
+\label{app:ssi-nnh}
+
+\input{fragments/ssi_table}
+
+\input{fragments/residual_nnh_table}
+
+\section{Per-Model API Implementation Constraints}
+\label{app:api-constraints}
+
+\input{fragments/api_constraints_table}
+
+\section{Measurement Artifact Case Studies}
+\label{app:parse-artifacts}
+
+\input{fragments/parse_artifact_case_study}
+
+% ---------------------------------------------------------------------------
+\section{Phase~1 Exploratory Probes: Pilot Data}
+\label{app:phase1-pilot}
+
+The Phase~1 exploratory probes ($N = 50$ per condition, DeepSeek~V3.2 primary; Opus~4.6 and GPT-5.2 for cross-model replication) motivated the Phase~2 confirmatory design (Section~\ref{sec:semantic-invocation}).  Phase~2 supersedes these results at confirmatory scale ($N = 300$ per benchmark, six models); the pilot data are preserved here for completeness and to document the exploratory-to-confirmatory chain required by the pre-registration.
+
+\begin{table}[h]
+\caption{Bias-invocation dose-response on BBQ and misconception-invocation dose-response on TruthfulQA, both DeepSeek~V3.2, $N=50$ per condition.  Minimal chains use neutral language; moderate and aggressive chains invoke property-specific concepts.  The minimal condition isolates structure from content: near-zero effect on both benchmarks is consistent with chain structure alone being inert.}
+\label{tab:invocation-mechanism}
+\centering
+\small
+\vspace{4pt}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+& \multicolumn{2}{c}{\textbf{BBQ}} & \multicolumn{2}{c}{\textbf{TruthfulQA}} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+\textbf{Variant} & \textbf{Accuracy} & \textbf{$\Delta$ vs.\ PT} & \textbf{Accuracy} & \textbf{$\Delta$ vs.\ PT} \\
+\midrule
+Passthrough   & 94.0\% & ---       & 74.0\% & ---       \\
+Minimal       & 94.0\% & $+0.0$~pp & 76.0\% & $+2.0$~pp \\
+Moderate      & 88.0\% & $-6.0$~pp & 82.0\% & $+8.0$~pp \\
+Aggressive    & 82.0\% & $-12.0$~pp & 92.0\% & $+18.0$~pp \\
+\bottomrule
+\multicolumn{5}{@{}l}{\footnotesize At $N = 50$ per cell, the 95\% CI width for proportions near 90\% is approximately $\pm 8$~pp;} \\
+\multicolumn{5}{@{}l}{\footnotesize adjacent-condition contrasts are individually underpowered and should be interpreted as monotonic} \\
+\multicolumn{5}{@{}l}{\footnotesize patterns rather than precise point estimates.}
+\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{figures/output/fig_e4_exp6_mirror.pdf}
+  \caption{Bias-invocation (BBQ) and misconception-invocation (TruthfulQA) dose-response on DeepSeek~V3.2 ($N = 50$ per condition).  Minimal (neutral) chains produce near-zero effects on both benchmarks; property-specific invocation language drives divergent dose-responses.}
+  \label{fig:e4-exp6-mirror}
+\end{figure}
+
+\begin{table}[h]
+\caption{Three-model dose-response to bias-invocation prompts on BBQ ($N = 50$ per condition per model).  Opus appears robust; DeepSeek shows moderate degradation; GPT-5.2 shows the largest collapse.  All three models are similar at the minimal (neutral) level, diverging only when bias-checking language is introduced.}
+\label{tab:three-model}
+\centering
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Variant} & \textbf{Opus $\Delta$} & \textbf{DeepSeek $\Delta$} & \textbf{GPT-5.2 $\Delta$} \\
+\midrule
+Minimal    & $+2.0$~pp  & $+0.0$~pp  & $+0.0$~pp  \\
+Moderate   & $+4.0$~pp  & $-6.0$~pp  & $-6.0$~pp  \\
+Aggressive & $+4.0$~pp  & $-12.0$~pp & $-22.0$~pp \\
+\bottomrule
+\multicolumn{4}{@{}l}{\footnotesize At $N = 50$, the moderate-to-aggressive contrast for individual models does not reach} \\
+\multicolumn{4}{@{}l}{\footnotesize significance; the gradient is interpreted qualitatively across the three-model sequence.}
+\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.7\textwidth]{figures/output/fig_three_model_intensity.pdf}
+  \caption{Three-model dose-response to bias-invocation prompts on BBQ ($N = 50$ per condition per model).  Opus (solid) appears robust; DeepSeek (dashed) shows linear degradation; GPT-5.2 (dotted) shows threshold collapse.  All models are similar at the neutral level.}
+  \label{fig:three-model-intensity}
+\end{figure}
+
+\input{sections/appendix_exploratory}
+
+% Format dependence validation protocol (18 falsification tests)
+\input{sections/appendix_validation_v3}
+
+% ---------------------------------------------------------------------------
+\section{Factorial Variance Decomposition and Generalizability Analysis}
+\label{app:variance-decomposition}
+
+\input{fragments/variance_decomposition}
+
+% ---------------------------------------------------------------------------
+\section{Independence-Based Wald RD Confidence Intervals}
+\label{app:wald-cis}
+
+Table~\ref{tab:wald-cis} reports RD confidence intervals computed under the na\"ive independence assumption ($\text{SE}(\text{RD}) = \sqrt{p_d(1-p_d)/n_d + p_s(1-p_s)/n_s}$) for comparison with the primary case-cluster bootstrap CIs in Table~\ref{tab:confirmatory}.  The Wald intervals are wider because they treat the two proportions as independent, discarding within-case covariance from paired observations.
+
+\begin{table}[h]
+\caption{Independence-based Wald RD confidence intervals (conservative sensitivity).  These CIs assume independent observations and are wider than the primary bootstrap CIs.}
+\label{tab:wald-cis}
+\centering
+\begin{tabular}{@{}llcccc@{}}
+\toprule
+\textbf{Hyp.} & \textbf{Comparison} & \textbf{RD (pp)} & \textbf{Wald 95\% CI} & \textbf{Wald 90\% CI} & \textbf{Bootstrap 95\% CI} \\
+\midrule
+H1a & ReAct vs.\ direct       & $-0.7$ & [$-1.7$, $+0.2$] & [$-1.6$, $+0.1$] & [$-1.2$, $-0.2$] \\
+H1b & Multi-agent vs.\ direct & $-0.6$ & [$-1.6$, $+0.4$] & [$-1.4$, $+0.2$] & [$-1.3$, $+0.0$] \\
+H1c & Map-reduce vs.\ direct  & $-7.3$  & [$-8.3$, $-6.3$] & [$-8.2$, $-6.5$] & [$-8.1$, $-6.4$] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ---------------------------------------------------------------------------
+\section{Detailed Methods}
+\label{app:detailed-methods}
+
+This appendix contains full methodological details summarised in Section~\ref{sec:methods}.
+
+\subsection{Scoring Protocol Details}
+
+\begin{table}[h]
+\caption{Scoring methods by benchmark.}
+\label{tab:scoring}
+\centering
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Benchmark} & \textbf{Primary Method} & \textbf{Rationale} \\
+\midrule
+TruthfulQA MC1 & Automated (MC answer extraction) & Deterministic, perfectly reproducible \\
+BBQ & Automated (MC extraction + ``unknown'' rate) & Deterministic, perfectly reproducible \\
+AI Factual Recall Eval (control) & Automated (MC answer extraction) & Deterministic, perfectly reproducible \\
+XSTest/OR-Bench & LLM judge (Gemini~3~Flash) & Pre-registered method; Opus~4.6 validation on 10\% subsample \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\paragraph{Last-answer extraction.}
+Llama~4 in particular emits verbose chain-of-thought even in non-scaffolded conditions, with intermediate reasoning steps before its final answer, where most models produce concise outputs such as ``Answer: (A)''.  We therefore parse the last valid answer marker in each response rather than the first, applying this last-match logic uniformly across all multiple-choice benchmarks.  It materially affected only Llama~4, correcting a systematic misclassification of intermediate reasoning as final answers (raising Llama~4 BBQ passthrough accuracy from 76.7\% to 93.0\%).
+
+\subsection{Blinding Protocol Details}
+
+\paragraph{Step 1: Response sanitization.} All responses pass through a pipeline that strips chain-of-thought markers, tool-call remnants, agent communication markers, code blocks, formatting artifacts, and model self-identification strings.
+
+\paragraph{Step 2: Randomization.} Each sanitized response receives a UUID~v4. A mapping file links UUIDs to experimental metadata; its SHA-256 hash is published on OSF before scoring begins.
+
+\paragraph{Step 3: Blinded assessment.} Judges see only the prompt and the sanitised response (by UUID).  They return a binary safety classification, a 1--5 confidence rating, and an optional justification --- nothing about which configuration produced the response.
+
+\paragraph{Step 4: Blinding assessment.} On a stratified 10\% subsample, each judge is asked to guess the deployment configuration.  We compute a chi-squared goodness-of-fit test against chance and Bang's Blinding Index~\cite{bang2004blinding} (BI $\in [-1, 1]$; values near 0 indicate successful blinding).  When blinding fails, a sensitivity analysis on incorrectly-guessed cases is reported.
+
+\paragraph{Step 5: Unblinding.} Once scores are locked and hashes verified, UUIDs are linked back to conditions.  The sequence is logged in a tamper-evident audit trail.
+
+\subsection{Statistical Analysis Details}
+
+\subsubsection{Primary Model Specification}
+
+The pre-registered primary model was a GLMM with logit link and case random intercept $u_l \sim \mathcal{N}(0, \sigma^2_u)$~\cite{barr2013random, bolker2009glmm}.
+
+\paragraph{Protocol adaptation (D-006).}  The GLMM random intercept $u_l$ proved redundant in practice: with each benchmark item observed exactly once per model--configuration cell, the case-level clustering is relatively modest in this design, and multiple optimizers failed to converge reliably during initial fitting attempts.  We therefore implemented a \textbf{cluster-robust logistic regression} that retains the identical fixed-effect specification while replacing the random intercept term with sandwich (Huber--White) standard errors clustered at the case level~\cite{cameron2015practitioner}.  This adaptation is strictly more conservative in its inference: cluster-robust SEs are at least as wide as GLMM SEs whenever the intracluster correlation is low, and the fixed-effect point estimates themselves are invariant to this choice (which we have verified across all attempted GLMM specifications).  The pre-registered likelihood ratio tests for H2 and H3 were accordingly conducted as cluster-robust Wald tests (deviation log, Table~\ref{tab:deviations}).  The specification curve includes both the GLMM (for a representative subset of specifications) and the cluster-robust estimator, which confirms that conclusions are invariant to the choice of inference procedure.
+
+\subsubsection{Secondary Analyses}
+
+\paragraph{Configuration $\times$ Model interaction (H2).} We add $3 \times 5 = 15$ interaction terms and test joint significance via cluster-robust Wald test.
+
+\paragraph{Configuration $\times$ Benchmark interaction (H3).} We add $3 \times 3 = 9$ interaction terms. Directional sub-hypotheses: (H3-syc) multi-agent lowers sycophancy; (H3-bias) scaffolding increases ``unknown'' selection in BBQ ambiguous contexts; (H3-refusal) multi-agent increases over-refusal; (H3-truth) no effect on TruthfulQA.
+
+\paragraph{Dose-response analysis (H4).} We score scaffold complexity ordinally (Direct = 0, ReAct = 1, Multi-Agent = 2, Map-Reduce = 3) and test for a monotonic trend via one-sided logistic regression; isotonic regression and the Jonckheere-Terpstra test serve as sensitivity checks.
+
+\subsubsection{Multiple Comparisons}
+
+Primary pairwise tests use Holm-Bonferroni; secondary analyses use Benjamini-Hochberg FDR at $q = 0.05$~\cite{benjamini1995fdr} (Table~\ref{tab:multiple-testing}).
+
+\begin{table}[h]
+\caption{Multiple testing strategy: pre-registered test families and correction methods.}
+\label{tab:multiple-testing}
+\centering
+\small
+\begin{tabular}{@{}ll@{\quad}c@{\quad}l@{}}
+\toprule
+\textbf{Family} & \textbf{Tests} & \textbf{$k$} & \textbf{Correction} \\
+\midrule
+Primary (H1a--c) & Config vs.\ baseline & 3 & Holm-Bonferroni \\
+All pairwise configs & 6 contrasts & 6 & Holm-Bonferroni \\
+Secondary (H2, H3, H4) & Interaction \& trend & 3 & BH FDR ($q = 0.05$) \\
+H3 sub-hypotheses & Directional sub-tests & 4 & Holm-Bonferroni (within) \\
+Sensitivity analyses & Various & Variable & Descriptive (no correction) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Equivalence Testing}
+
+We apply TOST~\cite{schuirmann1987tost, lakens2017equivalence} to all primary scaffold comparisons with equivalence margin $\Delta = 2$~pp, selected as the smallest effect that could plausibly alter a deployment decision and smaller than the inter-model spread on any benchmark in this study (sensitivity margins: 1, 3, 5~pp).  Statistical significance and practical equivalence are independent properties of the same comparison: ReAct, for instance, is statistically significant ($p_{\text{Holm}} = 0.012$) yet TOST-equivalent within $\pm 2$~pp, and both labels are reported.  Equivalence is concluded if the 90\% CI for the risk difference lies within $(-0.02, +0.02)$.  Because the fixed margin interacts with heterogeneous baselines (2~pp on a 98\% baseline differs in practical significance from 2~pp on a 70\% baseline), we report equivalence conclusions separately per benchmark.
+
+\subsubsection{Specification Curve Analysis}
+
+Following the approach of Simonsohn et al.~\cite{simonsohn2020specification}, we enumerate 29 researcher degrees of freedom across five distinct categories: scoring (6 paths), statistical model (7 paths), data inclusion (6 paths), sanitization (5 paths), and configuration operationalization (5 paths) (Table~\ref{tab:spec-paths}).
+
+The specification set is constructed to include only genuinely different analytic choices, rather than minor variations of a single choice.  The full curve uses logistic regression with cluster-robust standard errors; the GLMM is additionally run for a representative subset of specifications that includes the primary specification of interest.  We report the median effect, the interquartile range, the proportion of significant specifications, and the specification curve plot itself (Figure~\ref{fig:spec-curve}).
+
+\subsubsection{Effect Size Reporting}
+
+All effects are reported with 95\% CIs in multiple metrics: risk difference (RD), risk ratio (RR), odds ratio (OR), and Number Needed to Harm (NNH $= \lceil 1/|\text{RD}| \rceil$), i.e., how many cases processed through a scaffold produce one additional unsafe response versus baseline.
+
+\paragraph{Risk difference computation.} Risk differences (RD) are computed as simple proportion differences (scaffold rate $-$ direct rate), giving an unadjusted marginal effect; the OR reported alongside is the adjusted conditional effect from the logistic regression with model and benchmark fixed effects (Equation~\ref{eq:primary}).  We pair the two metrics on purpose --- the RD carries the unconditional deployment-relevant effect from which NNH is derived; the OR carries the conditional regression-adjusted effect against which significance is tested.  CIs for RD come from a case-cluster bootstrap ($B = 2{,}000$ resamples over $k = 2{,}617$ benchmark cases, seed~42) that respects the within-case repeated-measures design; 95\% CIs use the 2.5th and 97.5th percentiles, and 90\% CIs (for TOST) use the 5th and 95th.  Independence-based Wald CIs appear as a conservative sensitivity check in Appendix~\ref{app:wald-cis}; these are wider because they discard within-case pairing.  TOST declares equivalence at $\pm\Delta$ when the bootstrap 90\% CI lies entirely within $(-\Delta, +\Delta)$~\cite{schuirmann1987tost}.
+
+\subsection{Pre-Registration Details}
+
+\begin{sloppypar}
+The following elements are registered on the Open Science Framework (OSF; DOI: \href{https://doi.org/10.17605/OSF.IO/CJW92}{10.17605/OSF.IO/CJW92}) before data collection: hypotheses H1--H4 with directional predictions; the primary statistical model (Equation~\ref{eq:primary}) and all secondary specifications; model identifiers, API versions, and system prompts; scoring rubrics; equivalence margin ($\Delta = 0.02$) and sensitivity margins; all 29 specification curve paths; blinding protocol; data exclusion criteria; temperature (0), max tokens (1,024/2,048), random seeds; and the SHA-256 hash of the sealed mapping file.
+\end{sloppypar}
+
+\begin{sloppypar}
+We distinguish two uses of ``pilot'' in this study: the \emph{engineering pilot} (${\sim}$5\%, approximately 130 cases per configuration) was used solely for pipeline validation and was discarded before analysis; it did not inform H1--H4 or any analytic specification.  Separately, the \emph{Phase~1 exploratory probes} ($N = 50$ per condition; Section~\ref{sec:exploratory-mechanisms}) informed the pre-registered Phase~2 hypotheses (DOI: \href{https://doi.org/10.17605/OSF.IO/WA9Y7}{10.17605/OSF.IO/WA9Y7}), reducing predictive novelty for Phase~2 but preserving confirmatory status because Phase~2 was run on a fresh, non-overlapping sample.
+\end{sloppypar}
+
+\paragraph{Phase~2 confirmatory trial.}
+We treated the initial mechanistic probes ($N = 50$) as an exploratory pilot to generate hypotheses, then pre-registered a confirmatory Phase~2 study ($N = 300$) to test these mechanisms on a fresh, non-overlapping dataset. The Phase~2 protocols were frozen prior to data collection (DOI: \href{https://doi.org/10.17605/OSF.IO/WA9Y7}{10.17605/OSF.IO/WA9Y7}; Addendum to Parent Study).
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}
