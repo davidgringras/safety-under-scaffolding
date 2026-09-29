@@ -24,6 +24,8 @@ Outputs (MEDIUM PRIORITY):
 
 Usage:
   python analysis/master_reanalysis.py
+  SUS_CANONICAL=results/analysis_dataset.jsonl \\
+  SUS_OUT_DIR=analysis/outputs/analysis_dataset python analysis/master_reanalysis.py
 
 Author: Analysis pipeline (data correction effort)
 """
@@ -48,6 +50,11 @@ import statsmodels.api as sm
 import statsmodels.formula.api as smf
 from statsmodels.stats.multitest import multipletests
 
+try:  # Direct script execution and package imports are both supported.
+    from .cluster_logit_inference import ClusterInferenceError, fit_case_cluster_logit
+except ImportError:
+    from cluster_logit_inference import ClusterInferenceError, fit_case_cluster_logit
+
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 warnings.filterwarnings("ignore", category=RuntimeWarning)
@@ -57,9 +64,12 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 # ======================================================================
 
 PROJECT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-CANONICAL_PATH = os.path.join(PROJECT_DIR, "results", "canonical_primary_dataset.jsonl")
+# SUS_CANONICAL and SUS_OUT_DIR redirect input and output (relative paths resolve against
+# the repository root), e.g. to the analysis dataset from analysis/build_analysis_dataset.py.
+CANONICAL_PATH = os.path.join(PROJECT_DIR, os.environ.get(
+    "SUS_CANONICAL", os.path.join("results", "canonical_primary_dataset.jsonl")))
 BENCH_DIR = os.path.join(PROJECT_DIR, "data", "benchmarks")
-OUT_DIR = os.path.join(PROJECT_DIR, "analysis", "outputs")
+OUT_DIR = os.path.join(PROJECT_DIR, os.environ.get("SUS_OUT_DIR", os.path.join("analysis", "outputs")))
 os.makedirs(OUT_DIR, exist_ok=True)
 
 MODELS = {"opus", "gpt52", "deepseek", "llama4", "gemini3pro", "mistral"}
@@ -286,6 +296,10 @@ def generate_safety_rates(df: pd.DataFrame) -> dict:
                          (df["config_id"] == config) &
                          (df["benchmark_id"] == bm)]
                 n_total = len(sub)
+                if n_total == 0:
+                    # Cell with no observations (Gemini x sycophancy in the analysis dataset):
+                    # no rate is reported and no comparison enters the BH family.
+                    continue
                 n_safe = int(sub["safe"].sum())
                 rate, ci_lo, ci_hi = wilson_ci(n_safe, n_total)
 
@@ -306,12 +320,16 @@ def generate_safety_rates(df: pd.DataFrame) -> dict:
     for model in sorted(MODELS):
         for bm in BENCHMARKS:
             d_key = f"{model}|direct|{bm}"
+            if d_key not in safety_rates:
+                continue
             d = safety_rates[d_key]
             d_rate = d["safety_rate"]
             d_n = d["n_total"]
 
             for scaffold_cfg in SCAFFOLD_CONFIGS:
                 s_key = f"{model}|{scaffold_cfg}|{bm}"
+                if s_key not in safety_rates:
+                    continue
                 s = safety_rates[s_key]
                 s_rate = s["safety_rate"]
                 s_n = s["n_total"]
@@ -714,7 +732,7 @@ def generate_confirmatory_results(df: pd.DataFrame) -> dict:
     all_results = {
         "meta": {
             "analysis_date": datetime.now(timezone.utc).isoformat(),
-            "data_files": [CANONICAL_PATH],
+            "data_files": [os.path.relpath(CANONICAL_PATH, PROJECT_DIR)],
             "total_rows_scored": len(df),
             "models_included": sorted(MODELS),
             "configs": CONFIGS,
@@ -1251,18 +1269,7 @@ def generate_spec_curve(df: pd.DataFrame) -> dict:
                 y = sub["safe"].values.astype(float)
                 clusters = sub["case_id"].values
 
-                model_fit = sm.Logit(y, X)
-                result = model_fit.fit(disp=0, maxiter=100, method="newton", warn_convergence=False)
-
-                try:
-                    cluster_ids, cluster_idx = np.unique(clusters, return_inverse=True)
-                    if len(cluster_ids) > 1:
-                        robust_result = result.get_robustcov_results(
-                            cov_type="cluster", groups=cluster_idx, use_correction=True)
-                    else:
-                        robust_result = result.get_robustcov_results(cov_type="HC1")
-                except Exception:
-                    robust_result = result
+                robust_result = fit_case_cluster_logit(y, X, clusters)
 
                 coef = float(robust_result.params[1])
                 se = float(robust_result.bse[1])
@@ -1280,9 +1287,16 @@ def generate_spec_curve(df: pd.DataFrame) -> dict:
                     "OR": float(OR), "OR_ci_lower": float(OR_lo), "OR_ci_upper": float(OR_hi),
                     "p_value": pval,
                     "significant_005": bool(pval < 0.05),
+                    "covariance_type": robust_result.cov_type,
+                    "covariance_finite_sample_correction": True,
+                    "inference_reference": "normal",
+                    "optimizer_converged": bool(robust_result.mle_retvals["converged"]),
                 }
                 any_succeeded = True
 
+            except ClusterInferenceError:
+                # An incomplete or differently scored inference grid must not be published.
+                raise
             except Exception:
                 continue
 

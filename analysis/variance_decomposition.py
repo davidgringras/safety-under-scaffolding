@@ -16,17 +16,28 @@ Two approaches:
   1. Observation-level Type II ANOVA (logistic-scale via OLS on binary outcome)
   2. Cell-means approach: aggregate to safety rates per cell, then decompose
 
+Both use Type II sums of squares computed by nested-model comparison
+(type2_anova), and eta-squared is each term's share of the total corrected
+sum of squares. On the complete full-data design this reproduces
+statsmodels' anova_lm(typ=2) exactly. On the analysis dataset, whose empty Gemini x
+sycophancy cells make the design rank-deficient, anova_lm's sums of squares
+change with the row order of the data; these do not.
+
 Also computes per-model variance profiles to show which factors
-drive each model's safety variation.
+drive each model's safety variation (with anova_lm; each model's
+scaffold x benchmark grid is complete).
 
 Usage:
     python analysis/variance_decomposition.py
+    SUS_CANONICAL=results/analysis_dataset.jsonl \\
+    SUS_OUT_DIR=analysis/outputs/analysis_dataset python analysis/variance_decomposition.py
 
 Output:
-    analysis/outputs/variance_decomposition_results.json
+    analysis/outputs/variance_decomposition_results.json (or under SUS_OUT_DIR)
 """
 
 import json
+import os
 import sys
 import warnings
 from pathlib import Path
@@ -44,8 +55,15 @@ warnings.filterwarnings("ignore", category=UserWarning)
 
 # ── Paths ──────────────────────────────────────────────────────────────
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-CANONICAL = PROJECT_ROOT / "results" / "canonical_primary_dataset.jsonl"
-OUTPUT = PROJECT_ROOT / "analysis" / "outputs" / "variance_decomposition_results.json"
+# SUS_CANONICAL and SUS_OUT_DIR redirect input and output (relative paths resolve against
+# the repository root), e.g. to the analysis dataset from analysis/build_analysis_dataset.py.
+CANONICAL = PROJECT_ROOT / os.environ.get("SUS_CANONICAL", "results/canonical_primary_dataset.jsonl")
+OUTPUT = PROJECT_ROOT / os.environ.get("SUS_OUT_DIR", "analysis/outputs") / "variance_decomposition_results.json"
+
+TERMS = [
+    "C(model)", "C(scaffold)", "C(benchmark)",
+    "C(model):C(scaffold)", "C(scaffold):C(benchmark)", "C(model):C(benchmark)",
+]
 
 
 def load_data():
@@ -79,6 +97,41 @@ def compute_eta_squared(anova_table):
     return eta2
 
 
+def type2_anova(data, response, terms=TERMS):
+    """
+    Type II ANOVA table by nested-model comparison.
+
+    Each term's sum of squares is the reduction in residual sum of squares when
+    the term is added to the OLS model containing every term that does not
+    contain it; its df is the change in residual df (from the design rank).
+    Returns (table, full_fit), the table in anova_lm's layout. On a rank-deficient
+    design the result does not depend on the row order, unlike the Wald-test
+    route in anova_lm(typ=2).
+    """
+    def fit(ts):
+        return ols(f"{response} ~ " + (" + ".join(ts) if ts else "1"), data=data).fit()
+
+    full = fit(terms)
+    ms_error = full.ssr / full.df_resid
+    rows = {}
+    for term in terms:
+        others = [t for t in terms if not set(term.split(":")) <= set(t.split(":"))]
+        reduced, augmented = fit(others), fit(others + [term])
+        ss = reduced.ssr - augmented.ssr
+        df_term = reduced.df_resid - augmented.df_resid
+        f_val = (ss / df_term) / ms_error
+        rows[term] = {"sum_sq": ss, "df": df_term, "F": f_val,
+                      "PR(>F)": stats.f.sf(f_val, df_term, full.df_resid)}
+    rows["Residual"] = {"sum_sq": full.ssr, "df": full.df_resid, "F": np.nan, "PR(>F)": np.nan}
+    return pd.DataFrame.from_dict(rows, orient="index"), full
+
+
+def compute_eta_squared_total(anova_table, y):
+    """Eta-squared as each term's share of the total corrected sum of squares of y."""
+    ss_total = float(((y - y.mean()) ** 2).sum())
+    return {idx: anova_table.loc[idx, "sum_sq"] / ss_total for idx in anova_table.index}, ss_total
+
+
 def compute_partial_eta_squared(anova_table):
     """Compute partial eta-squared for each factor."""
     ss_residual = anova_table.loc["Residual", "sum_sq"]
@@ -103,19 +156,11 @@ def observation_level_anova(df):
     print("APPROACH 1: Observation-Level Type II ANOVA (OLS on binary outcome)")
     print("=" * 70)
 
-    # Fit the model with main effects and key interactions
-    formula = (
-        "is_safe ~ C(model) + C(scaffold) + C(benchmark) "
-        "+ C(model):C(scaffold) + C(scaffold):C(benchmark) "
-        "+ C(model):C(benchmark)"
-    )
-    model = ols(formula, data=df).fit()
+    # Main effects and two-way interactions; Type II ANOVA by nested-model comparison
+    anova_table, model = type2_anova(df, "is_safe")
 
-    # Type II ANOVA
-    anova_table = anova_lm(model, typ=2)
-
-    # Compute eta-squared
-    eta2 = compute_eta_squared(anova_table)
+    # Compute eta-squared (share of the total corrected sum of squares)
+    eta2, _ = compute_eta_squared_total(anova_table, df["is_safe"])
     partial_eta2 = compute_partial_eta_squared(anova_table)
 
     print(f"\nR-squared: {model.rsquared:.4f}")
@@ -174,15 +219,9 @@ def cell_means_decomposition(df):
           f"mean={cells['n'].mean():.0f}")
 
     # ANOVA on cell means (weighted by cell size for proper decomposition)
-    formula = (
-        "safe_rate ~ C(model) + C(scaffold) + C(benchmark) "
-        "+ C(model):C(scaffold) + C(scaffold):C(benchmark) "
-        "+ C(model):C(benchmark)"
-    )
-    model = ols(formula, data=cells).fit()
-    anova_table = anova_lm(model, typ=2)
+    anova_table, model = type2_anova(cells, "safe_rate")
 
-    eta2 = compute_eta_squared(anova_table)
+    eta2, _ = compute_eta_squared_total(anova_table, cells["safe_rate"])
     partial_eta2 = compute_partial_eta_squared(anova_table)
 
     print(f"\nR-squared: {model.rsquared:.4f}")
@@ -411,22 +450,14 @@ def compute_omega_squared(df):
     print("OMEGA-SQUARED (LESS BIASED EFFECT SIZE)")
     print("=" * 70)
 
-    formula = (
-        "is_safe ~ C(model) + C(scaffold) + C(benchmark) "
-        "+ C(model):C(scaffold) + C(scaffold):C(benchmark) "
-        "+ C(model):C(benchmark)"
-    )
-    model = ols(formula, data=df).fit()
-    anova_table = anova_lm(model, typ=2)
+    anova_table, _ = type2_anova(df, "is_safe")
 
     ms_error = anova_table.loc["Residual", "sum_sq"] / anova_table.loc["Residual", "df"]
-    ss_total = anova_table["sum_sq"].sum()
+    eta2_all, ss_total = compute_eta_squared_total(anova_table, df["is_safe"])
 
     results = {}
     print(f"\n{'Factor':<35} {'omega²':>10} {'eta²':>10} {'Interpretation':<25}")
     print("-" * 82)
-
-    eta2_all = compute_eta_squared(anova_table)
 
     for idx in anova_table.index:
         if idx == "Residual":

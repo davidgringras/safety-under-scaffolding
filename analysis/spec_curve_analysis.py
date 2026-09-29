@@ -7,15 +7,26 @@ Implements forking paths across scoring, statistical model, data inclusion,
 and configuration decisions. Fits logistic regression with cluster-robust
 standard errors for each specification.
 
-Output:
-  - analysis/outputs/spec_curve_results.json
-  - analysis/outputs/spec_curve_summary.txt
+Output (SUS_OUT_DIR, default analysis/outputs/):
+  - spec_curve_results.json
+  - spec_curve_summary.txt
+
+The curve printed in the paper is this analysis on the analysis dataset (analysis/check_analysis_dataset.py --run runs
+both steps):
+    SUS_CANONICAL=results/analysis_dataset.jsonl \\
+    SUS_SPEC_CURVE_INPUT=results/spec_curve_input_analysis_dataset.jsonl \\
+    SUS_SPEC_CURVE_MODELS=deepseek,gemini3pro,gpt52,llama4,opus python analysis/build_spec_curve_input.py
+    SUS_SPEC_CURVE_INPUT=results/spec_curve_input_analysis_dataset.jsonl \\
+    SUS_SPEC_CURVE_MODELS=deepseek,gemini3pro,gpt52,llama4,opus \\
+    SUS_SPEC_CURVE_SYCOPHANCY_ITEMS=data/benchmarks/sycophancy_eval_exp4.jsonl \\
+    SUS_OUT_DIR=analysis/outputs/analysis_dataset/spec_curve_exploratory python analysis/spec_curve_analysis.py
 """
 
 from __future__ import annotations
 
 import itertools
 import json
+import os
 import re
 import time
 import warnings
@@ -26,6 +37,11 @@ import pandas as pd
 import statsmodels.api as sm
 from scipy import stats as scipy_stats
 
+try:  # Direct script execution and package imports are both supported.
+    from .cluster_logit_inference import ClusterInferenceError, fit_case_cluster_logit
+except ImportError:
+    from cluster_logit_inference import ClusterInferenceError, fit_case_cluster_logit
+
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -33,12 +49,19 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 # Paths
 # ---------------------------------------------------------------------------
 PROJECT = Path(__file__).resolve().parent.parent
-RESULTS_FILE = PROJECT / "results" / "experiment_results_clean.jsonl"
+# SUS_SPEC_CURVE_INPUT, SUS_OUT_DIR, SUS_SPEC_CURVE_MODELS (comma-separated) and SUS_SPEC_CURVE_SYCOPHANCY_ITEMS
+# redirect the input records, the output directory, the models kept and the sycophancy item file (relative paths
+# resolve against the repository root).
+RESULTS_FILE = PROJECT / os.environ.get("SUS_SPEC_CURVE_INPUT",
+                                        os.path.join("results", "experiment_results_clean.jsonl"))
 BENCHMARK_DIR = PROJECT / "data" / "benchmarks"
-OUTPUT_DIR = PROJECT / "analysis" / "outputs"
+SYCOPHANCY_ITEMS = PROJECT / os.environ.get("SUS_SPEC_CURVE_SYCOPHANCY_ITEMS",
+                                            os.path.join("data", "benchmarks", "sycophancy_eval.jsonl"))
+OUTPUT_DIR = PROJECT / os.environ.get("SUS_OUT_DIR", os.path.join("analysis", "outputs"))
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-MODELS_KEEP = {"opus", "gpt52", "deepseek", "llama4", "gemini3pro", "mistral"}
+MODELS_KEEP = (set(os.environ["SUS_SPEC_CURVE_MODELS"].split(",")) if os.environ.get("SUS_SPEC_CURVE_MODELS")
+               else {"opus", "gpt52", "deepseek", "llama4", "gemini3pro", "mistral"})
 CONFIGS = ["direct", "react", "multi_agent", "map_reduce"]
 
 # ---------------------------------------------------------------------------
@@ -116,7 +139,7 @@ def load_truthfulqa_lookup() -> dict:
 
 def load_sycophancy_lookup() -> dict:
     lookup = {}
-    with open(BENCHMARK_DIR / "sycophancy_eval.jsonl") as f:
+    with open(SYCOPHANCY_ITEMS) as f:
         for line in f:
             row = json.loads(line)
             ref = row["reference_answer"].strip()
@@ -397,32 +420,16 @@ def fit_logistic(data: pd.DataFrame, spec: dict) -> dict | None:
     clusters = data["case_id"].values
 
     try:
-        model = sm.Logit(y, X)
-        result = model.fit(disp=0, maxiter=100, method="newton", warn_convergence=False)
-
-        # Cluster-robust SEs
-        try:
-            cluster_ids, cluster_idx = np.unique(clusters, return_inverse=True)
-            n_clusters = len(cluster_ids)
-            if n_clusters > 1:
-                robust_result = result.get_robustcov_results(
-                    cov_type="cluster",
-                    groups=cluster_idx,
-                    use_correction=True,
-                )
-            else:
-                robust_result = result.get_robustcov_results(cov_type="HC1")
-        except Exception:
-            try:
-                robust_result = result.get_robustcov_results(cov_type="HC1")
-            except Exception:
-                robust_result = result
+        robust_result = fit_case_cluster_logit(y, X, clusters)
 
         params_arr = np.asarray(robust_result.params)
         bse_arr = np.asarray(robust_result.bse)
         pvalues_arr = np.asarray(robust_result.pvalues)
         conf_int_arr = np.asarray(robust_result.conf_int(alpha=0.05))
 
+    except ClusterInferenceError:
+        # Do not silently omit failed covariance fits from the reported grid.
+        raise
     except Exception:
         return None
 
@@ -459,7 +466,10 @@ def fit_logistic(data: pd.DataFrame, spec: dict) -> dict | None:
         "n_clusters": int(len(np.unique(clusters))),
         "n_safe": int(y.sum()),
         "n_unsafe": int(len(y) - y.sum()),
-        "converged": True,
+        "converged": bool(robust_result.mle_retvals["converged"]),
+        "covariance_type": robust_result.cov_type,
+        "covariance_finite_sample_correction": True,
+        "inference_reference": "normal",
     }
 
 
@@ -577,6 +587,13 @@ def permutation_test(
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
+
+def significant_by_direction(all_results: list[dict], cfg: str) -> tuple[int, int]:
+    """Specifications in which cfg is significant (p < 0.05) with OR < 1, and with OR > 1."""
+    effects = [r["config_effects"][cfg] for r in all_results if cfg in r.get("config_effects", {})]
+    return (sum(e["p_value"] < 0.05 and e["OR"] < 1 for e in effects),
+            sum(e["p_value"] < 0.05 and e["OR"] > 1 for e in effects))
+
 
 def main():
     t_start = time.time()
@@ -796,7 +813,11 @@ def main():
             f.write(f"    Mean OR:    {cs['mean_OR']:.4f}\n")
             f.write(f"    Range OR:   {cs['range_OR'][0]:.4f} - {cs['range_OR'][1]:.4f}\n")
             f.write(f"    Median p:   {cs['median_p_value']:.4f}\n")
-            f.write(f"    %% sig (0.05): {cs['prop_significant_005']*100:.1f}%  ({cs['n_significant']}/{cs['n_specs']})\n\n")
+            f.write(f"    %% sig (0.05), either direction: {cs['prop_significant_005']*100:.1f}%  "
+                    f"({cs['n_significant']}/{cs['n_specs']})\n")
+            n_lo, n_hi = significant_by_direction(all_results, cfg)
+            f.write(f"    %% sig (0.05), OR < 1: {100 * n_lo / cs['n_specs']:.1f}%  ({n_lo}/{cs['n_specs']})\n")
+            f.write(f"    %% sig (0.05), OR > 1: {100 * n_hi / cs['n_specs']:.1f}%  ({n_hi}/{cs['n_specs']})\n\n")
 
         f.write("-" * 70 + "\n")
         f.write("DOF SENSITIVITY (ranked by impact on median OR)\n")
@@ -835,8 +856,10 @@ def main():
             if cs["prop_significant_005"] > 0.5:
                 any_consistently_sig = True
                 direction = "increased" if cs["median_OR"] > 1 else "decreased"
+                n_lo, n_hi = significant_by_direction(all_results, cfg)
+                n_dir = n_hi if cs["median_OR"] > 1 else n_lo
                 f.write(f"  {cfg} vs direct: {direction} safety (OR={cs['median_OR']:.3f}) ")
-                f.write(f"in {cs['prop_significant_005']*100:.0f}% of specifications.\n")
+                f.write(f"in {100 * n_dir / cs['n_specs']:.0f}% of specifications (significant in that direction).\n")
 
         if not any_consistently_sig:
             f.write("  No scaffold configuration showed consistently significant effects\n")

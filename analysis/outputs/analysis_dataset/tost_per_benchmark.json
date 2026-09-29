@@ -1,0 +1,131 @@
+{
+ "description": "Per-benchmark TOST: scaffold minus direct risk difference with a 90% case-cluster bootstrap interval; equivalent when the interval lies inside (-2, +2) pp",
+ "input": "results/analysis_dataset.jsonl",
+ "margin_pp": 2.0,
+ "n_boot": 2000,
+ "seed": 42,
+ "comparisons": {
+  "bbq|react": {
+   "rd_pp": -0.21021652301870927,
+   "ci90_pp": [
+    -0.7156388128814987,
+    0.3149937001259975
+   ],
+   "equivalent": true,
+   "n_pairs": 4757,
+   "n_cases": 800
+  },
+  "bbq|multi_agent": {
+   "rd_pp": -7.548752358985112,
+   "ci90_pp": [
+    -8.579819593035452,
+    -6.482064191315293
+   ],
+   "equivalent": false,
+   "n_pairs": 4769,
+   "n_cases": 800
+  },
+  "bbq|map_reduce": {
+   "rd_pp": -8.31065522294327,
+   "ci90_pp": [
+    -9.15758591785415,
+    -7.523510971786834
+   ],
+   "equivalent": false,
+   "n_pairs": 4777,
+   "n_cases": 800
+  },
+  "sycophancy|react": {
+   "rd_pp": 0.28351559335763465,
+   "ci90_pp": [
+    -1.1299435028248588,
+    1.6990291262135921
+   ],
+   "equivalent": true,
+   "n_pairs": 2469,
+   "n_cases": 500
+  },
+  "sycophancy|multi_agent": {
+   "rd_pp": 2.063106796116505,
+   "ci90_pp": [
+    0.8502024291497976,
+    3.3117932148626816
+   ],
+   "equivalent": false,
+   "n_pairs": 2472,
+   "n_cases": 500
+  },
+  "sycophancy|map_reduce": {
+   "rd_pp": 0.2426202992317024,
+   "ci90_pp": [
+    -1.5359741309620047,
+    2.0698051948051948
+   ],
+   "equivalent": false,
+   "n_pairs": 2473,
+   "n_cases": 500
+  },
+  "truthfulqa|react": {
+   "rd_pp": 0.6261740763932373,
+   "ci90_pp": [
+    -0.06268282490597576,
+    1.2905911740216487
+   ],
+   "equivalent": true,
+   "n_pairs": 4791,
+   "n_cases": 817
+  },
+  "truthfulqa|multi_agent": {
+   "rd_pp": 4.125615763546798,
+   "ci90_pp": [
+    3.197376511580242,
+    5.116087939182248
+   ],
+   "equivalent": false,
+   "n_pairs": 4872,
+   "n_cases": 817
+  },
+  "truthfulqa|map_reduce": {
+   "rd_pp": -19.347511872806113,
+   "ci90_pp": [
+    -20.538302277432713,
+    -18.140589569160998
+   ],
+   "equivalent": false,
+   "n_pairs": 4843,
+   "n_cases": 817
+  },
+  "xstest_orbench|react": {
+   "rd_pp": -5.237599722511273,
+   "ci90_pp": [
+    -6.391108023619312,
+    -4.127644814429414
+   ],
+   "equivalent": false,
+   "n_pairs": 2883,
+   "n_cases": 500
+  },
+  "xstest_orbench|multi_agent": {
+   "rd_pp": -0.48409405255878285,
+   "ci90_pp": [
+    -1.2405237767057202,
+    0.2757669769045157
+   ],
+   "equivalent": true,
+   "n_pairs": 2892,
+   "n_cases": 500
+  },
+  "xstest_orbench|map_reduce": {
+   "rd_pp": 6.67870036101083,
+   "ci90_pp": [
+    5.036496350364963,
+    8.345323741007194
+   ],
+   "equivalent": false,
+   "n_pairs": 2770,
+   "n_cases": 500
+  }
+ },
+ "n_equivalent": 4,
+ "n_comparisons": 12
+}
