@@ -190,10 +190,15 @@ LLM tools provided substantial assistance with implementation of the evaluation 
 ## Citation
 
 ```bibtex
-@article{gringras2026safety,
-  title={Safety Under Scaffolding: How Evaluation Conditions Shape Measured Safety},
-  author={Gringras, David},
-  year={2026}
+@misc{gringras2026safety,
+  title         = {Safety Under Scaffolding: How Evaluation Conditions Shape Measured Safety},
+  author        = {Gringras, David},
+  year          = {2026},
+  eprint        = {2603.10044},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  doi           = {10.48550/arXiv.2603.10044},
+  url           = {https://arxiv.org/abs/2603.10044}
 }
 ```
 
